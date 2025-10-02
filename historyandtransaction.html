@@ -1,0 +1,150 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Transaction History - AgriLink</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Material+Symbols+Outlined" rel="stylesheet">
+  <link rel="stylesheet" href="../assets/css/historyandtransaction.css" />
+</head>
+<body>
+  <!-- HEADER -->
+  <div class="header-container">
+    <div class="header-left">
+      <div class="logo">AgriLink</div>
+      <div class="search-container">
+        <span class="material-symbols-outlined">search</span>
+        <input type="text" placeholder="Search Agri" />
+      </div>
+    </div>
+    <div class="header-center">
+      <div class="nav-icons">
+        <a href="homemain.html" class="icon"><span class="material-symbols-outlined">home</span></a>
+        <a href="listing.html" class="icon"><span class="material-symbols-outlined">storefront</span></a>
+        <div class="icon" id="chat-icon"><span class="material-symbols-outlined">forum</span></div>
+        <div class="icon" id="notification-icon"><span class="material-symbols-outlined">notifications</span></div>
+      </div>
+    </div>
+    <div class="header-right"></div>
+  </div>
+
+  <!-- PROFILE SIDEBAR -->
+  <div class="profile-container">
+    <div class="profile-header">
+      <img src="https://storage.googleapis.com/workspace-0f70711f-8b4e-4d94-86f1-2a93ccde5887/image/0ec0940b-23d9-4b1f-8e72-2a8bd35584e4.png" alt="Farmer" class="profile-pic" onclick="location.href='profile.html'" />
+      <div class="profile-name">Juan Dela Cruz</div>
+    </div>
+    <ul class="profile-menu">
+      <li onclick="location.href='request.html'"><i class="material-symbols-outlined">request_quote</i><span>Request</span></li>
+      <li onclick="location.href='historyandtransaction.html'"><i class="material-symbols-outlined">receipt_long</i><span>History and Transactions</span></li>
+      <li onclick="location.href='settings.html'"><i class="material-symbols-outlined">privacy_tip</i><span>Settings and Privacy</span></li>
+      <li onclick="location.href='report.html'"><i class="material-symbols-outlined">analytics</i><span>Reports</span></li>
+    </ul>
+    <button class="logout-btn" onclick="location.href='index.html'"><i class="material-symbols-outlined">logout</i><span>Logout</span></button>
+  </div>
+
+  <!-- MAIN CONTENT -->
+  <div class="main-container">
+    <div class="main-content">
+      <!-- Filters -->
+      <div class="filter-controls">
+        <div class="filter-row">
+          <div class="filter-group">
+            <label class="filter-label">All Transactions</label>
+            <select id="filter-type" class="filter-select">
+              <option value="all">All Transactions</option>
+              <option value="sales">Sales</option>
+              <option value="purchases">Purchases</option>
+              <option value="exchanges">Exchanges</option>
+              <option value="deliveries">Deliveries</option>
+            </select>
+          </div>
+          <div class="filter-group">
+            <label class="filter-label">Filter by Status</label>
+            <select id="filter-status" class="filter-select">
+              <option value="all">All Status</option>
+              <option value="completed">Completed</option>
+              <option value="pending">Pending</option>
+              <option value="cancelled">Cancelled</option>
+            </select>
+          </div>
+          <div class="filter-group">
+            <label class="filter-label">Date Range - From</label>
+            <input id="date-from" type="date" class="date-input" />
+          </div>
+          <div class="filter-group">
+            <label class="filter-label">Date Range - To</label>
+            <input id="date-to" type="date" class="date-input" />
+          </div>
+        </div>
+      </div>
+
+      <!-- Page header -->
+      <div class="page-header">
+        <h1 class="page-title">Transaction History</h1>
+        <p class="page-subtitle">Track all your agricultural waste exchange activities</p>
+      </div>
+
+      <!-- Stats grid -->
+      <div class="stats-grid">
+        <div class="stat-card"><div id="stat-total" class="stat-value">0</div><div class="stat-label">Total Transactions</div></div>
+        <div class="stat-card"><div id="stat-earned" class="stat-value">₱0</div><div class="stat-label">Total Earnings</div></div>
+        <div class="stat-card"><div id="stat-spent" class="stat-value">₱0</div><div class="stat-label">Total Spent</div></div>
+        <div class="stat-card"><div id="stat-success" class="stat-value">0%</div><div class="stat-label">Success Rate</div></div>
+      </div>
+
+      <!-- Transaction list -->
+      <div class="transaction-list">
+        <div class="list-header">
+          <h3 class="list-title">Recent Transactions</h3>
+          <div class="list-actions">
+            <button class="action-button" id="btn-export"><span class="material-symbols-outlined" style="font-size:16px">download</span>&nbsp;Export</button>
+            <button class="action-button" id="btn-sort"><span class="material-symbols-outlined" style="font-size:16px">filter_list</span>&nbsp;Sort</button>
+          </div>
+        </div>
+        <div id="transactions-container"></div>
+        <div id="transactions-empty" class="empty-state" style="display:none">
+          <span class="material-symbols-outlined">search_off</span>
+          <h3>No transactions found</h3>
+          <p>Try adjusting your filters to see more results.</p>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Notification popup -->
+  <div class="notification-container" id="notification-panel" style="position:fixed;">
+    <div class="notification-header"><h3>Notifications</h3><i class="material-symbols-outlined" id="close-notification">close</i></div>
+    <div class="notification-list">
+      <div class="notification-item"><div class="notification-content"><div class="notification-text"><strong>Maria Santos</strong> commented on your post: "This looks great! Would love to buy some."</div><div class="notification-time">2 hrs ago</div></div></div>
+      <div class="notification-item"><div class="notification-content"><div class="notification-text"><strong>Pedro Bautista</strong> liked your post about organic fertilizer.</div><div class="notification-time">5 hrs ago</div></div></div>
+      <div class="notification-item"><div class="notification-content"><div class="notification-text"><strong>AgriTech PH</strong> shared a new article: "Benefits of Organic Waste in Farming"</div><div class="notification-time">1 day ago</div></div></div>
+      <div class="notification-item"><div class="notification-content"><div class="notification-text"><strong>Farmers Cooperative</strong> added a new listing for compost materials.</div><div class="notification-time">2 days ago</div></div></div>
+    </div>
+  </div>
+
+  <!-- Chat popup -->
+  <div class="header-chat-container" id="chat-panel" style="position:fixed;">
+    <div class="chat-header-popup"><h3>Chats</h3><i class="material-symbols-outlined" id="close-chat">close</i></div>
+    <div class="active-users-popup">
+      <div class="active-title-popup">Active Now</div>
+      <div class="active-list-popup" id="active-users"></div>
+    </div>
+    <div class="conversations-title-popup">Conversations</div>
+    <div class="chat-list-popup" id="chat-list"></div>
+  </div>
+
+  <!-- Listings sidebar -->
+  <div class="listings-container">
+    <div class="listings-header"><h3>Current Listings</h3></div>
+    <div class="listings-list" id="listings-list"></div>
+  </div>
+
+  <!-- Floating chat windows container (rendered by JS) -->
+  <div id="floating-chats-root"></div>
+
+  <script src="../assets/js/historyandtransaction.js"></script>
+</body>
+</html>
