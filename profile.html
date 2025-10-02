@@ -1,0 +1,452 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>AgriLink - Profile</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200" rel="stylesheet" />
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Inter', 'Segoe UI', system-ui, -apple-system, sans-serif; }
+    :root { --brand:#047857; --brand-light:#059669; --brand-dark:#065f46; --bg:linear-gradient(135deg,#f0f9ff 0%,#e0f2fe 50%,#f0f2f5 100%); --surface:#ffffff; --surface-2:#f8fafc; --surface-hover:#f1f5f9; --text:#0f172a; --border:#e2e8f0; --shadow-md:0 4px 6px -1px rgba(0,0,0,.1), 0 2px 4px -1px rgba(0,0,0,.06); --radius:12px; }
+    body { background: var(--bg); color: var(--text); min-height: 100vh; }
+
+    /* Header */
+    .header-container { position: fixed; top: 0; left: 0; right: 0; height: 60px; background-color: #FF9100; display: flex; align-items: center; padding: 0 20px; z-index: 100; box-shadow: 0 2px 4px rgba(0,0,0,0.1); }
+    .header-left { flex: 1; display: flex; align-items: center; gap: 20px; }
+    .header-center { flex: 2; display: flex; justify-content: center; align-items: center; }
+    .header-right { flex: 1; display: flex; justify-content: flex-end; align-items: center; }
+    .logo { font-size: 24px; font-weight: bold; color: white; }
+    .search-container { display: flex; align-items: center; background-color: rgba(255,255,255,0.2); border-radius: 12px; padding: 8px 16px; gap: 12px; }
+    .search-container input { background: transparent; border: none; color: white; outline: none; width: 250px; font-size: 14px; }
+    .search-container .material-symbols-outlined { color: white; font-size: 24px; }
+    .nav-icons { display: flex; gap: 20px; }
+    .nav-icons .icon { width: 40px; height: 40px; border-radius: 50%; background-color: rgba(255,255,255,0.2); display: flex; justify-content: center; align-items: center; color: white; cursor: pointer; text-decoration:none; }
+
+    /* Sidebar */
+    .profile-container { position: fixed; left: 0; top: 60px; bottom: 0; width: 280px; background-color: white; padding: 20px; overflow-y: auto; z-index: 90; box-shadow: 1px 0 5px rgba(0,0,0,0.1); }
+    .profile-header { display: flex; align-items: center; margin-bottom: 20px; }
+    .profile-pic { width: 50px; height: 50px; border-radius: 50%; object-fit: cover; margin-right: 10px; cursor: pointer; }
+    .profile-name { font-weight: 600; }
+    .profile-menu { list-style: none; }
+    .profile-menu li { padding: 10px; margin: 5px 0; border-radius: 8px; display: flex; align-items: center; cursor: pointer; }
+    .profile-menu li:hover { background-color: #f0f2f5; }
+    .profile-menu li i { margin-right: 10px; color: #FF9100; }
+    .logout-btn { margin-top: 20px; padding: 10px 15px; background-color: #ef4444; color: white; border: none; border-radius: 8px; display: flex; align-items: center; justify-content: center; cursor: pointer; width: 100%; }
+
+    /* Main content container */
+    .main-content { margin-left: 300px; padding: 80px 24px 24px; }
+
+    /* Cover/Profile section */
+    .cover-section { margin-bottom: 20px; }
+    .cover-container { position: relative; border-radius: 12px; overflow: hidden; box-shadow: var(--shadow-md); background: white; }
+    .cover-photo { height: 220px; position: relative; }
+    .cover-image { width: 100%; height: 100%; object-fit: cover; display: block; }
+    .cover-overlay { position: absolute; inset: 0; background: linear-gradient(180deg, rgba(0,0,0,0.15), rgba(0,0,0,0.25)); }
+    .profile-header-section { display: flex; gap: 16px; align-items: flex-end; padding: 0 24px 16px; margin-top: -48px; }
+    .profile-picture-container { position: relative; width: 120px; height: 120px; border-radius: 50%; overflow: hidden; border: 4px solid white; box-shadow: 0 6px 16px rgba(0,0,0,0.2); background: #fff; }
+    .profile-picture { width: 100%; height: 100%; object-fit: cover; display: block; }
+    .profile-edit-overlay { position: absolute; inset: 0; display: flex; align-items: center; justify-content: center; background: rgba(0,0,0,0.35); opacity: 0; color: #fff; cursor: pointer; transition: opacity .2s; }
+    .profile-picture-container:hover .profile-edit-overlay { opacity: 1; }
+    .profile-info-header { flex: 1; color: #0f172a; }
+    .profile-name { font-size: 28px; font-weight: 700; }
+    .profile-role { color: #047857; font-weight: 600; margin: 4px 0; }
+    .profile-bio { color: #334155; margin-top: 6px; }
+    .profile-meta { display: flex; gap: 16px; margin-top: 10px; color: #475569; align-items: center; flex-wrap: wrap; }
+    .profile-meta .material-symbols-outlined { font-size: 18px; vertical-align: middle; margin-right: 4px; }
+    .rating-stars-inline { display: inline-flex; gap: 2px; vertical-align: middle; }
+    .rating-stars-inline .material-symbols-outlined { color: #f59e0b; font-size: 20px; }
+
+    /* Edit inputs */
+    .profile-edit-form { display: grid; grid-template-columns: 1fr 200px; gap: 12px; align-items: start; }
+    .profile-name-input, .profile-role-input, .profile-bio-input, .profile-location-input { width: 100%; padding: 8px 10px; border: 1px solid #e2e8f0; border-radius: 8px; }
+    .profile-bio-input { grid-column: 1 / -1; }
+    .profile-edit-actions { display: flex; gap: 8px; }
+    .save-btn, .cancel-btn { display: inline-flex; align-items: center; gap: 6px; border: none; border-radius: 8px; padding: 8px 12px; cursor: pointer; }
+    .save-btn { background: #047857; color: #fff; }
+    .cancel-btn { background: #e2e8f0; color: #0f172a; }
+
+    /* Stats */
+    .profile-stats-section { margin: 12px 0 20px 300px; padding: 0 24px; }
+    .stats-container { display: grid; grid-template-columns: repeat(3, 1fr); gap: 12px; }
+    .stat-item { background: white; border-radius: 12px; box-shadow: var(--shadow-md); padding: 16px; text-align: center; }
+    .stat-number { font-size: 22px; font-weight: 700; color: #047857; }
+    .stat-label { color: #64748b; font-weight: 600; }
+
+    /* Content area */
+    .profile-content-section { margin-left: 300px; padding: 0 24px 24px; }
+    .profile-content-container { display: grid; grid-template-columns: 1fr; gap: 16px; }
+    .profile-about-card { background: white; border-radius: 12px; box-shadow: var(--shadow-md); padding: 16px; }
+    .about-info { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 12px; margin-top: 10px; }
+    .info-item { display: flex; gap: 10px; align-items: flex-start; color: #334155; }
+    .info-label { font-size: 12px; color: #64748b; }
+    .info-value { font-weight: 600; }
+
+    /* Posts */
+    .recent-posts-section { background: white; border-radius: 12px; box-shadow: var(--shadow-md); padding: 16px; }
+    .posts-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 16px; margin-top: 10px; }
+    .post-card { background: #fff; border-radius: 12px; box-shadow: 0 1px 2px rgba(0,0,0,.08); padding: 12px; }
+    .post-header { display: flex; align-items: center; gap: 10px; margin-bottom: 8px; }
+    .post-header img { width: 36px; height: 36px; border-radius: 50%; object-fit: cover; }
+    .post-user { font-weight: 600; }
+    .post-time { font-size: 12px; color: #64748b; }
+    .post-content { margin: 8px 0; color: #334155; }
+    .post-image { width: 100%; max-height: 260px; object-fit: cover; border-radius: 8px; margin-top: 6px; }
+    .post-stats { display: flex; justify-content: space-between; margin-top: 10px; color: #475569; }
+
+    /* Notifications */
+    .notification-toast { position: fixed; bottom: 24px; left: 50%; transform: translateX(-50%); background: #047857; color: white; padding: 10px 16px; border-radius: 8px; box-shadow: var(--shadow-md); z-index: 150; }
+    .notification-container { position: fixed; width: 350px; background-color: white; border-radius: 12px; box-shadow: 0 8px 30px rgba(0,0,0,0.12); z-index: 120; display: none; border: 1px solid #e4e6ea; }
+    .notification-container.visible { display: block; }
+    .notification-header { display: flex; justify-content: space-between; align-items: center; padding: 14px 16px; border-bottom: 1px solid #e4e6ea; background: #f8f9fa; border-radius: 12px 12px 0 0; }
+    .notification-list { max-height: 400px; overflow-y: auto; }
+    .notification-item { padding: 12px 16px; border-bottom: 1px solid #f1f5f9; cursor: pointer; }
+    .notification-text strong { color: #047857; }
+
+    /* Chat popup + floating chats (reuse styles) */
+    .header-chat-container { position: fixed; width: 320px; background-color: white; border-radius: 12px; box-shadow: 0 8px 30px rgba(0,0,0,0.12); z-index: 120; display: none; max-height: 450px; border: 1px solid #e4e6ea; }
+    .header-chat-container.visible { display: block; }
+    .chat-header-popup { display: flex; justify-content: space-between; align-items: center; padding: 16px 20px; border-bottom: 1px solid #e4e6ea; background-color: #f8f9fa; border-radius: 12px 12px 0 0; }
+    .active-users-popup { padding: 16px 20px 12px; border-bottom: 1px solid #e4e6ea; }
+    .active-title-popup { font-weight: 600; font-size: 14px; color: #047857; margin-bottom: 12px; }
+    .active-list-popup { display: flex; gap: 12px; overflow-x: auto; padding-bottom: 8px; }
+    .active-user-popup { display: flex; flex-direction: column; align-items: center; cursor: pointer; min-width: 60px; }
+    .user-status-popup { position: relative; display: inline-block; margin-bottom: 6px; }
+    .user-status-popup img { width: 40px; height: 40px; border-radius: 50%; object-fit: cover; border: 2px solid #e4e6ea; }
+    .status-indicator-popup { position: absolute; bottom: 2px; right: 2px; width: 12px; height: 12px; background-color: #42b883; border-radius: 50%; border: 2px solid white; }
+    .conversations-title-popup { font-weight: 600; font-size: 14px; color: #047857; padding: 12px 20px 8px; }
+    .chat-list-popup { max-height: 280px; overflow-y: auto; }
+    .chat-item-popup { display: flex; align-items: center; padding: 12px 20px; cursor: pointer; }
+    .chat-item-popup img { width: 44px; height: 44px; border-radius: 50%; margin-right: 12px; object-fit: cover; }
+
+    .chat-window { position: fixed; width: 280px; height: 420px; background: white; border-radius: 12px 12px 0 0; box-shadow: 0 -4px 25px rgba(0,0,0,0.2); z-index: 130; border: 1px solid #e4e6ea; border-bottom: none; }
+    .chat-window.minimized { height: 42px; }
+    .chat-window-header { background: linear-gradient(135deg, #047857 0%, #059669 100%); color: white; padding: 14px 18px; border-radius: 12px 12px 0 0; display: flex; justify-content: space-between; align-items: center; cursor: pointer; }
+    .chat-window-user { display: flex; align-items: center; gap: 10px; }
+    .chat-window-avatar { width: 28px; height: 28px; border-radius: 50%; object-fit: cover; border: 2px solid rgba(255,255,255,0.3); }
+    .chat-window-name { font-weight: 600; font-size: 15px; }
+    .chat-window-controls { display: flex; gap: 6px; }
+    .chat-window-messages { height: 320px; overflow-y: auto; padding: 16px; background: linear-gradient(to bottom, #f8f9fa 0%, #ffffff 100%); }
+    .chat-message { margin-bottom: 16px; }
+    .chat-message.sent { text-align: right; }
+    .message-content { display: inline-block; max-width: 85%; padding: 10px 14px; border-radius: 18px; }
+    .chat-message.sent .message-content { background: linear-gradient(135deg, #047857 0%, #059669 100%); color: white; }
+    .chat-message.received .message-content { background: #e4e6ea; color: #1c1e21; }
+    .message-time { font-size: 11px; color: #65676b; margin-top: 6px; }
+    .message-status { font-size: 10px; color: #65676b; margin-top: 4px; }
+
+    @media (max-width: 992px) {
+      .main-content, .profile-stats-section, .profile-content-section { margin-left: 0; }
+      .profile-container { transform: translateX(-100%); transition: transform .3s; }
+      .profile-container.active { transform: translateX(0); }
+      .posts-grid { grid-template-columns: 1fr; }
+    }
+  </style>
+</head>
+<body>
+  <!-- Header -->
+  <div class="header-container">
+    <div class="header-left">
+      <div class="logo">AgriLink</div>
+      <div class="search-container">
+        <span class="material-symbols-outlined">search</span>
+        <input type="text" placeholder="Search Agri" />
+      </div>
+    </div>
+    <div class="header-center">
+      <div class="nav-icons">
+        <a href="homemain.html" class="icon"><span class="material-symbols-outlined">home</span></a>
+        <a href="listing.html" class="icon"><span class="material-symbols-outlined">storefront</span></a>
+        <div class="icon" id="chat-icon"><span class="material-symbols-outlined">forum</span></div>
+        <div class="icon" id="notification-icon"><span class="material-symbols-outlined">notifications</span></div>
+      </div>
+    </div>
+    <div class="header-right"></div>
+  </div>
+
+  <!-- Sidebar -->
+  <div class="profile-container">
+    <div class="profile-header">
+      <img src="https://storage.googleapis.com/workspace-0f70711f-8b4e-4d94-86f1-2a93ccde5887/image/0ec0940b-23d9-4b1f-8e72-2a8bd35584e4.png" alt="Farmer" class="profile-pic" id="profile-link" />
+      <div class="profile-name">Juan Dela Cruz</div>
+    </div>
+    <ul class="profile-menu">
+      <li data-href="/request"><i class="material-symbols-outlined">request_quote</i><span>Request</span></li>
+      <li data-href="/historyandtransaction"><i class="material-symbols-outlined">receipt_long</i><span>History and Transactions</span></li>
+      <li data-href="/settings"><i class="material-symbols-outlined">privacy_tip</i><span>Settings and Privacy</span></li>
+      <li data-href="/report"><i class="material-symbols-outlined">analytics</i><span>Reports</span></li>
+    </ul>
+    <button class="logout-btn" id="logout-btn"><i class="material-symbols-outlined">logout</i><span>Logout</span></button>
+  </div>
+
+  <!-- Main content -->
+  <div class="main-content">
+    <div class="cover-section">
+      <div class="cover-container">
+        <div class="cover-photo">
+          <img src="https://images.unsplash.com/photo-1500937386664-56d1dfef3854?ixlib=rb-4.0.3&auto=format&fit=crop&w=1200&q=80" alt="Cover" class="cover-image" />
+          <div class="cover-overlay"></div>
+        </div>
+        <div class="profile-header-section">
+          <div class="profile-picture-container">
+            <img id="profile-picture" src="https://storage.googleapis.com/workspace-0f70711f-8b4e-4d94-86f1-2a93ccde5887/image/0ec0940b-23d9-4b1f-8e72-2a8bd35584e4.png" alt="Profile" class="profile-picture" />
+            <div class="profile-edit-overlay" id="edit-profile-trigger">
+              <span class="material-symbols-outlined">edit</span>
+            </div>
+            <input type="file" id="profile-file" accept="image/*" style="display:none" />
+          </div>
+          <div class="profile-info-header">
+            <div id="profile-static">
+              <h1 class="profile-name" id="name-text">Juan Dela Cruz</h1>
+              <p class="profile-role" id="role-text">Crop Farmer</p>
+              <p class="profile-bio" id="bio-text">Organic farmer specializing in rice and vegetable production. Passionate about sustainable agriculture and waste management.</p>
+              <div class="profile-meta">
+                <span class="location"><span class="material-symbols-outlined">location_on</span><span id="location-text">Cabanatuan City, Nueva Ecija</span></span>
+                <span class="joined-date"><span class="material-symbols-outlined">calendar_today</span>Joined March 2023</span>
+                <span class="rating-meta"><span class="rating-text">Rating:</span> <span class="rating-stars-inline" id="rating-stars"></span></span>
+              </div>
+              <div style="margin-top:10px"><button class="save-btn" id="start-edit"><span class="material-symbols-outlined">edit</span>Edit Profile</button></div>
+            </div>
+            <div id="profile-edit" style="display:none" class="profile-edit-form">
+              <input type="text" id="name-input" class="profile-name-input" placeholder="Full Name" />
+              <select id="role-input" class="profile-role-input">
+                <option value="Crop Farmer">Crop Farmer</option>
+                <option value="Livestock Waste Owner">Livestock Waste Owner</option>
+              </select>
+              <textarea id="bio-input" class="profile-bio-input" rows="3" placeholder="Bio"></textarea>
+              <input type="text" id="location-input" class="profile-location-input" placeholder="Location" />
+              <div class="profile-edit-actions">
+                <button class="save-btn" id="save-profile"><span class="material-symbols-outlined">check</span>Save</button>
+                <button class="cancel-btn" id="cancel-edit"><span class="material-symbols-outlined">close</span>Cancel</button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Stats -->
+  <div class="profile-stats-section">
+    <div class="stats-container">
+      <div class="stat-item"><div class="stat-number">2</div><div class="stat-label">Posts</div></div>
+      <div class="stat-item"><div class="stat-number">2</div><div class="stat-label">Products</div></div>
+      <div class="stat-item"><div class="stat-number">5</div><div class="stat-label">Transactions</div></div>
+    </div>
+  </div>
+
+  <!-- Content area -->
+  <div class="profile-content-section">
+    <div class="profile-content-container">
+      <div class="profile-about-card">
+        <h3>About Juan Dela Cruz</h3>
+        <div class="about-info">
+          <div class="info-item"><span class="material-symbols-outlined">work</span><div><div class="info-label">Occupation</div><div class="info-value" id="about-role">Crop Farmer</div></div></div>
+          <div class="info-item"><span class="material-symbols-outlined">location_on</span><div><div class="info-label">Location</div><div class="info-value" id="about-location">Cabanatuan City, Nueva Ecija</div></div></div>
+          <div class="info-item"><span class="material-symbols-outlined">mail</span><div><div class="info-label">Email</div><div class="info-value">juan.delacruz@email.com</div></div></div>
+          <div class="info-item"><span class="material-symbols-outlined">phone</span><div><div class="info-label">Phone</div><div class="info-value">+63 912 345 6789</div></div></div>
+        </div>
+      </div>
+
+      <div class="recent-posts-section">
+        <h3>Recent Posts</h3>
+        <div class="posts-grid">
+          <div class="post-card">
+            <div class="post-header">
+              <img src="https://storage.googleapis.com/workspace-0f70711f-8b4e-4d94-86f1-2a93ccde5887/image/0ec0940b-23d9-4b1f-8e72-2a8bd35584e4.png" alt="Juan Dela Cruz" />
+              <div><div class="post-user">Juan Dela Cruz</div><div class="post-time">2 hours ago</div></div>
+            </div>
+            <div class="post-content">Just harvested fresh organic vegetables! Available for pickup or delivery in Nueva Ecija area. Contact me for bulk orders.</div>
+            <img src="https://images.unsplash.com/photo-1542838132-92c53300491e?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80" alt="Post content" class="post-image" />
+            <div class="post-stats"><div class="post-reactions"><i class="material-symbols-outlined">thumb_up</i><span class="reaction-count">15</span></div><div class="post-comments"><span>3 comments</span></div></div>
+          </div>
+          <div class="post-card">
+            <div class="post-header">
+              <img src="https://storage.googleapis.com/workspace-0f70711f-8b4e-4d94-86f1-2a93ccde5887/image/0ec0940b-23d9-4b1f-8e72-2a8bd35584e4.png" alt="Juan Dela Cruz" />
+              <div><div class="post-user">Juan Dela Cruz</div><div class="post-time">1 day ago</div></div>
+            </div>
+            <div class="post-content">Sharing my experience with composting chicken manure. Great results for soil fertility! Here are some tips for fellow farmers.</div>
+            <div class="post-stats"><div class="post-reactions"><i class="material-symbols-outlined">thumb_up</i><span class="reaction-count">23</span></div><div class="post-comments"><span>7 comments</span></div></div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Notification toast -->
+  <div class="notification-toast" id="toast" style="display:none"></div>
+
+  <!-- Notification popup -->
+  <div class="notification-container" id="notification-container" style="top:0; right:0;">
+    <div class="notification-header"><h3>Notifications</h3><i class="material-symbols-outlined" id="close-notification">close</i></div>
+    <div class="notification-list">
+      <div class="notification-item"><div class="notification-content"><div class="notification-text"><strong>Maria Santos</strong> commented on your post: "This looks great! Would love to buy some."</div><div class="notification-time">2 hrs ago</div></div></div>
+      <div class="notification-item"><div class="notification-content"><div class="notification-text"><strong>Pedro Bautista</strong> liked your post about organic fertilizer.</div><div class="notification-time">5 hrs ago</div></div></div>
+      <div class="notification-item"><div class="notification-content"><div class="notification-text"><strong>AgriTech PH</strong> shared a new article: "Benefits of Organic Waste in Farming"</div><div class="notification-time">1 day ago</div></div></div>
+      <div class="notification-item"><div class="notification-content"><div class="notification-text"><strong>Farmers Cooperative</strong> added a new listing for compost materials.</div><div class="notification-time">2 days ago</div></div></div>
+    </div>
+  </div>
+
+  <!-- Chat popup -->
+  <div class="header-chat-container" id="header-chat-container" style="top:0; right:0;">
+    <div class="chat-header-popup"><h3>Chats</h3><i class="material-symbols-outlined" id="close-chat">close</i></div>
+    <div class="active-users-popup">
+      <div class="active-title-popup">Active Now</div>
+      <div class="active-list-popup">
+        <div class="active-user-popup" data-user='{"id":"ana-gonzales","name":"Ana Gonzales","avatar":"https://storage.googleapis.com/workspace-0f70711f-8b4e-4d94-86f1-2a93ccde5887/image/ee4b5487-b1ea-40b6-9a76-0415e304de49.png"}'>
+          <div class="user-status-popup"><img src="https://storage.googleapis.com/workspace-0f70711f-8b4e-4d94-86f1-2a93ccde5887/image/ee4b5487-b1ea-40b6-9a76-0415e304de49.png" alt="Ana Gonzales" /><span class="status-indicator-popup"></span></div>
+          <span class="name-popup">Ana</span>
+        </div>
+        <div class="active-user-popup" data-user='{"id":"carlos-reyes","name":"Carlos Reyes","avatar":"https://storage.googleapis.com/workspace-0f70711f-8b4e-4d94-86f1-2a93ccde5887/image/331059ac-f6bf-4684-b902-d37824bad8f5.png"}'>
+          <div class="user-status-popup"><img src="https://storage.googleapis.com/workspace-0f70711f-8b4e-4d94-86f1-2a93ccde5887/image/331059ac-f6bf-4684-b902-d37824bad8f5.png" alt="Carlos Reyes" /><span class="status-indicator-popup"></span></div>
+          <span class="name-popup">Carlos</span>
+        </div>
+        <div class="active-user-popup" data-user='{"id":"lorna-lim","name":"Lorna Lim","avatar":"https://storage.googleapis.com/workspace-0f70711f-8b4e-4d94-86f1-2a93ccde5887/image/2ab478de-5d6d-4dce-8c67-baf47fd7ad8e.png"}'>
+          <div class="user-status-popup"><img src="https://storage.googleapis.com/workspace-0f70711f-8b4e-4d94-86f1-2a93ccde5887/image/2ab478de-5d6d-4dce-8c67-baf47fd7ad8e.png" alt="Lorna Lim" /><span class="status-indicator-popup"></span></div>
+          <span class="name-popup">Lorna</span>
+        </div>
+      </div>
+    </div>
+    <div class="conversations-title-popup">Conversations</div>
+    <div class="chat-list-popup" id="chat-list-popup"></div>
+  </div>
+
+  <div id="floating-chats-root"></div>
+
+  <script>
+    // State
+    const state = {
+      name: 'Juan Dela Cruz',
+      role: 'Crop Farmer',
+      bio: 'Organic farmer specializing in rice and vegetable production. Passionate about sustainable agriculture and waste management.',
+      location: 'Cabanatuan City, Nueva Ecija',
+      profilePicture: document.getElementById('profile-picture').src,
+      notificationStyle: { top: 0, right: 0 },
+      chatStyle: { top: 0, right: 0 },
+      conversations: [
+        { id: 'mang-jose', name: 'Mang Jose', avatar: 'https://storage.googleapis.com/workspace-0f70711f-8b4e-4d94-86f1-2a93ccde5887/image/70ed3f6c-a0ca-4490-8b6a-eaa245dffa33.png', lastMessage: 'Hi, about the manure delivery tomorrow...', time: '2:30 PM', messages: [ { id: 1, text: 'Hi, about the manure delivery tomorrow...', sender: 'them', time: '2:30 PM' }, { id: 2, text: 'What time should I expect the delivery?', sender: 'them', time: '2:31 PM' } ] },
+        { id: 'farmers-coop', name: 'Farmers Cooperative', avatar: 'https://storage.googleapis.com/workspace-0f70711f-8b4e-4d94-86f1-2a93ccde5887/image/250bc031-e5eb-4467-9d71-49154b992c13.png', lastMessage: 'New bulk order of organic fertilizer available', time: 'Yesterday', messages: [ { id: 1, text: 'New bulk order of organic fertilizer available', sender: 'them', time: 'Yesterday' }, { id: 2, text: 'Would you be interested in placing an order?', sender: 'them', time: 'Yesterday' } ] }
+      ],
+      openChatWindows: [],
+      typingUsers: {},
+      messageInputs: {},
+    };
+
+    function $(sel, root=document){ return root.querySelector(sel); }
+    function $all(sel, root=document){ return Array.from(root.querySelectorAll(sel)); }
+
+    // Rating
+    function calculateRating(){ const products=2, transactions=5, total=products+transactions; let r = total<=2?1: total<=5?2: total<=10?3: total<=20?4:5; if ([2,4,8,15].includes(total)) r += 0.5; return Math.min(5,r); }
+    function renderStars(rating){ const root = $('#rating-stars'); root.innerHTML=''; const full=Math.floor(rating), half = rating%1!==0; for(let i=0;i<full;i++){ root.innerHTML += '<span class="material-symbols-outlined">star</span>'; } if(half){ root.innerHTML += '<span class="material-symbols-outlined">star_half</span>'; } const empties = 5 - Math.ceil(rating); for(let i=0;i<empties;i++){ root.innerHTML += '<span class="material-symbols-outlined">star</span>'; } }
+
+    // Sidebar nav
+    $('#profile-link').addEventListener('click', ()=>{ window.location.href = 'profile.html'; });
+    $all('.profile-menu li').forEach(li=> li.addEventListener('click', ()=>{ const href=li.getAttribute('data-href'); if(href) window.location.href = href; }));
+    $('#logout-btn').addEventListener('click', ()=>{ window.location.href = '/'; });
+
+    // Edit profile
+    const startEdit = $('#start-edit');
+    const editPanel = $('#profile-edit');
+    const staticPanel = $('#profile-static');
+    const nameInput = $('#name-input');
+    const roleInput = $('#role-input');
+    const bioInput = $('#bio-input');
+    const locationInput = $('#location-input');
+
+    startEdit.addEventListener('click', ()=>{
+      nameInput.value = state.name;
+      roleInput.value = state.role;
+      bioInput.value = state.bio;
+      locationInput.value = state.location;
+      staticPanel.style.display='none';
+      editPanel.style.display='grid';
+    });
+    $('#cancel-edit').addEventListener('click', ()=>{ editPanel.style.display='none'; staticPanel.style.display='block'; });
+    $('#save-profile').addEventListener('click', ()=>{
+      state.name = nameInput.value.trim()||state.name;
+      state.role = roleInput.value;
+      state.bio = bioInput.value.trim();
+      state.location = locationInput.value.trim();
+      $('#name-text').textContent = state.name;
+      $('#role-text').textContent = state.role;
+      $('#bio-text').textContent = state.bio;
+      $('#location-text').textContent = state.location;
+      $('#about-role').textContent = state.role;
+      $('#about-location').textContent = state.location;
+      showToast('Profile updated successfully!');
+      editPanel.style.display='none'; staticPanel.style.display='block';
+    });
+
+    // Profile picture edit
+    $('#edit-profile-trigger').addEventListener('click', ()=>{ $('#profile-file').click(); });
+    $('#profile-file').addEventListener('change', (e)=>{
+      const file = e.target.files && e.target.files[0];
+      if (!file) return;
+      const validTypes = ['image/jpeg','image/jpg','image/png','image/gif'];
+      if (!validTypes.includes(file.type)) { showToast('Please select a valid image file (JPEG, PNG, or GIF)'); return; }
+      if (file.size > 5*1024*1024) { showToast('Image size must be less than 5MB'); return; }
+      const reader = new FileReader();
+      reader.onload = (ev)=>{ state.profilePicture = ev.target.result; $('#profile-picture').src = state.profilePicture; showToast('Profile picture updated successfully!'); };
+      reader.readAsDataURL(file);
+    });
+
+    // Toast
+    function showToast(msg){ const t = $('#toast'); t.textContent = msg; t.style.display='block'; setTimeout(()=>{ t.style.display='none'; }, 4000); }
+
+    // Header popups
+    const notificationIcon = $('#notification-icon');
+    const notificationContainer = $('#notification-container');
+    const chatIcon = $('#chat-icon');
+    const chatContainer = $('#header-chat-container');
+
+    notificationIcon.addEventListener('click', (e)=>{
+      const rect = notificationIcon.getBoundingClientRect();
+      state.notificationStyle = { top: rect.bottom + 5, right: window.innerWidth - rect.right - 190 };
+      notificationContainer.style.top = state.notificationStyle.top + 'px';
+      notificationContainer.style.right = state.notificationStyle.right + 'px';
+      chatContainer.classList.remove('visible');
+      notificationContainer.classList.toggle('visible');
+      e.stopPropagation();
+    });
+    chatIcon.addEventListener('click', (e)=>{
+      const rect = chatIcon.getBoundingClientRect();
+      state.chatStyle = { top: rect.bottom + 5, right: window.innerWidth - rect.right - 190 };
+      chatContainer.style.top = state.chatStyle.top + 'px';
+      chatContainer.style.right = state.chatStyle.right + 'px';
+      notificationContainer.classList.remove('visible');
+      chatContainer.classList.toggle('visible');
+      e.stopPropagation();
+    });
+    document.addEventListener('click', (e)=>{
+      if (notificationContainer.classList.contains('visible') && !notificationContainer.contains(e.target) && e.target !== notificationIcon) notificationContainer.classList.remove('visible');
+      if (chatContainer.classList.contains('visible') && !chatContainer.contains(e.target) && e.target !== chatIcon) chatContainer.classList.remove('visible');
+    });
+    $('#close-notification').addEventListener('click', ()=> notificationContainer.classList.remove('visible'));
+    $('#close-chat').addEventListener('click', ()=> chatContainer.classList.remove('visible'));
+
+    // Chat list
+    function renderChatList(){ const list = $('#chat-list-popup'); list.innerHTML=''; state.conversations.forEach(c=>{ const item=document.createElement('div'); item.className='chat-item-popup'; item.innerHTML = `<img src="${c.avatar}" alt="${c.name}" /><div class="chat-info-popup"><div class="chat-name-popup">${c.name}</div><div class="chat-preview-popup">${c.lastMessage}</div></div><div class="chat-time-popup">${c.time}</div>`; item.addEventListener('click', ()=> openChatWindow(c)); list.appendChild(item); }); }
+    renderChatList();
+
+    // Active users quick open
+    $all('.active-user-popup').forEach(el=> el.addEventListener('click', ()=>{ const user = JSON.parse(el.getAttribute('data-user')); openChatWindow({ ...user, messages: [] }); chatContainer.classList.remove('visible'); }));
+
+    // Floating chat windows
+    function openChatWindow(user){ if (state.openChatWindows.find(c=>c.id===user.id)) return; const existing = state.conversations.find(c=>c.id===user.id); const newChat = { id:user.id, name:user.name, avatar:user.avatar, messages: existing?.messages || user.messages || [], isMinimized:false }; if(!existing){ state.conversations=[{ id:user.id, name:user.name, avatar:user.avatar, lastMessage:'Start a conversation...', time:'Now', messages:[] }, ...state.conversations]; renderChatList(); } state.openChatWindows.push(newChat); renderFloatingChats(); }
+    function closeChatWindow(chatId){ state.openChatWindows = state.openChatWindows.filter(c=>c.id!==chatId); renderFloatingChats(); }
+    function minimizeChatWindow(chatId){ state.openChatWindows = state.openChatWindows.map(c=> c.id===chatId ? { ...c, isMinimized: !c.isMinimized } : c); renderFloatingChats(); }
+    function sendMessage(chatId, message){ if(!message||!message.trim()) return; const time=new Date().toLocaleTimeString([], {hour:'2-digit',minute:'2-digit'}); const m={id:Date.now(), text:message, sender:'me', time, timestamp:new Date(), status:'sent'}; state.openChatWindows=state.openChatWindows.map(c=>c.id===chatId?{...c,messages:[...c.messages,m]}:c); state.conversations=state.conversations.map(conv=>conv.id===chatId?{...conv,lastMessage:message,time:'Now',messages:[...conv.messages,m]}:conv); state.messageInputs[chatId]=''; renderFloatingChats(); simulateTypingAndResponse(chatId); setTimeout(()=>autoScrollMessages(chatId),100); }
+    function simulateTypingAndResponse(chatId){ state.typingUsers[chatId]=true; renderFloatingChats(); setTimeout(()=>{ state.typingUsers[chatId]=false; const responses=["Thanks for your message! I'll get back to you soon.","That sounds great! Let me check on that for you.","I appreciate you reaching out. Let's discuss this further.","Perfect! I'll have more details for you shortly.","Got it! I'll look into this and respond soon."]; const r=responses[Math.floor(Math.random()*responses.length)]; const time=new Date().toLocaleTimeString([], {hour:'2-digit',minute:'2-digit'}); const m={id:Date.now()+1, text:r, sender:'them', time, timestamp:new Date(), status:'delivered'}; state.openChatWindows=state.openChatWindows.map(c=>c.id===chatId?{...c,messages:[...c.messages,m]}:c); state.conversations=state.conversations.map(conv=>conv.id===chatId?{...conv,lastMessage:r,time:'Now',messages:[...conv.messages,m]}:conv); renderFloatingChats(); setTimeout(()=>autoScrollMessages(chatId),100); }, Math.random()*2000+1500); }
+    function autoScrollMessages(chatId){ const el=document.getElementById(`messages-${chatId}`); if(el) el.scrollTop=el.scrollHeight; }
+    function renderFloatingChats(){ const root=document.getElementById('floating-chats-root'); root.innerHTML=''; state.openChatWindows.forEach((chat,idx)=>{ const c=document.createElement('div'); c.className=`chat-window ${chat.isMinimized?'minimized':''}`; c.style.bottom='0px'; c.style.right = `${20 + idx*300}px`; c.innerHTML = `<div class=\"chat-window-header\"><div class=\"chat-window-user\"><img src=\"${chat.avatar}\" alt=\"${chat.name}\" class=\"chat-window-avatar\" /><span class=\"chat-window-name\">${chat.name}</span></div><div class=\"chat-window-controls\"><i class=\"material-symbols-outlined chat-minimize\">${chat.isMinimized?'expand_more':'expand_less'}</i><i class=\"material-symbols-outlined chat-close\">close</i></div></div>${chat.isMinimized?'':`<div class=\"chat-window-messages\" id=\"messages-${chat.id}\">${chat.messages.map(m=>`<div class=\"chat-message ${m.sender==='me'?'sent':'received'}\"><div class=\"message-content\">${m.text}</div><div class=\"message-time\">${m.time}</div>${m.sender==='me'?`<div class=\"message-status\">${m.status==='sent'?'✓':(m.status==='delivered'?'✓✓':'')}</div>`:''}</div>`).join('')}${state.typingUsers[chat.id]?`<div class=\"typing-indicator\"><div class=\"typing-bubble\"><div class=\"typing-dot\"></div><div class=\"typing-dot\"></div><div class=\"typing-dot\"></div></div></div>`:''}</div><div class=\"chat-window-input\"><input type=\"text\" placeholder=\"Message ${chat.name}...\" value=\"${state.messageInputs[chat.id]||''}\" /><button ${!(state.messageInputs[chat.id]||'').trim()?'disabled':''}><i class=\"material-symbols-outlined\">send</i></button></div>`}`; c.querySelector('.chat-window-header').addEventListener('click', ()=> minimizeChatWindow(chat.id)); c.querySelector('.chat-close').addEventListener('click', (e)=>{ e.stopPropagation(); closeChatWindow(chat.id); }); if(!chat.isMinimized){ const input=c.querySelector('.chat-window-input input'); const btn=c.querySelector('.chat-window-input button'); input.addEventListener('input',(e)=>{ state.messageInputs[chat.id]=e.target.value; }); input.addEventListener('keypress',(e)=>{ if(e.key==='Enter'&&!e.shiftKey){ e.preventDefault(); sendMessage(chat.id, input.value); }}); btn.addEventListener('click', ()=> sendMessage(chat.id, input.value)); } root.appendChild(c); }); }
+
+    // Notification toast helper for reuse
+    function showNotificationToast(msg){ showToast(msg); }
+
+    // Notification open from header
+    renderStars(calculateRating());
+  </script>
+</body>
+</html>
