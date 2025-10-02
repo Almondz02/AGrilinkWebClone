@@ -1,0 +1,323 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>AgriLink - Report</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200" rel="stylesheet" />
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Inter', 'Segoe UI', system-ui, -apple-system, sans-serif; }
+    :root { --brand:#047857; --brand-light:#059669; --brand-dark:#065f46; --bg:linear-gradient(135deg,#f0f9ff 0%,#e0f2fe 50%,#f0f2f5 100%); --surface:#ffffff; --surface-2:#f8fafc; --surface-hover:#f1f5f9; --text:#0f172a; --text-muted:#64748b; --text-light:#94a3b8; --border:#e2e8f0; --border-light:#f1f5f9; --ring:rgba(4,120,87,0.12); --shadow-sm:0 1px 2px rgba(0,0,0,0.05); --shadow-md:0 4px 6px -1px rgba(0,0,0,0.1),0 2px 4px -1px rgba(0,0,0,0.06); --shadow-lg:0 10px 15px -3px rgba(0,0,0,0.1),0 4px 6px -2px rgba(0,0,0,0.05); --radius:12px; --radius-sm:8px; }
+    body { background: var(--bg); color: var(--text); line-height: 1.6; overflow-x: hidden; min-height: 100vh; }
+
+    /* Header */
+    .header-container { position: fixed; top:0; left:0; right:0; height:60px; background:#FF9100; display:flex; align-items:center; padding:0 20px; z-index:100; box-shadow:0 2px 4px rgba(0,0,0,0.1); }
+    .header-left { flex:1; display:flex; align-items:center; gap:20px; }
+    .header-center { flex:2; display:flex; justify-content:center; align-items:center; }
+    .header-right { flex:1; display:flex; justify-content:flex-end; align-items:center; }
+    .logo { font-size:24px; font-weight:bold; color:#fff; }
+    .search-container { display:flex; align-items:center; background:rgba(255,255,255,0.2); border-radius:12px; padding:8px 16px; gap:12px; }
+    .search-container input { background:transparent; border:none; color:#fff; outline:none; width:250px; font-size:14px; }
+    .search-container .material-symbols-outlined { color:#fff; font-size:24px; }
+    .nav-icons { display:flex; gap:20px; }
+    .nav-icons .icon { width:40px; height:40px; border-radius:50%; background:rgba(255,255,255,0.2); display:flex; justify-content:center; align-items:center; color:#fff; cursor:pointer; text-decoration:none; }
+
+    /* Sidebar */
+    .profile-container { position:fixed; left:0; top:60px; bottom:0; width:280px; background:#fff; padding:20px; overflow-y:auto; z-index:90; box-shadow:1px 0 5px rgba(0,0,0,0.1); }
+    .profile-header { display:flex; align-items:center; margin-bottom:20px; }
+    .profile-pic { width:50px; height:50px; border-radius:50%; object-fit:cover; margin-right:10px; cursor:pointer; }
+    .profile-name { font-weight:600; }
+    .profile-menu { list-style:none; }
+    .profile-menu li { padding:10px; margin:5px 0; border-radius:8px; display:flex; align-items:center; cursor:pointer; }
+    .profile-menu li:hover { background:#f0f2f5; }
+    .profile-menu li i { margin-right:10px; color:#FF9100; }
+    .logout-btn { margin-top:20px; padding:10px 15px; background:#ef4444; color:#fff; border:none; border-radius:8px; display:flex; align-items:center; justify-content:center; cursor:pointer; width:100%; }
+
+    /* Main content */
+    .main-content { margin-left:300px; padding: 80px 24px 24px; }
+    .report-container { max-width: 900px; margin: 0 auto; }
+    .report-header { background:#fff; border-radius:12px; box-shadow:var(--shadow-md); padding:20px 24px; margin-bottom:16px; }
+    .report-header h1 { margin:0; color:#0f172a; }
+    .report-header p { margin-top:4px; color:#64748b; }
+
+    .report-form-container { background:#fff; border-radius:12px; box-shadow:var(--shadow-md); padding:20px 24px; margin-bottom:16px; }
+    .report-form .form-group { margin-bottom:16px; }
+    .report-form label { display:block; margin-bottom:6px; font-weight:600; color:#0f172a; }
+    .report-form input, .report-form select, .report-form textarea { width:100%; padding:10px 12px; border:1px solid #e2e8f0; border-radius:8px; outline:none; }
+    .report-form textarea { resize:vertical; }
+    .submit-btn { background:#047857; color:#fff; border:none; border-radius:8px; padding:10px 16px; cursor:pointer; font-weight:600; }
+    .submit-btn:hover { background:#065f46; }
+
+    .report-info { background:#fff; border-radius:12px; box-shadow:var(--shadow-md); padding:20px 24px; }
+    .report-info h3 { margin:0 0 8px 0; }
+    .report-info ul { padding-left: 18px; color:#334155; }
+
+    /* Notifications */
+    .notification-toast { position: fixed; bottom: 24px; left: 50%; transform: translateX(-50%); background: #047857; color: white; padding: 10px 16px; border-radius: 8px; box-shadow: var(--shadow-md); z-index: 150; display:none; }
+    .notification-container { position: fixed; width: 350px; background-color: white; border-radius: 12px; box-shadow: 0 8px 30px rgba(0,0,0,0.12); z-index: 120; display: none; border: 1px solid #e4e6ea; }
+    .notification-container.visible { display: block; }
+    .notification-header { display: flex; justify-content: space-between; align-items: center; padding: 14px 16px; border-bottom: 1px solid #e4e6ea; background: #f8f9fa; border-radius: 12px 12px 0 0; }
+    .notification-list { max-height: 400px; overflow-y: auto; }
+    .notification-item { padding: 12px 16px; border-bottom: 1px solid #f1f5f9; cursor: pointer; }
+    .notification-text strong { color: #047857; }
+
+    /* Chat popups */
+    .header-chat-container { position: fixed; width: 320px; background-color: white; border-radius: 12px; box-shadow: 0 8px 30px rgba(0,0,0,0.12); z-index: 120; display: none; max-height: 450px; border: 1px solid #e4e6ea; }
+    .header-chat-container.visible { display: block; }
+    .chat-header-popup { display: flex; justify-content: space-between; align-items: center; padding: 16px 20px; border-bottom: 1px solid #e4e6ea; background-color: #f8f9fa; border-radius: 12px 12px 0 0; }
+    .active-users-popup { padding: 16px 20px 12px; border-bottom: 1px solid #e4e6ea; }
+    .active-title-popup { font-weight: 600; font-size: 14px; color: #047857; margin-bottom: 12px; }
+    .active-list-popup { display: flex; gap: 12px; overflow-x: auto; padding-bottom: 8px; }
+    .active-user-popup { display: flex; flex-direction: column; align-items: center; cursor: pointer; min-width: 60px; }
+    .user-status-popup { position: relative; display: inline-block; margin-bottom: 6px; }
+    .user-status-popup img { width: 40px; height: 40px; border-radius: 50%; object-fit: cover; border: 2px solid #e4e6ea; }
+    .status-indicator-popup { position: absolute; bottom: 2px; right: 2px; width: 12px; height: 12px; background-color: #42b883; border-radius: 50%; border: 2px solid white; }
+    .conversations-title-popup { font-weight: 600; font-size: 14px; color: #047857; padding: 12px 20px 8px; }
+    .chat-list-popup { max-height: 280px; overflow-y: auto; }
+    .chat-item-popup { display: flex; align-items: center; padding: 12px 20px; cursor: pointer; }
+    .chat-item-popup img { width: 44px; height: 44px; border-radius: 50%; margin-right: 12px; object-fit: cover; }
+
+    /* Floating chat windows */
+    .chat-window { position: fixed; width: 280px; height: 420px; background: white; border-radius: 12px 12px 0 0; box-shadow: 0 -4px 25px rgba(0,0,0,0.2); z-index: 130; border: 1px solid #e4e6ea; border-bottom: none; }
+    .chat-window.minimized { height: 42px; }
+    .chat-window-header { background: linear-gradient(135deg, #047857 0%, #059669 100%); color: white; padding: 14px 18px; border-radius: 12px 12px 0 0; display: flex; justify-content: space-between; align-items: center; cursor: pointer; }
+    .chat-window-user { display: flex; align-items: center; gap: 10px; }
+    .chat-window-avatar { width: 28px; height: 28px; border-radius: 50%; object-fit: cover; border: 2px solid rgba(255,255,255,0.3); }
+    .chat-window-name { font-weight: 600; font-size: 15px; }
+    .chat-window-controls { display: flex; gap: 6px; }
+    .chat-window-messages { height: 320px; overflow-y: auto; padding: 16px; background: linear-gradient(to bottom, #f8f9fa 0%, #ffffff 100%); }
+    .chat-message { margin-bottom: 16px; }
+    .chat-message.sent { text-align: right; }
+    .message-content { display: inline-block; max-width: 85%; padding: 10px 14px; border-radius: 18px; }
+    .chat-message.sent .message-content { background: linear-gradient(135deg, #047857 0%, #059669 100%); color: white; }
+    .chat-message.received .message-content { background: #e4e6ea; color: #1c1e21; }
+    .message-time { font-size: 11px; color: #65676b; margin-top: 6px; }
+    .message-status { font-size: 10px; color: #65676b; margin-top: 4px; }
+
+    @media (max-width: 992px) { .main-content { margin-left: 0; } .profile-container { transform: translateX(-100%); transition: transform .3s; } .profile-container.active { transform: translateX(0); } }
+  </style>
+</head>
+<body>
+  <!-- Header -->
+  <div class="header-container">
+    <div class="header-left">
+      <div class="logo">AgriLink</div>
+      <div class="search-container">
+        <span class="material-symbols-outlined">search</span>
+        <input type="text" placeholder="Search Agri" />
+      </div>
+    </div>
+    <div class="header-center">
+      <div class="nav-icons">
+        <a href="homemain.html" class="icon"><span class="material-symbols-outlined">home</span></a>
+        <a href="listing.html" class="icon"><span class="material-symbols-outlined">storefront</span></a>
+        <div class="icon" id="chat-icon"><span class="material-symbols-outlined">forum</span></div>
+        <div class="icon" id="notification-icon"><span class="material-symbols-outlined">notifications</span></div>
+      </div>
+    </div>
+    <div class="header-right"></div>
+  </div>
+
+  <!-- Sidebar -->
+  <div class="profile-container">
+    <div class="profile-header">
+      <img src="https://storage.googleapis.com/workspace-0f70711f-8b4e-4d94-86f1-2a93ccde5887/image/0ec0940b-23d9-4b1f-8e72-2a8bd35584e4.png" alt="Farmer" class="profile-pic" id="profile-link" />
+      <div class="profile-name">Juan Dela Cruz</div>
+    </div>
+    <ul class="profile-menu">
+      <li data-href="/request"><i class="material-symbols-outlined">request_quote</i><span>Request</span></li>
+      <li data-href="/historyandtransaction"><i class="material-symbols-outlined">receipt_long</i><span>History and Transactions</span></li>
+      <li data-href="/settings"><i class="material-symbols-outlined">privacy_tip</i><span>Settings and Privacy</span></li>
+      <li data-href="/report"><i class="material-symbols-outlined">analytics</i><span>Reports</span></li>
+    </ul>
+    <button class="logout-btn" id="logout-btn"><i class="material-symbols-outlined">logout</i><span>Logout</span></button>
+  </div>
+
+  <!-- Main content -->
+  <div class="main-content">
+    <div class="report-container">
+      <header class="report-header">
+        <h1>Submit a Report</h1>
+        <p>Help us improve AgriLink by reporting issues, violations, or providing feedback</p>
+      </header>
+
+      <div id="toast" class="notification-toast"></div>
+
+      <div class="report-form-container">
+        <form id="report-form" class="report-form">
+          <div class="form-group">
+            <label for="reportType">Report Type *</label>
+            <select id="reportType" name="reportType" required>
+              <option value="">Select report type</option>
+              <option value="spam">Spam Content</option>
+              <option value="inappropriate">Inappropriate Content</option>
+              <option value="fraud">Fraudulent Activity</option>
+              <option value="harassment">Harassment</option>
+              <option value="technical">Technical Issue</option>
+              <option value="other">Other</option>
+            </select>
+          </div>
+
+          <div class="form-group">
+            <label for="priority">Priority Level</label>
+            <select id="priority" name="priority">
+              <option value="low">Low</option>
+              <option value="medium" selected>Medium</option>
+              <option value="high">High</option>
+              <option value="urgent">Urgent</option>
+            </select>
+          </div>
+
+          <div class="form-group">
+            <label for="description">Description *</label>
+            <textarea id="description" name="description" rows="6" placeholder="Please provide detailed information about the issue..." required></textarea>
+          </div>
+
+          <div class="form-group">
+            <label for="location">Location (Optional)</label>
+            <input type="text" id="location" name="location" placeholder="Where did this occur? (e.g., specific post, user profile, etc.)" />
+          </div>
+
+          <div class="form-group">
+            <label for="contactInfo">Contact Information (Optional)</label>
+            <input type="text" id="contactInfo" name="contactInfo" placeholder="Email or phone number for follow-up" />
+          </div>
+
+          <button type="submit" class="submit-btn">Submit Report</button>
+        </form>
+      </div>
+
+      <div class="report-info">
+        <h3>Reporting Guidelines</h3>
+        <ul>
+          <li>Provide as much detail as possible to help us understand the issue</li>
+          <li>Include screenshots or links if relevant</li>
+          <li>Reports are reviewed within 24-48 hours</li>
+          <li>False reports may result in account restrictions</li>
+          <li>For urgent safety concerns, contact local authorities first</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+
+  <!-- Notification popup -->
+  <div class="notification-container" id="notification-container" style="top:0; right:0;">
+    <div class="notification-header"><h3>Notifications</h3><i class="material-symbols-outlined" id="close-notification">close</i></div>
+    <div class="notification-list">
+      <div class="notification-item"><div class="notification-content"><div class="notification-text"><strong>Maria Santos</strong> commented on your post: "This looks great! Would love to buy some."</div><div class="notification-time">2 hrs ago</div></div></div>
+      <div class="notification-item"><div class="notification-content"><div class="notification-text"><strong>Pedro Bautista</strong> liked your post about organic fertilizer.</div><div class="notification-time">5 hrs ago</div></div></div>
+      <div class="notification-item"><div class="notification-content"><div class="notification-text"><strong>AgriTech PH</strong> shared a new article: "Benefits of Organic Waste in Farming"</div><div class="notification-time">1 day ago</div></div></div>
+      <div class="notification-item"><div class="notification-content"><div class="notification-text"><strong>Farmers Cooperative</strong> added a new listing for compost materials.</div><div class="notification-time">2 days ago</div></div></div>
+    </div>
+  </div>
+
+  <!-- Chat popup -->
+  <div class="header-chat-container" id="header-chat-container" style="top:0; right:0;">
+    <div class="chat-header-popup"><h3>Chats</h3><i class="material-symbols-outlined" id="close-chat">close</i></div>
+    <div class="active-users-popup">
+      <div class="active-title-popup">Active Now</div>
+      <div class="active-list-popup">
+        <div class="active-user-popup" data-user='{"id":"ana-gonzales","name":"Ana Gonzales","avatar":"https://storage.googleapis.com/workspace-0f70711f-8b4e-4d94-86f1-2a93ccde5887/image/ee4b5487-b1ea-40b6-9a76-0415e304de49.png"}'>
+          <div class="user-status-popup"><img src="https://storage.googleapis.com/workspace-0f70711f-8b4e-4d94-86f1-2a93ccde5887/image/ee4b5487-b1ea-40b6-9a76-0415e304de49.png" alt="Ana Gonzales" /><span class="status-indicator-popup"></span></div>
+          <span class="name-popup">Ana</span>
+        </div>
+        <div class="active-user-popup" data-user='{"id":"carlos-reyes","name":"Carlos Reyes","avatar":"https://storage.googleapis.com/workspace-0f70711f-8b4e-4d94-86f1-2a93ccde5887/image/331059ac-f6bf-4684-b902-d37824bad8f5.png"}'>
+          <div class="user-status-popup"><img src="https://storage.googleapis.com/workspace-0f70711f-8b4e-4d94-86f1-2a93ccde5887/image/331059ac-f6bf-4684-b902-d37824bad8f5.png" alt="Carlos Reyes" /><span class="status-indicator-popup"></span></div>
+          <span class="name-popup">Carlos</span>
+        </div>
+        <div class="active-user-popup" data-user='{"id":"lorna-lim","name":"Lorna Lim","avatar":"https://storage.googleapis.com/workspace-0f70711f-8b4e-4d94-86f1-2a93ccde5887/image/2ab478de-5d6d-4dce-8c67-baf47fd7ad8e.png"}'>
+          <div class="user-status-popup"><img src="https://storage.googleapis.com/workspace-0f70711f-8b4e-4d94-86f1-2a93ccde5887/image/2ab478de-5d6d-4dce-8c67-baf47fd7ad8e.png" alt="Lorna Lim" /><span class="status-indicator-popup"></span></div>
+          <span class="name-popup">Lorna</span>
+        </div>
+      </div>
+    </div>
+    <div class="conversations-title-popup">Conversations</div>
+    <div class="chat-list-popup" id="chat-list-popup"></div>
+  </div>
+
+  <div id="floating-chats-root"></div>
+
+  <script>
+    // Helpers
+    function $(sel, root=document){ return root.querySelector(sel); }
+    function $all(sel, root=document){ return Array.from(root.querySelectorAll(sel)); }
+    function showToast(msg){ const t = $('#toast'); t.textContent = msg; t.style.display='block'; setTimeout(()=>{ t.style.display='none'; }, 4000); }
+
+    // Sidebar nav
+    $('#profile-link').addEventListener('click', ()=>{ window.location.href = 'profile.html'; });
+    $all('.profile-menu li').forEach(li=> li.addEventListener('click', ()=>{ const href=li.getAttribute('data-href'); if(href) window.location.href = href; }));
+    $('#logout-btn').addEventListener('click', ()=>{ window.location.href = '/'; });
+
+    // Form handling
+    $('#report-form').addEventListener('submit', (e)=>{
+      e.preventDefault();
+      const formData = new FormData(e.target);
+      const reportType = formData.get('reportType');
+      const description = formData.get('description');
+      if (reportType && description) {
+        showToast('Report submitted successfully! We will review it within 24 hours.');
+        e.target.reset();
+      } else {
+        showToast('Please fill in all required fields.');
+      }
+    });
+
+    // Header popups
+    const notificationIcon = $('#notification-icon');
+    const notificationContainer = $('#notification-container');
+    const chatIcon = $('#chat-icon');
+    const chatContainer = $('#header-chat-container');
+    notificationIcon.addEventListener('click', (e)=>{
+      const rect = notificationIcon.getBoundingClientRect();
+      notificationContainer.style.top = (rect.bottom + 5) + 'px';
+      notificationContainer.style.right = (window.innerWidth - rect.right - 190) + 'px';
+      chatContainer.classList.remove('visible');
+      notificationContainer.classList.toggle('visible');
+      e.stopPropagation();
+    });
+    chatIcon.addEventListener('click', (e)=>{
+      const rect = chatIcon.getBoundingClientRect();
+      chatContainer.style.top = (rect.bottom + 5) + 'px';
+      chatContainer.style.right = (window.innerWidth - rect.right - 190) + 'px';
+      notificationContainer.classList.remove('visible');
+      chatContainer.classList.toggle('visible');
+      e.stopPropagation();
+    });
+    document.addEventListener('click', (e)=>{
+      if (notificationContainer.classList.contains('visible') && !notificationContainer.contains(e.target) && e.target !== notificationIcon) notificationContainer.classList.remove('visible');
+      if (chatContainer.classList.contains('visible') && !chatContainer.contains(e.target) && e.target !== chatIcon) chatContainer.classList.remove('visible');
+    });
+    $('#close-notification').addEventListener('click', ()=> notificationContainer.classList.remove('visible'));
+    $('#close-chat').addEventListener('click', ()=> chatContainer.classList.remove('visible'));
+
+    // Conversations data
+    const state = {
+      conversations: [
+        { id: 'mang-jose', name: 'Mang Jose', avatar: 'https://storage.googleapis.com/workspace-0f70711f-8b4e-4d94-86f1-2a93ccde5887/image/70ed3f6c-a0ca-4490-8b6a-eaa245dffa33.png', lastMessage: 'Hi, about the manure delivery tomorrow...', time: '2:30 PM', messages: [ { id: 1, text: 'Hi, about the manure delivery tomorrow...', sender: 'them', time: '2:30 PM' }, { id: 2, text: 'What time should I expect the delivery?', sender: 'them', time: '2:31 PM' } ] },
+        { id: 'farmers-coop', name: 'Farmers Cooperative', avatar: 'https://storage.googleapis.com/workspace-0f70711f-8b4e-4d94-86f1-2a93ccde5887/image/250bc031-e5eb-4467-9d71-49154b992c13.png', lastMessage: 'New bulk order of organic fertilizer available', time: 'Yesterday', messages: [ { id: 1, text: 'New bulk order of organic fertilizer available', sender: 'them', time: 'Yesterday' }, { id: 2, text: 'Would you be interested in placing an order?', sender: 'them', time: 'Yesterday' } ] }
+      ],
+      openChatWindows: [],
+      typingUsers: {},
+      messageInputs: {},
+    };
+
+    function renderChatList(){ const list = $('#chat-list-popup'); list.innerHTML=''; state.conversations.forEach(c=>{ const item=document.createElement('div'); item.className='chat-item-popup'; item.innerHTML = `<img src="${c.avatar}" alt="${c.name}" /><div class="chat-info-popup"><div class="chat-name-popup">${c.name}</div><div class="chat-preview-popup">${c.lastMessage}</div></div><div class="chat-time-popup">${c.time}</div>`; item.addEventListener('click', ()=> openChatWindow(c)); list.appendChild(item); }); }
+    renderChatList();
+
+    $all('.active-user-popup').forEach(el=> el.addEventListener('click', ()=>{ const user = JSON.parse(el.getAttribute('data-user')); openChatWindow({ ...user, messages: [] }); chatContainer.classList.remove('visible'); }));
+
+    function openChatWindow(user){ if (state.openChatWindows.find(c=>c.id===user.id)) return; const existing = state.conversations.find(c=>c.id===user.id); const newChat = { id:user.id, name:user.name, avatar:user.avatar, messages: existing?.messages || user.messages || [], isMinimized:false }; if(!existing){ state.conversations=[{ id:user.id, name:user.name, avatar:user.avatar, lastMessage:'Start a conversation...', time:'Now', messages:[] }, ...state.conversations]; renderChatList(); } state.openChatWindows.push(newChat); renderFloatingChats(); }
+    function closeChatWindow(chatId){ state.openChatWindows = state.openChatWindows.filter(c=>c.id!==chatId); renderFloatingChats(); }
+    function minimizeChatWindow(chatId){ state.openChatWindows = state.openChatWindows.map(c=> c.id===chatId ? { ...c, isMinimized: !c.isMinimized } : c); renderFloatingChats(); }
+
+    function sendMessage(chatId, message){ if(!message||!message.trim()) return; const time=new Date().toLocaleTimeString([], {hour:'2-digit',minute:'2-digit'}); const m={id:Date.now(), text:message, sender:'me', time, timestamp:new Date(), status:'sent'}; state.openChatWindows=state.openChatWindows.map(c=>c.id===chatId?{...c,messages:[...c.messages,m]}:c); state.conversations=state.conversations.map(conv=>conv.id===chatId?{...conv,lastMessage:message,time:'Now',messages:[...conv.messages,m]}:conv); state.messageInputs[chatId]=''; renderFloatingChats(); simulateTypingAndResponse(chatId); setTimeout(()=>autoScrollMessages(chatId),100); }
+    function simulateTypingAndResponse(chatId){ state.typingUsers[chatId]=true; renderFloatingChats(); setTimeout(()=>{ state.typingUsers[chatId]=false; const responses=["Thanks for your message! I'll get back to you soon.","That sounds great! Let me check on that for you.","I appreciate you reaching out. Let's discuss this further.","Perfect! I'll have more details for you shortly.","Got it! I'll look into this and respond soon."]; const r=responses[Math.floor(Math.random()*responses.length)]; const time=new Date().toLocaleTimeString([], {hour:'2-digit',minute:'2-digit'}); const m={id:Date.now()+1, text:r, sender:'them', time, timestamp:new Date(), status:'delivered'}; state.openChatWindows=state.openChatWindows.map(c=>c.id===chatId?{...c,messages:[...c.messages,m]}:c); state.conversations=state.conversations.map(conv=>conv.id===chatId?{...conv,lastMessage:r,time:'Now',messages:[...conv.messages,m]}:conv); renderFloatingChats(); setTimeout(()=>autoScrollMessages(chatId),100); }, Math.random()*2000+1500); }
+    function autoScrollMessages(chatId){ const el=document.getElementById(`messages-${chatId}`); if(el) el.scrollTop=el.scrollHeight; }
+
+    function renderFloatingChats(){ const root=document.getElementById('floating-chats-root'); root.innerHTML=''; state.openChatWindows.forEach((chat,idx)=>{ const c=document.createElement('div'); c.className=`chat-window ${chat.isMinimized?'minimized':''}`; c.style.bottom='0px'; c.style.right = `${20 + idx*300}px`; c.innerHTML = `<div class=\"chat-window-header\"><div class=\"chat-window-user\"><img src=\"${chat.avatar}\" alt=\"${chat.name}\" class=\"chat-window-avatar\" /><span class=\"chat-window-name\">${chat.name}</span></div><div class=\"chat-window-controls\"><i class=\"material-symbols-outlined chat-minimize\">${chat.isMinimized?'expand_more':'expand_less'}</i><i class=\"material-symbols-outlined chat-close\">close</i></div></div>${chat.isMinimized?'':`<div class=\"chat-window-messages\" id=\"messages-${chat.id}\">${chat.messages.length===0?`<div class=\"chat-empty-state\"><h4>👋 Hey there!</h4><p>Start a conversation with ${chat.name}</p></div>`:chat.messages.map(m=>`<div class=\"chat-message ${m.sender==='me'?'sent':'received'}\"><div class=\"message-content\">${m.text}</div><div class=\"message-time\">${m.time}</div>${m.sender==='me'?`<div class=\"message-status\">${m.status==='sent'?'✓':(m.status==='delivered'?'✓✓':'')}</div>`:''}</div>`).join('')}</div><div class=\"chat-window-input\"><input type=\"text\" placeholder=\"Message ${chat.name}...\" value=\"${state.messageInputs[chat.id]||''}\" /><button ${!(state.messageInputs[chat.id]||'').trim()?'disabled':''}><i class=\"material-symbols-outlined\">send</i></button></div>`}`; c.querySelector('.chat-window-header').addEventListener('click', ()=> minimizeChatWindow(chat.id)); c.querySelector('.chat-close').addEventListener('click', (e)=>{ e.stopPropagation(); closeChatWindow(chat.id); }); if(!chat.isMinimized){ const input=c.querySelector('.chat-window-input input'); const btn=c.querySelector('.chat-window-input button'); input.addEventListener('input',(e)=>{ state.messageInputs[chat.id]=e.target.value; }); input.addEventListener('keypress',(e)=>{ if(e.key==='Enter'&&!e.shiftKey){ e.preventDefault(); sendMessage(chat.id, input.value); }}); btn.addEventListener('click', ()=> sendMessage(chat.id, input.value)); } root.appendChild(c); }); }
+  </script>
+</body>
+</html>
