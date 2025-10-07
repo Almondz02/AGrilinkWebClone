@@ -30,19 +30,19 @@
     <div class="header-right"></div>
   </div>
 
-  <!-- PROFILE SIDEBAR -->
+  <!-- PROFILE SIDEBAR (aligned with homemain.html) -->
   <div class="profile-container">
     <div class="profile-header">
-      <img src="https://storage.googleapis.com/workspace-0f70711f-8b4e-4d94-86f1-2a93ccde5887/image/0ec0940b-23d9-4b1f-8e72-2a8bd35584e4.png" alt="Farmer" class="profile-pic" onclick="location.href='profile.html'" />
+      <img src="https://storage.googleapis.com/workspace-0f70711f-8b4e-4d94-86f1-2a93ccde5887/image/0ec0940b-23d9-4b1f-8e72-2a8bd35584e4.png" alt="Farmer" class="profile-pic" id="profile-link" />
       <div class="profile-name">Juan Dela Cruz</div>
     </div>
     <ul class="profile-menu">
-      <li onclick="location.href='request.html'"><i class="material-symbols-outlined">request_quote</i><span>Request</span></li>
-      <li onclick="location.href='historyandtransaction.html'"><i class="material-symbols-outlined">receipt_long</i><span>History and Transactions</span></li>
-      <li onclick="location.href='settings.html'"><i class="material-symbols-outlined">privacy_tip</i><span>Settings and Privacy</span></li>
-      <li onclick="location.href='report.html'"><i class="material-symbols-outlined">analytics</i><span>Reports</span></li>
+      <li data-href="request.html"><i class="material-symbols-outlined">request_quote</i><span>Request</span></li>
+      <li data-href="historyandtransaction.html"><i class="material-symbols-outlined">receipt_long</i><span>History and Transactions</span></li>
+      <li data-href="settings.html"><i class="material-symbols-outlined">privacy_tip</i><span>Settings and Privacy</span></li>
+      <li data-href="report.html"><i class="material-symbols-outlined">analytics</i><span>Reports</span></li>
     </ul>
-    <button class="logout-btn" onclick="location.href='homemain.html'"><i class="material-symbols-outlined">logout</i><span>Logout</span></button>
+    <button class="logout-btn" id="logout-btn"><i class="material-symbols-outlined">logout</i><span>Logout</span></button>
   </div>
 
   <!-- MAIN CONTENT -->
@@ -114,8 +114,8 @@
     </div>
   </div>
 
-  <!-- Notification popup -->
-  <div class="notification-container" id="notification-panel" style="position:fixed;">
+  <!-- Notification popup (aligned with homemain.html) -->
+  <div class="notification-container" id="notification-container" style="position:fixed; top:0; right:0">
     <div class="notification-header"><h3>Notifications</h3><i class="material-symbols-outlined" id="close-notification">close</i></div>
     <div class="notification-list">
       <div class="notification-item"><div class="notification-content"><div class="notification-text"><strong>Maria Santos</strong> commented on your post: "This looks great! Would love to buy some."</div><div class="notification-time">2 hrs ago</div></div></div>
@@ -125,15 +125,15 @@
     </div>
   </div>
 
-  <!-- Chat popup -->
-  <div class="header-chat-container" id="chat-panel" style="position:fixed;">
+  <!-- Chat popup (aligned with homemain.html) -->
+  <div class="header-chat-container" id="header-chat-container" style="position:fixed; top:0; right:0">
     <div class="chat-header-popup"><h3>Chats</h3><i class="material-symbols-outlined" id="close-chat">close</i></div>
     <div class="active-users-popup">
       <div class="active-title-popup">Active Now</div>
       <div class="active-list-popup" id="active-users"></div>
     </div>
     <div class="conversations-title-popup">Conversations</div>
-    <div class="chat-list-popup" id="chat-list"></div>
+    <div class="chat-list-popup" id="chat-list-popup"></div>
   </div>
 
   <!-- Listings sidebar -->
