@@ -266,7 +266,7 @@
     <div class="header-center">
       <div class="nav-icons">
         <a href="homemain.html" class="icon"><span class="material-symbols-outlined">home</span></a>
-        <a href="/listing" class="icon"><span class="material-symbols-outlined">storefront</span></a>
+        <a href="listing.html" class="icon"><span class="material-symbols-outlined">storefront</span></a>
         <div class="icon" id="chat-icon"><span class="material-symbols-outlined">forum</span></div>
         <div class="icon" id="notification-icon"><span class="material-symbols-outlined">notifications</span></div>
       </div>
@@ -281,10 +281,10 @@
       <div class="profile-name">Juan Dela Cruz</div>
     </div>
     <ul class="profile-menu">
-      <li data-href="/request"><i class="material-symbols-outlined">request_quote</i><span>Request</span></li>
-      <li data-href="/historyandtransaction"><i class="material-symbols-outlined">receipt_long</i><span>History and Transactions</span></li>
-      <li data-href="/settings"><i class="material-symbols-outlined">privacy_tip</i><span>Settings and Privacy</span></li>
-      <li data-href="/report"><i class="material-symbols-outlined">analytics</i><span>Reports</span></li>
+      <li data-href="request.html"><i class="material-symbols-outlined">request_quote</i><span>Request</span></li>
+      <li data-href="historyandtransaction.html"><i class="material-symbols-outlined">receipt_long</i><span>History and Transactions</span></li>
+      <li data-href="settings.html"><i class="material-symbols-outlined">privacy_tip</i><span>Settings and Privacy</span></li>
+      <li data-href="report.html"><i class="material-symbols-outlined">analytics</i><span>Reports</span></li>
     </ul>
     <button class="logout-btn" id="logout-btn"><i class="material-symbols-outlined">logout</i><span>Logout</span></button>
   </div>
@@ -486,9 +486,9 @@
     function $all(sel, root=document){ return Array.from(root.querySelectorAll(sel)); }
 
     // ===== NAVIGATION BINDINGS =====
-    $('#profile-link').addEventListener('click', () => { window.location.href = '/profile'; });
+    $('#profile-link').addEventListener('click', () => { window.location.href = 'profile.html'; });
     $all('.profile-menu li').forEach(li => li.addEventListener('click', () => { const href = li.getAttribute('data-href'); if (href) window.location.href = href; }));
-    $('#logout-btn').addEventListener('click', () => { window.location.href = '/'; });
+    $('#logout-btn').addEventListener('click', () => { window.location.href = 'homemain.html'; });
 
     // ===== NOTIFICATION & CHAT HEADER ICONS =====
     const notificationIcon = $('#notification-icon');

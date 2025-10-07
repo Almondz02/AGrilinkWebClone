@@ -1,0 +1,41 @@
+/* Minimal styles to ensure readable layout for history and transaction page */
+:root { --brand: #047857; }
+* { box-sizing: border-box; }
+body { margin: 0; font-family: Inter, Segoe UI, system-ui, -apple-system, sans-serif; background: #f5f7fb; color: #0f172a; }
+
+.header-container { position: fixed; top: 0; left: 0; right: 0; height: 60px; background: #FF9100; display: flex; align-items: center; padding: 0 20px; box-shadow: 0 2px 4px rgba(0,0,0,.1); z-index: 100; }
+.logo { color:#fff; font-weight:700; }
+.search-container { display:flex; align-items:center; gap:8px; margin-left:16px; }
+.search-container input { border: none; outline: none; background: rgba(255,255,255,.2); color:#fff; padding:8px 12px; border-radius: 8px; }
+
+.profile-container { position: fixed; top: 60px; left: 0; bottom: 0; width: 280px; background: #fff; padding: 20px; overflow-y:auto; box-shadow: 1px 0 5px rgba(0,0,0,.06); }
+.profile-header { display:flex; align-items:center; gap:10px; margin-bottom: 12px; }
+.profile-pic { width:50px; height:50px; border-radius:50%; object-fit:cover; cursor:pointer; }
+.profile-menu { list-style:none; padding:0; margin:0; }
+.profile-menu li { display:flex; align-items:center; gap:10px; padding:10px; border-radius:8px; cursor:pointer; }
+.profile-menu li:hover { background:#f3f4f6; }
+.logout-btn { margin-top: 12px; width:100%; padding:10px 12px; border:none; border-radius:8px; background:#ef4444; color:#fff; cursor:pointer; }
+
+.main-container { display:flex; }
+.main-content { margin-left: 300px; padding: 80px 20px 20px; width: 100%; }
+
+.page-header { background:#fff; border-radius:12px; padding:16px; box-shadow: 0 1px 2px rgba(0,0,0,.06); margin-bottom: 12px; }
+.filter-controls { background:#fff; border-radius:12px; padding:12px; box-shadow: 0 1px 2px rgba(0,0,0,.06); margin-bottom: 16px; }
+.filter-row { display:flex; flex-wrap:wrap; gap: 12px; }
+.filter-group { display:flex; flex-direction:column; gap:6px; }
+.filter-select, .date-input { padding:8px 10px; border:1px solid #e5e7eb; border-radius:8px; }
+
+.stats-grid { display:grid; grid-template-columns: repeat(4, minmax(0,1fr)); gap: 12px; margin: 12px 0; }
+.stat-card { background:#fff; border-radius:12px; padding:16px; text-align:center; box-shadow: 0 1px 2px rgba(0,0,0,.06); }
+.stat-value { font-weight: 800; color: var(--brand); }
+
+.transaction-list { background:#fff; border-radius:12px; padding: 16px; box-shadow: 0 1px 2px rgba(0,0,0,.06); }
+.list-header { display:flex; align-items:center; justify-content: space-between; margin-bottom: 8px; }
+.action-button { border: 1px solid #e5e7eb; background:#fff; border-radius:8px; padding:8px 12px; cursor:pointer; }
+
+.empty-state { text-align:center; color:#64748b; padding: 24px 0; }
+
+/* Simple right sidebar placeholders */
+.listings-container { position: fixed; right: 0; top: 60px; bottom: 0; width: 300px; background:#fff; padding: 16px; overflow-y:auto; box-shadow: -1px 0 5px rgba(0,0,0,.06); }
+.listings-header { font-weight:700; color: var(--brand); }
+.listings-list { display:flex; flex-direction:column; gap:10px; }
