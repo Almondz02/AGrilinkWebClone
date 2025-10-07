@@ -1,0 +1,204 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <title>Verify Email | AgriLink PH</title>
+  <meta name="description" content="Verify your email address to complete registration" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css" />
+  <style>
+    /* Inlined from styles/verify-code.module.css */
+    .container{min-height:100vh;display:flex;align-items:center;justify-content:center;padding:20px;font-family:'Poppins',sans-serif}
+    .card{background:#fff;border-radius:16px;box-shadow:0 20px 40px rgba(0,0,0,.1);padding:40px;width:100%;max-width:450px}
+    .header{display:flex;align-items:center;justify-content:space-between;margin-bottom:30px}
+    .backButton{background:none;border:none;color:#2d5a27;font-size:16px;cursor:pointer;padding:8px;border-radius:6px;transition:background-color .2s}
+    .backButton:hover{background:#f0f8f0}
+    .logo{font-size:1.8rem;font-weight:bold;color:#2d5a27;margin:0}
+    .content{text-align:center}
+    .title{font-size:1.5rem;color:#333;margin-bottom:10px}
+    .subtitle{color:#666;font-size:.95rem;margin-bottom:30px;line-height:1.5}
+    .emailText{font-weight:600;color:#2d5a27}
+    .error{background:#fee;color:#c33;padding:12px;border-radius:8px;font-size:.9rem;margin-bottom:20px}
+    .form{display:flex;flex-direction:column;gap:20px;margin-bottom:30px}
+    .formGroup{display:flex;flex-direction:column;gap:6px;text-align:left}
+    .label{font-weight:500;color:#333;font-size:.9rem}
+    .input{padding:12px 16px;border:2px solid #e1e5e9;border-radius:8px;font-size:1.2rem;text-align:center;letter-spacing:2px;transition:border-color .2s}
+    .input:focus{outline:none;border-color:#2d5a27}
+    .input:disabled{background:#f5f5f5;cursor:not-allowed}
+    .verifyButton{background:#2d5a27;color:#fff;border:none;padding:14px;border-radius:8px;font-size:1rem;font-weight:600;cursor:pointer;transition:background-color .2s}
+    .verifyButton:hover:not(:disabled){background:#1e3d1a}
+    .verifyButton:disabled{background:#e4e6ea;color:#bcc0c4;cursor:not-allowed}
+    .resendSection{text-align:center}
+    .resendText{color:#666;font-size:.9rem;margin-bottom:10px}
+    .resendButton{background:none;border:none;color:#2d5a27;font-size:.9rem;font-weight:500;cursor:pointer;padding:8px 12px;border-radius:6px;transition:background-color .2s}
+    .resendButton:hover:not(:disabled){background:#f0f8f0}
+    .resendButton:disabled{color:#ccc;cursor:not-allowed}
+    @media(max-width:480px){.card{padding:30px 20px}.header{flex-direction:column;gap:15px;text-align:center}}
+    .toast{position:fixed;top:6rem;right:1rem;background:linear-gradient(135deg,#ff4444 0%,#cc0000 100%);color:#fff;padding:1rem 1.5rem;border-radius:12px;font-size:.9rem;font-weight:500;box-shadow:0 8px 32px rgba(255,68,68,.3);z-index:9999;display:flex;align-items:center;gap:.75rem;min-width:300px;max-width:400px;transform:translateX(100%);opacity:0;transition:all .3s ease}
+    .toast.show{transform:translateX(0);opacity:1}
+    .successToast{position:fixed;top:6rem;right:1rem;background:linear-gradient(135deg,#4CAF50 0%,#45a049 100%);color:#fff;padding:1rem 1.5rem;border-radius:12px;font-size:.9rem;font-weight:500;box-shadow:0 8px 32px rgba(76,175,80,.3);z-index:9999;display:flex;align-items:center;gap:.75rem;min-width:300px;max-width:400px;transform:translateX(100%);opacity:0;transition:all .3s ease}
+    .successToast.show{transform:translateX(0);opacity:1}
+    .toastIcon{font-size:1.2rem;flex-shrink:0}
+    .toastMessage{flex:1}
+    .toastClose{background:none;border:none;color:#fff;font-size:1.1rem;cursor:pointer;padding:0;margin-left:.5rem;opacity:.7;transition:opacity .2s ease;flex-shrink:0}
+    .toastClose:hover{opacity:1}
+  </style>
+</head>
+<body>
+  <div class="container">
+    <div class="card">
+      <div class="header">
+        <button class="backButton" id="backBtn">← Back</button>
+        <h1 class="logo">AgriLink</h1>
+      </div>
+
+      <div class="content">
+        <h2 class="title">Enter Verification Code</h2>
+        <p class="subtitle">We've sent a 6-digit verification code to <span class="emailText" id="emailText"></span></p>
+        <div class="error" id="errorBox" style="display:none"></div>
+
+        <form class="form" id="verifyForm">
+          <div class="formGroup">
+            <label for="code" class="label">Verification Code</label>
+            <input type="text" id="code" class="input" placeholder="Enter 6-digit code" maxlength="6" autocomplete="one-time-code" />
+          </div>
+
+          <button type="submit" class="verifyButton" id="verifyBtn">Verify Code</button>
+        </form>
+
+        <div class="resendSection">
+          <p class="resendText">Didn't receive the code?</p>
+          <button class="resendButton" id="resendBtn">Resend Code</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="toast" id="errorToast">
+    <i class="fas fa-exclamation-circle toastIcon"></i>
+    <span class="toastMessage" id="errorToastMsg">Error</span>
+    <button class="toastClose" id="errorToastClose"><i class="fas fa-times"></i></button>
+  </div>
+
+  <div class="successToast" id="successToast">
+    <i class="fas fa-check-circle toastIcon"></i>
+    <span class="toastMessage" id="successToastMsg">Success</span>
+    <button class="toastClose" id="successToastClose"><i class="fas fa-times"></i></button>
+  </div>
+
+  <script>
+    (function(){
+      const params = new URLSearchParams(window.location.search);
+      const email = params.get('email') || '';
+
+      const emailText = document.getElementById('emailText');
+      const codeInput = document.getElementById('code');
+      const verifyBtn = document.getElementById('verifyBtn');
+      const verifyForm = document.getElementById('verifyForm');
+      const resendBtn = document.getElementById('resendBtn');
+      const backBtn = document.getElementById('backBtn');
+
+      const errorBox = document.getElementById('errorBox');
+      const errorToast = document.getElementById('errorToast');
+      const errorToastMsg = document.getElementById('errorToastMsg');
+      const errorToastClose = document.getElementById('errorToastClose');
+      const successToast = document.getElementById('successToast');
+      const successToastMsg = document.getElementById('successToastMsg');
+      const successToastClose = document.getElementById('successToastClose');
+
+      let cooldown = 0;
+      let cooldownTimer = null;
+      let toastTimer = null;
+
+      function setCooldown(seconds){
+        cooldown = seconds;
+        updateResendUI();
+        clearInterval(cooldownTimer);
+        cooldownTimer = setInterval(()=>{
+          cooldown--; if(cooldown <= 0){ clearInterval(cooldownTimer); cooldown = 0; }
+          updateResendUI();
+        }, 1000);
+      }
+
+      function updateResendUI(){
+        resendBtn.disabled = cooldown > 0;
+        resendBtn.textContent = cooldown > 0 ? `Resend in ${cooldown}s` : 'Resend Code';
+      }
+
+      function showErrorToast(msg){
+        errorToastMsg.textContent = msg;
+        errorToast.classList.add('show');
+        clearTimeout(toastTimer);
+        toastTimer = setTimeout(()=> errorToast.classList.remove('show'), 5000);
+      }
+
+      function showSuccess(msg, redirect=false){
+        successToastMsg.textContent = msg;
+        successToast.classList.add('show');
+        clearTimeout(toastTimer);
+        toastTimer = setTimeout(()=>{
+          successToast.classList.remove('show');
+          if(redirect){ window.location.href = '/singin.html'; }
+        }, 3000);
+      }
+
+      errorToastClose.addEventListener('click', ()=> errorToast.classList.remove('show'));
+      successToastClose.addEventListener('click', ()=> successToast.classList.remove('show'));
+
+      emailText.textContent = email || 'your email';
+
+      backBtn.addEventListener('click', ()=>{ window.location.href = '/signup.html'; });
+
+      verifyForm.addEventListener('submit', async (e)=>{
+        e.preventDefault();
+        const code = (codeInput.value || '').trim();
+        if(!code){ showErrorToast('Please enter the 6-digit code'); return; }
+        verifyBtn.disabled = true;
+        try{
+          const res = await fetch('http://192.168.0.109:3000/verify-code', {
+            method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ email, code })
+          });
+          const data = await res.json().catch(()=>({success:false,error:'Invalid server response'}));
+          if(data.success){
+            // In Next.js version, may also create Firebase user. Static page will just show success and redirect.
+            showSuccess('Verification successful! Redirecting to sign in...', true);
+          } else {
+            showErrorToast(data.error || 'Invalid verification code');
+          }
+        } catch(err){
+          showErrorToast('Network error. Please try again.');
+        } finally {
+          verifyBtn.disabled = false;
+        }
+      });
+
+      resendBtn.addEventListener('click', async ()=>{
+        if(cooldown > 0){ return; }
+        resendBtn.disabled = true;
+        try{
+          const res = await fetch('http://192.168.0.109:3000/resend-code', {
+            method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ email })
+          });
+          const data = await res.json().catch(()=>({success:false}));
+          if(data.success){
+            setCooldown(59);
+            showSuccess('Verification code resent successfully!');
+          } else {
+            showErrorToast(data.error || 'Failed to resend code');
+          }
+        } catch(err){
+          showErrorToast('Failed to resend code. Please try again.');
+        } finally{
+          if(cooldown===0) resendBtn.disabled = false;
+        }
+      });
+
+      // Initialize
+      updateResendUI();
+      codeInput.focus();
+    })();
+  </script>
+</body>
+</html>
