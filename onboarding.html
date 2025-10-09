@@ -85,8 +85,8 @@
   <div class="onboardingWrapper">
     <nav class="nav">
       <div class="navContainer">
-        <a href="/signin" class="logo" id="logo-link">
-          <img src="/assets/images/AgrilinkLogo.png" alt="AgriLink Logo" />
+        <a href="signin.html" class="logo" id="logo-link">
+          <span style="font-weight:700;font-size:1.1rem;letter-spacing:.5px">AgriLink</span>
         </a>
         <ul class="navLinks">
           <li><a href="#home" data-target="home" class="nav-link active">Home</a></li>
@@ -329,9 +329,9 @@
       });
 
       // Buttons
-      document.getElementById('signin-btn')?.addEventListener('click', () => { window.location.href = '/signin'; });
-      document.getElementById('signup-btn')?.addEventListener('click', () => { window.location.href = '/signup'; });
-      document.getElementById('logo-link')?.addEventListener('click', (e) => { e.preventDefault(); window.location.href = '/signin'; });
+      document.getElementById('signin-btn')?.addEventListener('click', () => { window.location.href = 'signin.html'; });
+      document.getElementById('signup-btn')?.addEventListener('click', () => { window.location.href = 'signup.html'; });
+      document.getElementById('logo-link')?.addEventListener('click', (e) => { e.preventDefault(); window.location.href = 'signin.html'; });
       document.getElementById('go-suggestion')?.addEventListener('click', () => scrollToSection('suggestion-list'));
       document.getElementById('go-learn')?.addEventListener('click', () => scrollToSection('how-it-works'));
 

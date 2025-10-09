@@ -140,7 +140,7 @@
         clearTimeout(toastTimer);
         toastTimer = setTimeout(()=>{
           successToast.classList.remove('show');
-          if(redirect){ window.location.href = '/singin.html'; }
+          if(redirect){ window.location.href = 'signin.html'; }
         }, 3000);
       }
 
@@ -149,50 +149,31 @@
 
       emailText.textContent = email || 'your email';
 
-      backBtn.addEventListener('click', ()=>{ window.location.href = '/signup.html'; });
+      backBtn.addEventListener('click', ()=>{ window.location.href = 'signup.html'; });
 
       verifyForm.addEventListener('submit', async (e)=>{
         e.preventDefault();
         const code = (codeInput.value || '').trim();
         if(!code){ showErrorToast('Please enter the 6-digit code'); return; }
         verifyBtn.disabled = true;
-        try{
-          const res = await fetch('http://192.168.0.109:3000/verify-code', {
-            method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ email, code })
-          });
-          const data = await res.json().catch(()=>({success:false,error:'Invalid server response'}));
-          if(data.success){
-            // In Next.js version, may also create Firebase user. Static page will just show success and redirect.
-            showSuccess('Verification successful! Redirecting to sign in...', true);
-          } else {
-            showErrorToast(data.error || 'Invalid verification code');
-          }
-        } catch(err){
-          showErrorToast('Network error. Please try again.');
-        } finally {
-          verifyBtn.disabled = false;
+        // Static demo: accept any 6-digit numeric code
+        await new Promise(r=>setTimeout(r, 600));
+        if(/^\d{6}$/.test(code)){
+          showSuccess('Verification successful! Redirecting to sign in...', true);
+        } else {
+          showErrorToast('Invalid verification code');
         }
+        verifyBtn.disabled = false;
       });
 
       resendBtn.addEventListener('click', async ()=>{
         if(cooldown > 0){ return; }
         resendBtn.disabled = true;
-        try{
-          const res = await fetch('http://192.168.0.109:3000/resend-code', {
-            method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ email })
-          });
-          const data = await res.json().catch(()=>({success:false}));
-          if(data.success){
-            setCooldown(59);
-            showSuccess('Verification code resent successfully!');
-          } else {
-            showErrorToast(data.error || 'Failed to resend code');
-          }
-        } catch(err){
-          showErrorToast('Failed to resend code. Please try again.');
-        } finally{
-          if(cooldown===0) resendBtn.disabled = false;
-        }
+        // Static demo: simulate resend + cooldown
+        await new Promise(r=>setTimeout(r, 400));
+        setCooldown(30);
+        showSuccess('Verification code resent successfully!');
+        if(cooldown===0) resendBtn.disabled = false;
       });
 
       // Initialize

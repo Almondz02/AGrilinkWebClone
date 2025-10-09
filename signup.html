@@ -76,12 +76,12 @@
 <body>
   <nav class="nav">
     <div class="navContainer">
-      <a href="/onboarding.html" class="logo" id="logo-link"><img src="/assets/images/AgrilinkLogo.png" alt="AgriLink Logo" /></a>
+      <a href="onboarding.html" class="logo" id="logo-link"><img src="/assets/images/AgrilinkLogo.png" alt="AgriLink Logo" /></a>
       <ul class="navLinks">
-        <li><a href="/onboarding.html">Home</a></li>
-        <li><a href="/onboarding.html#how-it-works">How it works</a></li>
-        <li><a href="/onboarding.html#benefits">Benefits</a></li>
-        <li><a href="/onboarding.html#suggestion-list">Listings</a></li>
+        <li><a href="onboarding.html">Home</a></li>
+        <li><a href="onboarding.html#how-it-works">How it works</a></li>
+        <li><a href="onboarding.html#benefits">Benefits</a></li>
+        <li><a href="onboarding.html#suggestion-list">Listings</a></li>
       </ul>
       <div class="navButtons">
         <button class="signinBtn" id="nav-signin">Sign In</button>
@@ -260,10 +260,10 @@
       }
 
       toastClose.addEventListener('click', ()=>{ toast.classList.remove('show'); toastAction.style.display='none'; });
-      toastAction.addEventListener('click', ()=>{ window.location.href = '/singin.html'; });
+      toastAction.addEventListener('click', ()=>{ window.location.href = 'signin.html'; });
 
       modalCancel.addEventListener('click', ()=> emailExistsModal.classList.remove('show'));
-      modalSignIn.addEventListener('click', ()=> { emailExistsModal.classList.remove('show'); window.location.href = '/singin.html'; });
+      modalSignIn.addEventListener('click', ()=> { emailExistsModal.classList.remove('show'); window.location.href = 'signin.html'; });
 
       form.addEventListener('submit', (e)=>{
         e.preventDefault();
@@ -281,7 +281,7 @@
 
         // In the React app, backend sends a code and then navigates to /verify-code?email=...
         // For static HTML, navigate to that route to keep flow consistent.
-        window.location.href = '/verify-code?email=' + encodeURIComponent(email);
+        window.location.href = 'verify-code.html?email=' + encodeURIComponent(email);
       });
 
       // Password visibility toggles
@@ -304,8 +304,8 @@
       });
 
       // Navbar links
-      document.getElementById('nav-signin').addEventListener('click', ()=> window.location.href = '/singin.html');
-      document.getElementById('logo-link').addEventListener('click', (e)=>{ e.preventDefault(); window.location.href = '/onboarding.html'; });
+      document.getElementById('nav-signin').addEventListener('click', ()=> window.location.href = 'signin.html');
+      document.getElementById('logo-link').addEventListener('click', (e)=>{ e.preventDefault(); window.location.href = 'onboarding.html'; });
 
       // Initial render for carousel
       updateCarousel();
