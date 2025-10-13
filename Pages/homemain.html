@@ -33,7 +33,7 @@
       --sidebar-expanded: 280px;
       --sidebar-collapsed: 80px;
     }
-    body { margin: 0; padding: 0; background: var(--bg); color: var(--text); line-height: 1.6; overflow-x: hidden; min-height: 100vh; }
+    body { margin: 0; padding: 60px 0 0 0; background: var(--bg); color: var(--text); line-height: 1.6; overflow-x: hidden; min-height: 100vh; }
 
     /* ===== PROFILE CONTAINER SIDEBAR ===== */
     .profile-container { position: fixed; left: 0; top: 60px; bottom: 0; width: var(--sidebar-collapsed); background-color: var(--surface); padding: 20px; z-index: 90; box-shadow: var(--shadow-sm); overflow: hidden; transition: width 0.3s ease; display:flex; flex-direction:column; }
@@ -81,7 +81,7 @@
     .nav-icons .icon .material-symbols-outlined { font-size: 24px; font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24; }
 
     /* ===== MAIN CONTAINER AND CONTENT ===== */
-    .main-container { display: flex; margin-top: 60px; padding-top: 0px; min-height: 100vh; }
+    .main-container { display: flex; margin-top: 0px; padding-top: 0px; min-height: 100vh; }
     .main-content { margin: 0px 320px 20px calc(var(--sidebar-collapsed) + 20px); padding-top: 20px; flex: 1; display: flex; flex-direction: column; gap: 20px; transition: margin-left 0.3s ease; }
     /* When sidebar expands on hover, push content accordingly */
     .profile-container:hover ~ .main-container .main-content { margin-left: calc(var(--sidebar-expanded) + 20px); }
