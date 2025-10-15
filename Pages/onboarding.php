@@ -1,0 +1,328 @@
+<?php
+// No server-side form on this page; converted to PHP for consistency and future extensibility.
+?>
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <title>AgriLink PH | Livestock Waste Exchange Platform</title>
+  <meta name="description" content="Connect livestock farmers with crop farmers to exchange organic waste materials in the Philippines. AgriLink helps turn waste into valuable fertilizer." />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&family=Raleway:wght@700&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css" />
+  <style>
+    .onboardingWrapper { background-color:#f9f9f7; min-height:100vh; font-family:'Poppins',sans-serif; color:#333; line-height:1.6; -ms-overflow-style:none; scrollbar-width:none; overflow-x:hidden; }
+    .onboardingWrapper::-webkit-scrollbar { display:none; }
+    .nav { position:fixed; top:0; left:0; width:100%; height:80px; background:white; color:black; z-index:1000; padding:1rem 0; box-shadow:0 2px 10px rgba(0,0,0,0.2); backdrop-filter:blur(10px); }
+    .navContainer { display:flex; justify-content:space-between; align-items:center; max-width:100%; margin:0 auto; padding:0 0.5rem 0 2rem; font-family:'Poppins',sans-serif; }
+    .logo { text-decoration:none; display:flex; align-items:center; }
+    .logo img { height:2.2rem; width:auto; object-fit:contain; }
+    .navLinks { display:flex; list-style:none; margin-left:90px; }
+    .navLinks li { margin-left:2.5rem; margin-right:2.5rem; }
+    .navLinks a { text-decoration:none; color:black; font-weight:500; transition:color .3s ease; font-family:'Poppins',sans-serif; }
+    .navLinks a:hover { color:#FFA000; }
+    .navLinks a.active { color:#ff9100; font-weight:600; }
+    .navButtons { display:flex; align-items:center; gap:1rem; }
+    .signinBtn { background-color:transparent; color:black; text-decoration:none; padding:8px 16px; transition:color .3s ease; border-radius:4px; font-weight:500; border:none; min-width:70px; text-align:center; display:inline-block; font-family:'Poppins',sans-serif; font-size:1rem; cursor:pointer; }
+    .signinBtn:hover { color:#ff9100; }
+    .signupBtn { margin-left:1rem; margin-right:2rem; padding:.6rem 1.8rem; border:2px solid #ff9100; border-radius:5px; color:black; background:transparent; text-decoration:none; font-weight:500; transition:all .3s ease; min-width:80px; text-align:center; display:inline-block; font-family:'Poppins',sans-serif; font-size:1rem; cursor:pointer; }
+    .signupBtn:hover { background:#ff9100; color:white; border-color:#ff9100; }
+    .header { background:linear-gradient(rgba(0,0,0,.5), rgba(0,0,0,.3)), url('https://images.unsplash.com/photo-1625246333195-78d9c38ad449?fm=jpg&q=60&w=3000&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxzZWFyY2h8N3x8YWdyaWN1bHR1cmV8ZW58MHx8MHx8fDA%3D'); background-size:cover; background-position:center; height:100vh; min-height:500px; display:flex; flex-direction:column; justify-content:center; align-items:center; text-align:center; padding:0 2rem; color:white; }
+    .header h1 { font-family:'Raleway',sans-serif; font-size:3.5rem; margin-bottom:1.5rem; text-shadow:2px 2px 5px rgba(0,0,0,0.5); color:white; }
+    .header p { font-size:1.3rem; max-width:800px; margin-bottom:2rem; text-shadow:1px 1px 3px rgba(0,0,0,0.5); }
+    .header div { display:flex; gap:1rem; flex-wrap:wrap; justify-content:center; }
+    .btn { display:inline-block; background:#FFA000; color:white; padding:.8rem 1.8rem; border:none; border-radius:4px; text-decoration:none; font-size:1.1rem; font-weight:500; transition:all .3s ease; box-shadow:0 2px 5px rgba(0,0,0,0.2); cursor:pointer; }
+    .btn:hover { background:#2E7D32; transform:translateY(-2px); }
+    .btnOutline { background:transparent; border:2px solid white; margin-left:1rem; }
+    .btnOutline:hover { background:rgba(255,255,255,0.1); }
+    .container { max-width:1200px; margin:0 auto; padding:5rem 2rem; }
+    .section { padding:5rem 0; }
+    .howItWorksSection { margin-top:2rem; padding:5rem 0; }
+    .sectionTitle { text-align:center; margin-bottom:3rem; position:relative; font-family:'Raleway',sans-serif; color:#2E7D32; font-size:2.5rem; font-weight:700; }
+    .sectionTitle::after { content:''; display:block; width:80px; height:4px; background:#FFA000; margin:15px auto; }
+    .steps { display:flex; justify-content:space-between; align-items:stretch; gap:1.5rem; flex-wrap:nowrap; overflow-x:auto; margin:2rem 0; padding:2rem; border-radius:12px; }
+    .stepCard { flex:1; min-width:200px; max-width:220px; background:white; padding:1.5rem 1rem; border-radius:8px; box-shadow:0 5px 15px rgba(0,0,0,0.1); text-align:center; transition:transform .3s ease; }
+    .stepCard:hover { transform:translateY(-10px); }
+    .stepNumber { display:inline-block; width:40px; height:40px; background:#FFA000; color:white; border-radius:50%; line-height:40px; font-size:1.2rem; font-weight:bold; margin-bottom:1rem; }
+    .stepCard h3 { margin-bottom:.8rem; color:#5D4037; font-family:'Raleway',sans-serif; font-size:1.1rem; }
+    .stepCard p { color:#666; line-height:1.5; font-size:.9rem; }
+    .benefitsGrid { display:grid; grid-template-columns:repeat(auto-fit, minmax(300px,1fr)); gap:2rem; }
+    .benefitCard { background:white; border-radius:8px; padding:2rem; box-shadow:0 5px 15px rgba(0,0,0,0.1); border-top:4px solid #FFA000; display:flex; flex-direction:column; align-items:center; }
+    .benefitCard h3 { margin-bottom:1rem; display:flex; align-items:center; font-family:'Raleway',sans-serif; color:#2E7D32; }
+    .benefitIcon { margin-right:.8rem; color:#FFA000; font-size:1.5rem; }
+    .benefitImage { width:100%; height:160px; margin-bottom:1rem; display:flex; justify-content:center; align-items:center; }
+    .benefitImage img { height:100%; width:auto; border-radius:8px; object-fit:cover; max-width:100%; }
+    .benefitCard p { color:#666; line-height:1.6; text-align:center; }
+    .listings { display:grid; grid-template-columns:repeat(auto-fit, minmax(300px,1fr)); gap:2rem; margin-bottom:3rem; }
+    #suggestion-list { scroll-margin-top:100px; padding-top:6rem; padding-bottom:4rem; }
+    .listingCard { background:white; border-radius:8px; overflow:hidden; box-shadow:0 5px 15px rgba(0,0,0,0.1); transition:all .3s ease; }
+    .listingCard:hover { transform:translateY(-5px); box-shadow:0 10px 20px rgba(0,0,0,0.15); }
+    .listingImage { height:200px; overflow:hidden; }
+    .listingImage img { width:100%; height:100%; object-fit:cover; transition:transform .5s ease; }
+    .listingCard:hover .listingImage img { transform:scale(1.1); }
+    .listingContent { padding:1.5rem; }
+    .listingTitle { font-size:1.2rem; margin-bottom:.5rem; color:#2E7D32; font-family:'Raleway',sans-serif; }
+    .listingContent p { color:#666; line-height:1.6; }
+    .footer { background:#2E7D32; color:white; padding:3rem 0; }
+    .footerContent { display:grid; grid-template-columns:repeat(auto-fit, minmax(250px,1fr)); gap:2rem; max-width:1200px; margin:0 auto; padding:0 2rem; }
+    .footerLogo { font-family:'Raleway',sans-serif; font-size:1.8rem; margin-bottom:1rem; }
+    .footerLogo span { color:#FFA000; }
+    .footerAbout p { margin-bottom:1.5rem; }
+    .footerLinks h4 { color:#FFA000; margin-bottom:1.5rem; font-family:'Raleway',sans-serif; }
+    .footerLinks ul { list-style:none; }
+    .footerLinks li { margin-bottom:.8rem; }
+    .footerLinks a { color:white; text-decoration:none; transition:color .3s ease; }
+    .footerLinks a:hover { color:#FFA000; }
+    .socialLinks { display:flex; gap:1rem; margin-top:1rem; }
+    .socialLinks a { display:inline-flex; width:40px; height:40px; background:rgba(255,255,255,0.1); border-radius:50%; color:white; align-items:center; justify-content:center; transition:all .3s ease; }
+    .socialLinks a:hover { background:#FFA000; transform:translateY(-3px); }
+    .copyright { text-align:center; padding-top:2rem; margin-top:2rem; border-top:1px solid rgba(255,255,255,0.1); font-size:.9rem; }
+    @media (max-width:768px){ .navContainer{padding:0 1rem;} .navLinks{display:none;} .header h1{font-size:2.5rem;} .header p{font-size:1rem;} .header{padding:120px 1rem 80px;} .container{padding:0 1rem;} .section{padding:60px 0;} .sectionTitle{font-size:2rem;} .steps{grid-template-columns:1fr;} .benefitsGrid{grid-template-columns:1fr;} .listings{grid-template-columns:1fr;} .footerContent{grid-template-columns:1fr; text-align:center;} }
+    @media (max-width:480px){ .header h1{font-size:2rem;} .header div{flex-direction:column; align-items:center;} .btn{width:100%; max-width:250px;} }
+  </style>
+</head>
+<body>
+  <div class="onboardingWrapper">
+    <nav class="nav">
+      <div class="navContainer">
+        <a href="signin.html" class="logo" id="logo-link">
+          <span style="font-weight:700;font-size:1.1rem;letter-spacing:.5px">AgriLink</span>
+        </a>
+        <ul class="navLinks">
+          <li><a href="#home" data-target="home" class="nav-link active">Home</a></li>
+          <li><a href="#how-it-works" data-target="how-it-works" class="nav-link">How it works</a></li>
+          <li><a href="#benefits" data-target="benefits" class="nav-link">Benefits</a></li>
+          <li><a href="#suggestion-list" data-target="suggestion-list" class="nav-link">Listings</a></li>
+        </ul>
+        <div class="navButtons">
+          <button class="signinBtn" id="signin-btn">Sign In</button>
+          <button class="signupBtn" id="signup-btn">Sign Up</button>
+        </div>
+      </div>
+    </nav>
+
+    <header id="home" class="header">
+      <h1>Connecting Livestock Waste to Crop Farmers</h1>
+      <p>AgriLink transforms organic waste into valuable resources, creating sustainable partnerships between livestock and crop farmers <br />across the Philippines.</p>
+      <div>
+        <button class="btn" id="go-suggestion">Suggestion List</button>
+        <button class="btn btnOutline" id="go-learn">Learn More</button>
+      </div>
+    </header>
+
+    <section id="how-it-works" class="container howItWorksSection">
+      <h2 class="sectionTitle">How AgriLink Works</h2>
+      <div class="steps">
+        <div class="stepCard">
+          <div class="stepNumber">1</div>
+          <h3>Sign Up</h3>
+          <p>Create your AgriLink account and set up your farmer profile with your location and farming details</p>
+        </div>
+        <div class="stepCard">
+          <div class="stepNumber">2</div>
+          <h3>List Materials</h3>
+          <p>Livestock farmers list available manure, compost, or other organic waste materials with quantities</p>
+        </div>
+        <div class="stepCard">
+          <div class="stepNumber">3</div>
+          <h3>Search & Connect</h3>
+          <p>Crop farmers search for organic fertilizers in their area and connect with suppliers nearby</p>
+        </div>
+        <div class="stepCard">
+          <div class="stepNumber">4</div>
+          <h3>Negotiate Terms</h3>
+          <p>Both parties communicate and agree on terms - pricing, quantities, delivery, or pickup arrangements</p>
+        </div>
+        <div class="stepCard">
+          <div class="stepNumber">5</div>
+          <h3>Complete Exchange</h3>
+          <p>Finalize the transaction, arrange transportation, and complete the sustainable waste-to-resource exchange</p>
+        </div>
+      </div>
+    </section>
+
+    <section id="benefits" class="container section">
+      <h2 class="sectionTitle">Benefits of Using AgriLink</h2>
+      <div class="benefitsGrid">
+        <div class="benefitCard">
+          <div class="benefitImage">
+            <img src="https://cdn.wikifarmer.com/images/detailed/2023/03/Training-livestock-farmers-for-sustainability-and-food-security.jpg" alt="For Livestock Farmers" />
+          </div>
+          <h3><span class="benefitIcon">🌱</span>For Livestock Farmers</h3>
+          <p>Turn waste into profit by selling excess manure. Reduce disposal costs and environmental impact while contributing to sustainable agriculture.</p>
+        </div>
+        <div class="benefitCard">
+          <div class="benefitImage">
+            <img src="https://images.stockcake.com/public/e/6/e/e6e4865c-08b7-4633-b428-f5658462485e_large/farmers-tending-crops-stockcake.jpg" alt="For Crop Farmers" />
+          </div>
+          <h3><span class="benefitIcon">🌾</span>For Crop Farmers</h3>
+          <p>Access affordable, high-quality organic fertilizer. Improve soil health and reduce chemical fertilizer costs with locally-sourced nutrients.</p>
+        </div>
+        <div class="benefitCard">
+          <div class="benefitImage">
+            <img src="https://naturesbeckon.org/wp-content/uploads/2022/05/environment.jpg" alt="For the Environment" />
+          </div>
+          <h3><span class="benefitIcon">♻️</span>For the Environment</h3>
+          <p>Close the nutrient loop in agriculture. Reduce methane emissions from decomposing waste and prevent water contamination from runoff.</p>
+        </div>
+      </div>
+    </section>
+
+    <section id="suggestion-list" class="container section">
+      <h2 class="sectionTitle">Suggestion List for Crop Farmers</h2>
+      <div class="listings">
+        <div class="listingCard">
+          <div class="listingImage">
+            <img src="https://storage.googleapis.com/workspace-0f70711f-8b4e-4d94-86f1-2a93ccde5887/image/6cd44865-88c8-403d-8e89-9efebd92b797.png" alt="Chicken Manure" />
+          </div>
+          <div class="listingContent">
+            <h3 class="listingTitle">Chicken Manure</h3>
+            <p>Rich in nitrogen, chicken manure is excellent for leafy vegetables like lettuce, spinach, and cabbage. It promotes fast growth and lush green leaves.</p>
+          </div>
+        </div>
+        <div class="listingCard">
+          <div class="listingImage">
+            <img src="https://storage.googleapis.com/workspace-0f70711f-8b4e-4d94-86f1-2a93ccde5887/image/22e8a4a0-4338-4022-841f-ff1dbdfc46da.png" alt="Composted Pig Manure" />
+          </div>
+          <div class="listingContent">
+            <h3 class="listingTitle">Composted Pig Manure</h3>
+            <p>Composted pig manure improves soil structure and water retention, making it ideal for root crops such as carrots, potatoes, and sweet potatoes.</p>
+          </div>
+        </div>
+        <div class="listingCard">
+          <div class="listingImage">
+            <img src="https://storage.googleapis.com/workspace-0f70711f-8b4e-4d94-86f1-2a93ccde5887/image/1f9b8452-0a8e-49b2-b20e-a0243838c4e4.png" alt="Pre-processed Cattle Manure" />
+          </div>
+          <div class="listingContent">
+            <h3 class="listingTitle">Pre-processed Cattle Manure</h3>
+            <p>Cattle manure is a balanced fertilizer, suitable for grains like rice and corn. It adds organic matter and improves overall crop yield and soil health.</p>
+          </div>
+        </div>
+        <div class="listingCard">
+          <div class="listingImage">
+            <img src="https://media.istockphoto.com/id/1494737370/photo/photo-of-goat-manure.jpg?s=612x612&w=0&k=20&c=l2wXRSHQssz9H2WtndtZMUQzSoip8BM3F5egQ5Y6nd0=" alt="Goat Manure" />
+          </div>
+          <div class="listingContent">
+            <h3 class="listingTitle">Goat Manure</h3>
+            <p>Goat manure is dry, easy to handle, and rich in nutrients. It is ideal for vegetable gardens and flowering plants, improving soil aeration and fertility.</p>
+          </div>
+        </div>
+        <div class="listingCard">
+          <div class="listingImage">
+            <img src="https://cdn.shopify.com/s/files/1/0955/4450/files/IMG_0031_Large_77abb180-0b30-4812-bb10-f81c77e742be_1024x1024.jpg?v=1749688044" alt="Rabbit Manure" />
+          </div>
+          <div class="listingContent">
+            <h3 class="listingTitle">Rabbit Manure</h3>
+            <p>Rabbit manure is considered a "cold" manure, safe to use directly on plants. It is perfect for vegetable beds, herbs, and nurseries, providing quick nutrient boost.</p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <footer class="footer">
+      <div class="footerContent">
+        <div class="footerAbout">
+          <div class="footerLogo">Agri<span>Link</span></div>
+          <p>Connecting livestock and crop farmers throughout the Philippines to create a sustainable agricultural ecosystem.</p>
+          <div class="socialLinks">
+            <a href="#"><i class="fab fa-facebook-f"></i></a>
+            <a href="#"><i class="fab fa-twitter"></i></a>
+            <a href="#"><i class="fab fa-instagram"></i></a>
+            <a href="#"><i class="fab fa-youtube"></i></a>
+          </div>
+        </div>
+        <div class="footerLinks">
+          <h4>Quick Links</h4>
+          <ul>
+            <li><a href="#how-it-works" data-target="how-it-works" class="quick-link">How It Works</a></li>
+            <li><a href="#suggestion-list" data-target="suggestion-list" class="quick-link">Suggestion List</a></li>
+            <li><a href="#marketplace">Marketplace</a></li>
+            <li><a href="#benefits" data-target="benefits" class="quick-link">Benefits</a></li>
+          </ul>
+        </div>
+        <div class="footerLinks">
+          <h4>Resources</h4>
+          <ul>
+            <li><a href="#">Composting Guide</a></li>
+            <li><a href="#">Livestock Management</a></li>
+            <li><a href="#">Organic Farming</a></li>
+            <li><a href="#">FAQ</a></li>
+          </ul>
+        </div>
+        <div class="footerLinks">
+          <h4>Legal</h4>
+          <ul>
+            <li><a href="#">Terms of Service</a></li>
+            <li><a href="#">Privacy Policy</a></li>
+            <li><a href="#">Safety Guidelines</a></li>
+          </ul>
+        </div>
+      </div>
+      <div class="copyright">
+        <p>&copy; 2025 AgriLink Philippines. All rights reserved.</p>
+      </div>
+    </footer>
+  </div>
+
+  <script>
+    (function(){
+      const NAV_HEIGHT = 100; // accounts for fixed nav
+      function scrollToSection(id){
+        const el = document.getElementById(id);
+        if(!el) return;
+        const offset = Math.max(0, el.offsetTop - NAV_HEIGHT - 20);
+        window.scrollTo({ top: offset, behavior: 'smooth' });
+        setTimeout(() => setActiveNav(id), 500);
+      }
+      function setActiveNav(id){
+        document.querySelectorAll('.nav-link').forEach(a => {
+          if(a.dataset.target === id){ a.classList.add('active'); }
+          else { a.classList.remove('active'); }
+        });
+      }
+      function updateActiveNav(){
+        const sections = document.querySelectorAll('section, header');
+        let current = '';
+        const y = window.pageYOffset;
+        sections.forEach(section => {
+          const top = section.offsetTop;
+          if (y >= (top - 200)) { current = section.getAttribute('id'); }
+        });
+        if(current) setActiveNav(current);
+      }
+      function handleHashNavigation(){
+        const hash = (window.location.hash || '').replace('#','');
+        if(hash){ setTimeout(()=>scrollToSection(hash), 100); }
+      }
+      document.querySelectorAll('.nav-link').forEach(a => {
+        a.addEventListener('click', (e) => {
+          e.preventDefault();
+          const id = a.dataset.target;
+          scrollToSection(id);
+          history.replaceState(null, '', '#' + id);
+        });
+      });
+      document.querySelectorAll('.quick-link').forEach(a => {
+        a.addEventListener('click', (e) => {
+          e.preventDefault();
+          const id = a.dataset.target;
+          scrollToSection(id);
+          history.replaceState(null, '', '#' + id);
+        });
+      });
+      document.getElementById('signin-btn')?.addEventListener('click', () => { window.location.href = 'signin.html'; });
+      document.getElementById('signup-btn')?.addEventListener('click', () => { window.location.href = 'signup.html'; });
+      document.getElementById('logo-link')?.addEventListener('click', (e) => { e.preventDefault(); window.location.href = 'signin.html'; });
+      document.getElementById('go-suggestion')?.addEventListener('click', () => scrollToSection('suggestion-list'));
+      document.getElementById('go-learn')?.addEventListener('click', () => scrollToSection('how-it-works'));
+      window.addEventListener('scroll', updateActiveNav);
+      window.addEventListener('load', updateActiveNav);
+      window.addEventListener('hashchange', handleHashNavigation);
+      handleHashNavigation();
+      updateActiveNav();
+    })();
+  </script>
+</body>
+</html>

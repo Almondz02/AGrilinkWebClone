@@ -1,0 +1,432 @@
+<?php
+session_start();
+// CSRF token
+if (empty($_SESSION['csrf_token'])) { $_SESSION['csrf_token'] = bin2hex(random_bytes(32)); }
+$csrf = $_SESSION['csrf_token'];
+
+$errors = [];
+$success = false;
+
+// Sticky fields
+$sticky = [
+  'wasteType' => '',
+  'animalType' => '',
+  'weight' => '',
+  'collectionDate' => '',
+  'price' => '',
+  'description' => ''
+];
+
+$allowedWaste = ['manure','bedding','slurry','compost','other'];
+
+if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+  // CSRF
+  if (!isset($_POST['csrf_token']) || !hash_equals($_SESSION['csrf_token'], $_POST['csrf_token'])) {
+    $errors[] = 'Invalid request. Please refresh the page and try again.';
+  }
+
+  // Collect input
+  $sticky['wasteType'] = isset($_POST['wasteType']) ? (string)$_POST['wasteType'] : '';
+  $sticky['animalType'] = isset($_POST['animalType']) ? trim((string)$_POST['animalType']) : '';
+  $sticky['weight'] = isset($_POST['weight']) ? (string)$_POST['weight'] : '';
+  $sticky['collectionDate'] = isset($_POST['collectionDate']) ? (string)$_POST['collectionDate'] : '';
+  $sticky['price'] = isset($_POST['price']) ? (string)$_POST['price'] : '';
+  $sticky['description'] = isset($_POST['description']) ? trim((string)$_POST['description']) : '';
+
+  // Validate required fields
+  if (!$sticky['wasteType'] || !in_array($sticky['wasteType'], $allowedWaste, true)) {
+    $errors[] = 'Please select a valid waste type.';
+  }
+  if ($sticky['wasteType'] === 'manure' && $sticky['animalType'] === '') {
+    $errors[] = 'Animal Type is required for manure.';
+  }
+  if ($sticky['weight'] === '') {
+    $errors[] = 'Weight is required.';
+  } else {
+    if (!is_numeric($sticky['weight']) || (float)$sticky['weight'] <= 0) {
+      $errors[] = 'Weight must be a number greater than 0.';
+    }
+  }
+  if ($sticky['collectionDate'] === '') {
+    $errors[] = 'Collection date is required.';
+  } else {
+    $cd = DateTime::createFromFormat('Y-m-d', $sticky['collectionDate']);
+    if (!$cd || $cd->format('Y-m-d') !== $sticky['collectionDate']) {
+      $errors[] = 'Invalid collection date. Use YYYY-MM-DD.';
+    }
+  }
+
+  // Optional price
+  if ($sticky['price'] !== '') {
+    if (!is_numeric($sticky['price']) || (float)$sticky['price'] < 0) {
+      $errors[] = 'Price must be a number 0 or greater.';
+    }
+  }
+
+  // Optional description length limit
+  if ($sticky['description'] !== '' && mb_strlen($sticky['description']) > 500) {
+    $errors[] = 'Description must be 500 characters or fewer.';
+  }
+
+  // Optional image
+  $hasFile = isset($_FILES['photo']) && is_array($_FILES['photo']) && (int)$_FILES['photo']['error'] !== UPLOAD_ERR_NO_FILE;
+  if ($hasFile) {
+    if ((int)$_FILES['photo']['error'] !== UPLOAD_ERR_OK) {
+      $errors[] = 'There was an error uploading the image.';
+    } else {
+      $maxBytes = 5 * 1024 * 1024; // 5MB
+      if ((int)$_FILES['photo']['size'] > $maxBytes) {
+        $errors[] = 'Image must be 5MB or smaller.';
+      }
+      $tmp = $_FILES['photo']['tmp_name'];
+      $finfo = function_exists('finfo_open') ? finfo_open(FILEINFO_MIME_TYPE) : false;
+      $mime = $finfo ? finfo_file($finfo, $tmp) : (mime_content_type($tmp) ?: null);
+      if ($finfo) { finfo_close($finfo); }
+      $allowed = ['image/jpeg','image/png','image/webp'];
+      if (!$mime || !in_array($mime, $allowed, true)) {
+        $errors[] = 'Only JPEG, PNG, or WEBP images are allowed.';
+      }
+    }
+  }
+
+  if (empty($errors)) {
+    $success = true;
+    // Rotate CSRF on success
+    $_SESSION['csrf_token'] = bin2hex(random_bytes(32));
+    $csrf = $_SESSION['csrf_token'];
+    // Demo only: not persisting to storage
+  }
+}
+?>
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>AgriLink - Listings</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200" rel="stylesheet" />
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Inter','Segoe UI',system-ui,-apple-system,sans-serif; }
+    :root { --brand:#047857; --brand-light:#059669; --brand-dark:#065f46; --bg:linear-gradient(135deg,#f0f9ff 0%,#e0f2fe 50%,#f0f2f5 100%); --surface:#ffffff; --surface-2:#f8fafc; --surface-hover:#f1f5f9; --text:#0f172a; --text-muted:#64748b; --text-light:#94a3b8; --border:#e2e8f0; --border-light:#f1f5f9; --ring:rgba(4,120,87,.12); --shadow-sm:0 1px 2px rgba(0,0,0,.05); --shadow-md:0 4px 6px -1px rgba(0,0,0,.1),0 2px 4px -1px rgba(0,0,0,.06); --shadow-lg:0 10px 15px -3px rgba(0,0,0,.1),0 4px 6px -2px rgba(0,0,0,.05); --radius:12px; --radius-sm:8px; --sidebar-expanded:280px; --sidebar-collapsed:80px; }
+    body { background: var(--bg); color: var(--text); line-height: 1.6; overflow-x: hidden; min-height: 100vh; padding-top: 60px; }
+    .header-container { position: fixed; top: 0; left: 0; right: 0; height: 60px; background-color: #FF9100; display: flex; align-items: center; padding: 0 20px; z-index: 100; box-shadow: 0 2px 4px rgba(0,0,0,0.1); }
+    .header-left { flex: 1; display: flex; align-items: center; gap: 20px; }
+    .header-center { flex: 2; display: flex; justify-content: center; align-items: center; }
+    .header-right { flex: 1; display: flex; justify-content: flex-end; align-items: center; }
+    .logo { font-size: 24px; font-weight: bold; color: white; }
+    .search-container { display: flex; align-items: center; background-color: rgba(255,255,255,0.2); border-radius: 12px; padding: 8px 16px; gap: 12px; transition: all 0.2s ease; }
+    .search-container:hover { background-color: rgba(255,255,255,0.25); }
+    .search-container input { background: transparent; border: none; color: white; outline: none; width: 250px; font-size: 14px; }
+    .search-container input::placeholder { color: rgba(255,255,255,0.7); }
+    .search-container .material-symbols-outlined { color: white; font-size: 24px; transition: transform 0.2s ease; }
+    .search-container:hover .material-symbols-outlined { transform: scale(1.1); }
+    .material-symbols-outlined { font-family: 'Material Symbols Outlined'; }
+    .nav-icons { display: flex; gap: 20px; }
+    .nav-icons .icon { width: 40px; height: 40px; border-radius: 50%; background-color: rgba(255,255,255,0.2); display: flex; justify-content: center; align-items: center; color: white; cursor: pointer; transition: background-color 0.3s; text-decoration: none; }
+    .nav-icons .icon:hover { background-color: rgba(255,255,255,0.3); }
+    .nav-icons .icon .material-symbols-outlined { font-size: 24px; font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24; }
+    .profile-container { position: fixed; left: 0; top: 60px; bottom: 0; width: var(--sidebar-collapsed); background-color: white; padding: 20px; z-index: 90; box-shadow: 1px 0 5px rgba(0,0,0,0.1); overflow:hidden; transition: width .3s ease; display:flex; flex-direction:column; }
+    .profile-container:hover { width: var(--sidebar-expanded); }
+    .profile-container:hover { overflow-y:auto; }
+    .profile-header { display: flex; align-items: center; margin-bottom: 20px; }
+    .profile-pic { width: 50px; height: 50px; border-radius: 50%; object-fit: cover; margin-right: 10px; cursor: pointer; }
+    .profile-name { font-weight: 600; }
+    .profile-menu { list-style: none; }
+    .profile-menu li { padding: 10px; margin: 5px 0; border-radius: 8px; display: flex; align-items: center; cursor: pointer; }
+    .profile-menu li:hover { background-color: #f0f2f5; }
+    .profile-menu li i { margin-right: 0; color: #FF9100; }
+    .profile-container:hover .profile-menu li i { margin-right: 10px; }
+    .logout-btn { margin-top: auto; margin-bottom: 16px; padding: 10px 15px; background-color: #ef4444; color: white; border: none; border-radius: 8px; display: flex; align-items: center; justify-content: flex-start; gap: 8px; cursor: pointer; width: 100%; }
+    .logout-btn i { margin-right: 0; line-height: 1; display: inline-flex; align-items: center; }
+    .logout-btn span { line-height: 1; display: inline-flex; align-items: center; }
+    .profile-container .profile-name, .profile-container .profile-menu li span, .profile-container .logout-btn span { display:none; }
+    .profile-container:hover .profile-name, .profile-container:hover .profile-menu li span, .profile-container:hover .logout-btn span { display:inline; }
+    .main-container { display: flex; margin-top: 0px; padding-top: 0px; min-height: 100vh; }
+    .main-content { flex: 1; margin-left: calc(var(--sidebar-collapsed) + 20px); margin-right: 20px; padding: 24px; display: flex; flex-direction: column; gap: 20px; transition: margin-left .3s ease; }
+    .profile-container:hover ~ .main-container .main-content { margin-left: calc(var(--sidebar-expanded) + 20px); }
+    .container { width: 100%; }
+    header { text-align: center; margin-bottom: 30px; }
+    h1 { color: #2c6b4a; }
+    .form-container { background-color: white; padding: 25px; border-radius: var(--radius); box-shadow: var(--shadow-md); margin-bottom: 30px; }
+    .form-group { margin-bottom: 15px; }
+    .form-row { display: flex; gap: 15px; }
+    .form-row .form-group { flex: 1; }
+    label { display: block; margin-bottom: 5px; font-weight: bold; }
+    input, textarea, select { width: 100%; padding: 8px; border: 1px solid #ddd; border-radius: 4px; box-sizing: border-box; }
+    button.primary { background-color: #047857; color: white; padding: 10px 15px; border: none; border-radius: 4px; cursor: pointer; }
+    button.primary:hover { background-color: #065f46; }
+    .main-listings-container { display: grid; grid-template-columns: repeat(2, 1fr); grid-template-rows: repeat(2, 1fr); gap: 25px; margin-top: 30px; }
+    .listing-card { background-color: white; border-radius: 12px; box-shadow: 0 4px 12px rgba(0,0,0,0.08); position: relative; display: flex; flex-direction: column; overflow: hidden; transition: transform 0.3s ease, box-shadow 0.3s ease; }
+    .listing-card:hover { transform: translateY(-5px); box-shadow: 0 6px 16px rgba(0,0,0,0.12); }
+    .listing-header { background-color: #047857; color: white; padding: 20px; text-align: center; }
+    .listing-title { margin: 0; font-size: 22px; font-weight: 600; }
+    .listing-subtitle { font-size: 16px; opacity: 0.9; margin-top: 5px; }
+    .listing-photo { max-width: 100%; height: 200px; object-fit: cover; width: 100%; border-radius: 8px 8px 0 0; }
+    .listing-content { padding: 25px; flex: 1; }
+    .listing-details { margin-bottom: 20px; }
+    .detail-item { display: flex; margin-bottom: 15px; padding-bottom: 15px; border-bottom: 1px solid #f0f0f0; }
+    .detail-item:last-child { border-bottom: none; margin-bottom: 0; padding-bottom: 0; }
+    .detail-label { font-weight: 600; color: #555; min-width: 140px; display: inline-block; }
+    .detail-value { flex: 1; color: #333; }
+    .price-tag { background-color: #047857; color: white; padding: 5px 12px; border-radius: 20px; font-weight: 600; display: inline-block; margin-top: 10px; }
+    .actions { display: flex; justify-content: flex-end; gap: 10px; margin-top: 15px; padding-top: 15px; border-top: 1px solid #eee; }
+    .edit-btn { padding: 8px 12px; border-radius: 4px; cursor: pointer; font-size: 14px; background-color: #ffc107; color: #000; border: none; }
+    .edit-btn:hover { background-color: #e0a800; }
+    .delete-btn { padding: 8px 12px; border-radius: 4px; cursor: pointer; font-size: 14px; background-color: #dc3545; color: white; border: none; }
+    .delete-btn:hover { background-color: #c82333; }
+    .edit-form { background-color: #f8f9fa; padding: 15px; border-radius: 4px; margin-top: 15px; }
+    .notification { padding: 10px; margin: 10px 0; border-radius: 4px; }
+    .notification.success { background-color: #d4edda; color: #155724; border: 1px solid #c3e6cb; }
+    .notification.error { background-color: #f8d7da; color: #721c24; border: 1px solid #f5c6cb; }
+    .notification-container { position: fixed; width: 350px; background-color: white; border-radius: 8px; box-shadow: 0 5px 15px rgba(0,0,0,0.2); z-index: 100; display: none; transition: opacity 0.2s ease; }
+    .notification-container.visible { display: block; }
+    .header-chat-container { position: fixed; width: 320px; background-color: white; border-radius: 12px; box-shadow: 0 8px 30px rgba(0,0,0,0.12); z-index: 100; display: none; transition: all 0.3s ease; max-height: 450px; border: 1px solid #e4e6ea; }
+    .header-chat-container.visible { display: block; opacity: 1; transform: translateY(0); }
+    @media (max-width: 992px) { .profile-container { transform: translateX(-100%); transition: transform 0.3s ease; width: var(--sidebar-expanded); } .profile-container.active { transform: translateX(0); } .main-content { margin-left: 0; margin-right: 0; } }
+  </style>
+</head>
+<body>
+  <div class="header-container">
+    <div class="header-left">
+      <div class="logo">AgriLink</div>
+      <div class="search-container">
+        <span class="material-symbols-outlined">search</span>
+        <input type="text" placeholder="Search Agri" />
+      </div>
+    </div>
+    <div class="header-center">
+      <div class="nav-icons">
+        <a href="homemain.php" class="icon"><span class="material-symbols-outlined">home</span></a>
+        <a href="listing.php" class="icon"><span class="material-symbols-outlined">storefront</span></a>
+        <div class="icon" id="chat-icon"><span class="material-symbols-outlined">forum</span></div>
+        <div class="icon" id="notification-icon"><span class="material-symbols-outlined">notifications</span></div>
+      </div>
+    </div>
+    <div class="header-right"></div>
+  </div>
+
+  <div class="profile-container">
+    <div class="profile-header">
+      <img src="https://storage.googleapis.com/workspace-0f70711f-8b4e-4d94-86f1-2a93ccde5887/image/0ec0940b-23d9-4b1f-8e72-2a8bd35584e4.png" alt="Farmer profile picture" class="profile-pic" id="profile-link" />
+      <div class="profile-name">Juan Dela Cruz</div>
+    </div>
+    <ul class="profile-menu">
+      <li data-href="request.html"><i class="material-symbols-outlined">request_quote</i><span>Request</span></li>
+      <li data-href="historyandtransaction.php"><i class="material-symbols-outlined">receipt_long</i><span>History and Transactions</span></li>
+      <li data-href="settings.html"><i class="material-symbols-outlined">privacy_tip</i><span>Settings and Privacy</span></li>
+      <li data-href="report.html"><i class="material-symbols-outlined">analytics</i><span>Reports</span></li>
+    </ul>
+    <button class="logout-btn" id="logout-btn"><i class="material-symbols-outlined">logout</i><span>Logout</span></button>
+  </div>
+
+  <div class="main-container">
+    <div class="main-content">
+      <div class="container">
+        <header><h1>Livestock Waste Listings</h1></header>
+
+        <?php if (!empty($errors)): ?>
+          <div class="notification error">
+            <ul style="padding-left:18px;">
+              <?php foreach ($errors as $e): ?>
+                <li><?php echo htmlspecialchars($e, ENT_QUOTES, 'UTF-8'); ?></li>
+              <?php endforeach; ?>
+            </ul>
+          </div>
+        <?php elseif ($success): ?>
+          <div class="notification success">Listing validated successfully. (Demo: not persisted.)</div>
+        <?php endif; ?>
+
+        <form id="listing-form" class="form-container" method="post" action="listing.php" enctype="multipart/form-data" novalidate>
+          <input type="hidden" name="csrf_token" value="<?php echo htmlspecialchars($csrf, ENT_QUOTES, 'UTF-8'); ?>" />
+          <div class="form-row">
+            <div class="form-group">
+              <label for="wasteType">Waste Type *</label>
+              <select id="wasteType" name="wasteType" required>
+                <option value="">Select type</option>
+                <option value="manure" <?php echo $sticky['wasteType']==='manure'?'selected':''; ?>>Manure</option>
+                <option value="bedding" <?php echo $sticky['wasteType']==='bedding'?'selected':''; ?>>Bedding</option>
+                <option value="slurry" <?php echo $sticky['wasteType']==='slurry'?'selected':''; ?>>Slurry</option>
+                <option value="compost" <?php echo $sticky['wasteType']==='compost'?'selected':''; ?>>Compost</option>
+                <option value="other" <?php echo $sticky['wasteType']==='other'?'selected':''; ?>>Other</option>
+              </select>
+            </div>
+            <div class="form-group">
+              <label for="animalType">Animal Type (for Manure)</label>
+              <input type="text" id="animalType" name="animalType" placeholder="e.g., Cattle" value="<?php echo htmlspecialchars($sticky['animalType'], ENT_QUOTES, 'UTF-8'); ?>" />
+            </div>
+          </div>
+
+          <div class="form-row">
+            <div class="form-group">
+              <label for="weight">Weight (kg) *</label>
+              <input type="number" id="weight" name="weight" placeholder="e.g., 500" required value="<?php echo htmlspecialchars($sticky['weight'], ENT_QUOTES, 'UTF-8'); ?>" />
+            </div>
+            <div class="form-group">
+              <label for="collectionDate">Collection Date *</label>
+              <input type="date" id="collectionDate" name="collectionDate" required value="<?php echo htmlspecialchars($sticky['collectionDate'], ENT_QUOTES, 'UTF-8'); ?>" />
+            </div>
+          </div>
+
+          <div class="form-row">
+            <div class="form-group">
+              <label for="price">Price (₱)</label>
+              <input type="number" step="0.01" id="price" name="price" placeholder="e.g., 75.00" value="<?php echo htmlspecialchars($sticky['price'], ENT_QUOTES, 'UTF-8'); ?>" />
+            </div>
+            <div class="form-group">
+              <label for="photo">Photo</label>
+              <input type="file" id="photo" name="photo" accept="image/*" />
+            </div>
+          </div>
+
+          <div class="form-group">
+            <label for="description">Description</label>
+            <textarea id="description" name="description" rows="3" placeholder="Describe the listing"><?php echo htmlspecialchars($sticky['description'], ENT_QUOTES, 'UTF-8'); ?></textarea>
+          </div>
+
+          <button type="submit" class="primary">Add Listing</button>
+        </form>
+
+        <div id="listings-grid" class="main-listings-container"></div>
+      </div>
+    </div>
+  </div>
+
+  <div class="notification-container" id="notification-container" style="position:fixed; top:0; right:0">
+    <div class="notification-header"><h3>Notifications</h3><i class="material-symbols-outlined" id="close-notification">close</i></div>
+    <div class="notification-list">
+      <div class="notification-item"><div class="notification-content"><div class="notification-text"><strong>Maria Santos</strong> commented on your listing.</div><div class="notification-time">2 hrs ago</div></div></div>
+      <div class="notification-item"><div class="notification-content"><div class="notification-text"><strong>Pedro Bautista</strong> liked your compost listing.</div><div class="notification-time">5 hrs ago</div></div></div>
+      <div class="notification-item"><div class="notification-content"><div class="notification-text"><strong>AgriTech PH</strong> shared a new article: "Benefits of Organic Waste in Farming"</div><div class="notification-time">1 day ago</div></div></div>
+      <div class="notification-item"><div class="notification-content"><div class="notification-text"><strong>Farmers Cooperative</strong> added a new listing for compost materials.</div><div class="notification-time">2 days ago</div></div></div>
+    </div>
+  </div>
+
+  <div class="header-chat-container" id="header-chat-container" style="position:fixed; top:0; right:0">
+    <div class="chat-header-popup">
+      <h3>Chats</h3>
+      <i class="material-symbols-outlined" id="close-chat">close</i>
+    </div>
+    <div class="active-users-popup">
+      <div class="active-title-popup">Active Now</div>
+      <div class="active-list-popup">
+        <div class="active-user-popup" data-user='{"id":"ana-gonzales","name":"Ana Gonzales","avatar":"https://storage.googleapis.com/workspace-0f70711f-8b4e-4d94-86f1-2a93ccde5887/image/ee4b5487-b1ea-40b6-9a76-0415e304de49.png"}'>
+          <div class="user-status-popup">
+            <img src="https://storage.googleapis.com/workspace-0f70711f-8b4e-4d94-86f1-2a93ccde5887/image/ee4b5487-b1ea-40b6-9a76-0415e304de49.png" alt="Ana Gonzales" />
+            <span class="status-indicator-popup"></span>
+          </div>
+          <span class="name-popup">Ana</span>
+        </div>
+        <div class="active-user-popup" data-user='{"id":"carlos-reyes","name":"Carlos Reyes","avatar":"https://storage.googleapis.com/workspace-0f70711f-8b4e-4d94-86f1-2a93ccde5887/image/331059ac-f6bf-4684-b902-d37824bad8f5.png"}'>
+          <div class="user-status-popup">
+            <img src="https://storage.googleapis.com/workspace-0f70711f-8b4e-4d94-86f1-2a93ccde5887/image/331059ac-f6bf-4684-b902-d37824bad8f5.png" alt="Carlos Reyes" />
+            <span class="status-indicator-popup"></span>
+          </div>
+          <span class="name-popup">Carlos</span>
+        </div>
+        <div class="active-user-popup" data-user='{"id":"lorna-lim","name":"Lorna Lim","avatar":"https://storage.googleapis.com/workspace-0f70711f-8b4e-4d94-86f1-2a93ccde5887/image/2ab478de-5d6d-4dce-8c67-baf47fd7ad8e.png"}'>
+          <div class="user-status-popup">
+            <img src="https://storage.googleapis.com/workspace-0f70711f-8b4e-4d94-86f1-2a93ccde5887/image/2ab478de-5d6d-4dce-8c67-baf47fd7ad8e.png" alt="Lorna Lim" />
+            <span class="status-indicator-popup"></span>
+          </div>
+          <span class="name-popup">Lorna</span>
+        </div>
+      </div>
+    </div>
+    <div class="conversations-title-popup">Conversations</div>
+    <div class="chat-list-popup" id="chat-list-popup"></div>
+  </div>
+
+  <div id="floating-chats-root"></div>
+
+  <script>
+    // ===== DATA & STATE =====
+    const initialListings = [
+      { id: 1, wasteType: 'manure', weight: 500, collectionDate: '2023-06-15', description: 'Well-aged cattle manure, excellent for fertilizer', animalType: 'Cattle', price: 50.0, photo: null },
+      { id: 2, wasteType: 'compost', weight: 300, collectionDate: '2023-06-18', description: 'Organic compost from mixed livestock waste', price: 75.0, photo: null },
+    ];
+    const state = { listings: [...initialListings], conversations: [], openChatWindows: [], typingUsers: {}, messageInputs: {}, notificationStyle: { top: 0, right: 0 }, chatStyle: { top: 0, right: 0 } };
+
+    // ===== HELPERS =====
+    function $(sel, root=document){ return root.querySelector(sel); }
+    function $all(sel, root=document){ return Array.from(root.querySelectorAll(sel)); }
+    function getWasteTypeLabel(type){ const map={manure:'Manure', bedding:'Bedding', slurry:'Slurry', compost:'Compost', other:'Other'}; return map[type]||type||'Unknown'; }
+    function formatDate(dateString){ if(!dateString) return 'No date provided'; try{ return new Date(dateString).toLocaleDateString(undefined,{year:'numeric',month:'long',day:'numeric'});}catch(e){ return dateString; } }
+
+    // ===== NAV =====
+    $('#profile-link').addEventListener('click', () => { window.location.href = 'profile.html'; });
+    $all('.profile-menu li').forEach(li => li.addEventListener('click', () => { const href = li.getAttribute('data-href'); if (href) window.location.href = href; }));
+    $('#logout-btn').addEventListener('click', () => { window.location.href = 'homemain.php'; });
+
+    // ===== HEADER POPUPS =====
+    const notificationIcon = $('#notification-icon');
+    const notificationContainer = $('#notification-container');
+    const chatIcon = $('#chat-icon');
+    const chatContainer = $('#header-chat-container');
+
+    notificationIcon.addEventListener('click', (e) => {
+      const rect = notificationIcon.getBoundingClientRect();
+      state.notificationStyle = { top: rect.bottom + 5, right: window.innerWidth - rect.right - 190 };
+      notificationContainer.style.top = state.notificationStyle.top + 'px';
+      notificationContainer.style.right = state.notificationStyle.right + 'px';
+      chatContainer.classList.remove('visible');
+      notificationContainer.classList.toggle('visible');
+      e.stopPropagation();
+    });
+
+    chatIcon.addEventListener('click', (e) => {
+      const rect = chatIcon.getBoundingClientRect();
+      state.chatStyle = { top: rect.bottom + 5, right: window.innerWidth - rect.right - 190 };
+      chatContainer.style.top = state.chatStyle.top + 'px';
+      chatContainer.style.right = state.chatStyle.right + 'px';
+      notificationContainer.classList.remove('visible');
+      chatContainer.classList.toggle('visible');
+      e.stopPropagation();
+    });
+
+    document.addEventListener('click', (e) => {
+      if (notificationContainer.classList.contains('visible') && !notificationContainer.contains(e.target) && e.target !== notificationIcon) {
+        notificationContainer.classList.remove('visible');
+      }
+      if (chatContainer.classList.contains('visible') && !chatContainer.contains(e.target) && e.target !== chatIcon) {
+        chatContainer.classList.remove('visible');
+      }
+    });
+    $('#close-notification').addEventListener('click', () => notificationContainer.classList.remove('visible'));
+    $('#close-chat').addEventListener('click', () => chatContainer.classList.remove('visible'));
+
+    // ===== LISTINGS RENDER =====
+    function renderListings(){
+      const grid = document.getElementById('listings-grid');
+      if (!grid) return;
+      grid.innerHTML = '';
+      state.listings.forEach(listing => {
+        const card = document.createElement('div');
+        card.className = 'listing-card';
+        const title = listing.animalType ? `${listing.animalType} ${getWasteTypeLabel(listing.wasteType)}` : getWasteTypeLabel(listing.wasteType);
+        card.innerHTML = `
+          ${listing.photo ? `<img class="listing-photo" src="${listing.photo}" alt="${title}" />` : ''}
+          <div class="listing-header">
+            <h2 class="listing-title">${title}</h2>
+            <div class="listing-subtitle">${formatDate(listing.collectionDate)}</div>
+          </div>
+          <div class="listing-content">
+            <div class="listing-details">
+              <div class="detail-item"><span class="detail-label">Waste Type:</span><span class="detail-value">${getWasteTypeLabel(listing.wasteType)}</span></div>
+              <div class="detail-item"><span class="detail-label">Weight:</span><span class="detail-value">${listing.weight} kg</span></div>
+              <div class="detail-item"><span class="detail-label">Description:</span><span class="detail-value">${listing.description || '—'}</span></div>
+              ${listing.price!=null? `<div class="price-tag">₱${Number(listing.price).toFixed(2)}</div>` : ''}
+            </div>
+          </div>
+        `;
+        grid.appendChild(card);
+      });
+    }
+
+    // Initial render (demo data only)
+    renderListings();
+  </script>
+</body>
+</html>
