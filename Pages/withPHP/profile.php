@@ -105,6 +105,16 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     .profile-menu li:hover { background-color: #f0f2f5; }
     .profile-menu li i { margin-right: 10px; color: #FF9100; }
     .bottom-menu { margin-top: auto; }
+    /* Menu trigger + popover (match homemain) */
+    .profile-menu-trigger { margin-top: auto; display: inline-flex; align-items: center; gap: 8px; border: 1px solid var(--border); background: #fff; color: #111827; padding: 10px 14px; border-radius: 10px; cursor: pointer; box-shadow: var(--shadow-sm); }
+    .profile-menu-trigger .material-symbols-outlined { color: #0f172a; }
+    .profile-menu-popover { position: fixed; width: 260px; background: #fff; border-radius: 12px; box-shadow: 0 10px 25px rgba(0,0,0,0.15); border: 1px solid #e5e7eb; padding: 10px 0; display: none; z-index: 120; max-height: calc(100vh - 16px); overflow-y: auto; }
+    .profile-menu-popover.visible { display: block; }
+    .profile-menu-popover .menu-item { display: flex; align-items: center; gap: 12px; padding: 10px 16px; color: #0f172a; cursor: pointer; }
+    .profile-menu-popover .menu-item:hover { background: #f8fafc; }
+    .profile-menu-popover .menu-item .material-symbols-outlined { color: #475569; }
+    .profile-menu-popover .menu-divider { height: 1px; background: #f1f5f9; margin: 6px 0; }
+    .profile-menu-popover .logout-action { margin: 8px 12px 4px; padding: 10px 14px; background: #ef4444; color: #fff; border-radius: 10px; display: flex; align-items: center; gap: 10px; font-weight: 600; justify-content: center; }
     .profile-container .profile-name, .profile-container .profile-menu li span, .profile-container .logout-btn span { display:inline; }
     .main-content { margin-left: calc(var(--sidebar-expanded) + 20px); padding: 20px 24px 24px; transition: margin-left .3s ease; }
     .cover-section { margin-bottom: 20px; }
@@ -209,12 +219,20 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
       <li data-href="request.php"><i class="material-symbols-outlined">request_quote</i><span>Request</span></li>
       <li data-href="historyandtransaction.php"><i class="material-symbols-outlined">receipt_long</i><span>History and Transactions</span></li>
     </ul>
-    <ul class="profile-menu bottom-menu">
-      <li data-href="#change-role"><i class="material-symbols-outlined">manage_accounts</i><span>Change Role</span></li>
-      <li data-href="settings.php"><i class="material-symbols-outlined">settings</i><span>Settings</span></li>
-      <li data-href="report.php"><i class="material-symbols-outlined">analytics</i><span>My Report</span></li>
-      <li data-href="#switch-appearance"><i class="material-symbols-outlined">dark_mode</i><span>Switch Appearance</span></li>
-    </ul>
+    <!-- Bottom popup menu trigger -->
+    <button class="profile-menu-trigger" id="profile-menu-trigger" type="button">
+      <span class="material-symbols-outlined">menu</span>
+      <span>Menu</span>
+    </button>
+  </div>
+  <!-- Popover moved outside sidebar -->
+  <div class="profile-menu-popover" id="profile-menu-popover">
+    <div class="menu-item" data-href="#change-role"><span class="material-symbols-outlined">manage_accounts</span><span>Change Role</span></div>
+    <div class="menu-item" data-href="settings.php"><span class="material-symbols-outlined">settings</span><span>Settings</span></div>
+    <div class="menu-item" data-href="report.php"><span class="material-symbols-outlined">analytics</span><span>My Report</span></div>
+    <div class="menu-item" data-href="#switch-appearance"><span class="material-symbols-outlined">dark_mode</span><span>Switch Appearance</span></div>
+    <div class="menu-divider"></div>
+    <div class="logout-action" id="logout-action"><span class="material-symbols-outlined">logout</span><span>Logout</span></div>
   </div>
 
   <!-- Main content -->
@@ -311,6 +329,33 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $('#profile-link')?.addEventListener('click', ()=>{ window.location.href = 'profile.php'; });
     $all('.profile-menu li').forEach(li=> li.addEventListener('click', ()=>{ const href=li.getAttribute('data-href'); if(href) window.location.href = href; }));
     $('#logout-btn')?.addEventListener('click', ()=>{ window.location.href = 'homemain.php'; });
+
+    // Sidebar bottom menu popover (match homemain)
+    (function(){
+      const trigger = document.getElementById('profile-menu-trigger');
+      const pop = document.getElementById('profile-menu-popover');
+      const logout = document.getElementById('logout-action');
+      if (!trigger || !pop) return;
+      function position(){
+        const r = trigger.getBoundingClientRect();
+        const gap = 16; const topOffset = -6; let left = r.right + gap; let top = Math.max(8, r.top + topOffset);
+        const pc = document.querySelector('.profile-container'); if (pc) { const cr = pc.getBoundingClientRect(); left = Math.max(left, cr.right + 8); }
+        const prevDisplay = pop.style.display; if (!pop.classList.contains('visible')) { pop.style.visibility='hidden'; pop.style.display='block'; }
+        const pw = pop.offsetWidth || 260; const ph = pop.offsetHeight || 200; if (!pop.classList.contains('visible')) { pop.style.display = prevDisplay; pop.style.visibility=''; }
+        const margin = 8; if (left + pw > window.innerWidth - margin) left = Math.max(margin, r.left - gap - pw);
+        top = Math.max(margin, Math.min(top, window.innerHeight - ph - margin));
+        pop.style.top = Math.round(top)+'px'; pop.style.left = Math.round(left)+'px';
+      }
+      function toggle(){ position(); pop.classList.toggle('visible'); }
+      function hide(){ pop.classList.remove('visible'); }
+      trigger.addEventListener('click', (e)=>{ e.stopPropagation(); toggle(); });
+      document.addEventListener('click', (e)=>{ if (pop.classList.contains('visible') && !pop.contains(e.target) && e.target !== trigger) hide(); });
+      document.addEventListener('keydown', (e)=>{ if (e.key==='Escape') hide(); });
+      pop.querySelectorAll('.menu-item').forEach(it=> it.addEventListener('click', ()=>{ const href=it.getAttribute('data-href'); if(href && href.startsWith('#')) { hide(); return; } if(href){ window.location.href = href; } }));
+      logout && logout.addEventListener('click', ()=>{ window.location.href = 'homemain.php'; });
+      window.addEventListener('resize', ()=>{ if (pop.classList.contains('visible')) position(); });
+      window.addEventListener('scroll', ()=>{ if (pop.classList.contains('visible')) position(); }, { passive:true });
+    })();
 
     // ===== HEADER POPUPS (standardized) =====
     (function(){

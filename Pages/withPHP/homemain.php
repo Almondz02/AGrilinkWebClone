@@ -115,7 +115,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     /* ===== PROFILE BOTTOM MENU (popover) ===== */
     .profile-menu-trigger { margin-top: auto; display: inline-flex; align-items: center; gap: 8px; border: 1px solid var(--border); background: #fff; color: #111827; padding: 10px 14px; border-radius: 10px; cursor: pointer; box-shadow: var(--shadow-sm); }
     .profile-menu-trigger .material-symbols-outlined { color: #0f172a; }
-    .profile-menu-popover { position: absolute; left: 16px; bottom: 70px; width: 260px; background: #fff; border-radius: 12px; box-shadow: 0 10px 25px rgba(0,0,0,0.15); border: 1px solid #e5e7eb; padding: 10px 0; display: none; z-index: 120; }
+    .profile-menu-popover { position: fixed; width: 260px; background: #fff; border-radius: 12px; box-shadow: 0 10px 25px rgba(0,0,0,0.15); border: 1px solid #e5e7eb; padding: 10px 0; display: none; z-index: 120; max-height: calc(100vh - 16px); overflow-y: auto; }
     .profile-menu-popover.visible { display: block; }
     .profile-menu-popover .menu-item { display: flex; align-items: center; gap: 12px; padding: 10px 16px; color: #0f172a; cursor: pointer; }
     .profile-menu-popover .menu-item:hover { background: #f8fafc; }
@@ -374,15 +374,15 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
       <span class="material-symbols-outlined">menu</span>
       <span>Menu</span>
     </button>
-    <!-- Popup content -->
-    <div class="profile-menu-popover" id="profile-menu-popover">
-      <div class="menu-item" data-href="#change-role"><span class="material-symbols-outlined">manage_accounts</span><span>Change Role</span></div>
-      <div class="menu-item" data-href="settings.php"><span class="material-symbols-outlined">settings</span><span>Settings</span></div>
-      <div class="menu-item" data-href="report.php"><span class="material-symbols-outlined">analytics</span><span>My Report</span></div>
-      <div class="menu-item" data-href="#switch-appearance"><span class="material-symbols-outlined">dark_mode</span><span>Switch Appearance</span></div>
-      <div class="menu-divider"></div>
-      <div class="logout-action" id="logout-action"><span class="material-symbols-outlined">logout</span><span>Logout</span></div>
-    </div>
+  </div>
+  <!-- Popup content moved OUTSIDE sidebar to avoid clipping and align beside trigger -->
+  <div class="profile-menu-popover" id="profile-menu-popover">
+    <div class="menu-item" data-href="#change-role"><span class="material-symbols-outlined">manage_accounts</span><span>Change Role</span></div>
+    <div class="menu-item" data-href="settings.php"><span class="material-symbols-outlined">settings</span><span>Settings</span></div>
+    <div class="menu-item" data-href="report.php"><span class="material-symbols-outlined">analytics</span><span>My Report</span></div>
+    <div class="menu-item" data-href="#switch-appearance"><span class="material-symbols-outlined">dark_mode</span><span>Switch Appearance</span></div>
+    <div class="menu-divider"></div>
+    <div class="logout-action" id="logout-action"><span class="material-symbols-outlined">logout</span><span>Logout</span></div>
   </div>
 
   <!-- ===== MAIN CONTAINER AND CONTENT AREA ===== -->
@@ -604,13 +604,46 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
       const pop = document.getElementById('profile-menu-popover');
       const logout = document.getElementById('logout-action');
       if (!trigger || !pop) return;
-      function toggle(){ pop.classList.toggle('visible'); }
+      function position(){
+        if (!trigger || !pop) return;
+        const r = trigger.getBoundingClientRect();
+        const gap = 16; // slight push to the right
+        const topOffset = -6; // nudge upwards slightly
+        // Default to right side of trigger
+        let left = r.right + gap;
+        // Ensure it's outside the profile container box
+        const pc = document.querySelector('.profile-container');
+        if (pc) {
+          const cr = pc.getBoundingClientRect();
+          left = Math.max(left, cr.right + 8);
+        }
+        let top = Math.max(8, r.top + topOffset);
+        // Measure popover dimensions by making it visible offscreen briefly if needed
+        const wasHidden = !pop.classList.contains('visible') && pop.style.display === '';
+        const prevDisplay = pop.style.display;
+        if (!pop.classList.contains('visible')) { pop.style.visibility = 'hidden'; pop.style.display = 'block'; }
+        const pw = pop.offsetWidth || 260;
+        const ph = pop.offsetHeight || 200;
+        if (!pop.classList.contains('visible')) { pop.style.display = prevDisplay; pop.style.visibility = ''; }
+        // Flip horizontally if overflowing right
+        const margin = 8;
+        if (left + pw > window.innerWidth - margin) {
+          left = Math.max(margin, r.left - gap - pw);
+        }
+        // Clamp vertically inside viewport
+        top = Math.max(margin, Math.min(top, window.innerHeight - ph - margin));
+        pop.style.top = Math.round(top) + 'px';
+        pop.style.left = Math.round(left) + 'px';
+      }
+      function toggle(){ position(); pop.classList.toggle('visible'); }
       function hide(){ pop.classList.remove('visible'); }
       trigger.addEventListener('click', (e)=>{ e.stopPropagation(); toggle(); });
       document.addEventListener('click', (e)=>{ if (pop.classList.contains('visible') && !pop.contains(e.target) && e.target !== trigger) hide(); });
       document.addEventListener('keydown', (e)=>{ if (e.key === 'Escape') hide(); });
       pop.querySelectorAll('.menu-item').forEach(it=> it.addEventListener('click', ()=>{ const href=it.getAttribute('data-href'); if(href && href.startsWith('#')) { hide(); return; } if(href){ window.location.href = href; } }));
       logout && logout.addEventListener('click', ()=>{ window.location.href = 'homemain.php'; });
+      window.addEventListener('resize', ()=>{ if (pop.classList.contains('visible')) position(); });
+      window.addEventListener('scroll', ()=>{ if (pop.classList.contains('visible')) position(); }, { passive: true });
     })();
 
     // ===== NOTIFICATION & CHAT HEADER ICONS =====
