@@ -151,9 +151,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
       <div class="profile-name">Juan Dela Cruz</div>
     </div>
     <ul class="profile-menu">
-      <li data-href="request.html"><i class="material-symbols-outlined">request_quote</i><span>Request</span></li>
+      <li data-href="request.php"><i class="material-symbols-outlined">request_quote</i><span>Request</span></li>
       <li data-href="historyandtransaction.php"><i class="material-symbols-outlined">receipt_long</i><span>History and Transactions</span></li>
-      <li data-href="settings.html"><i class="material-symbols-outlined">privacy_tip</i><span>Settings and Privacy</span></li>
+      <li data-href="settings.php"><i class="material-symbols-outlined">privacy_tip</i><span>Settings and Privacy</span></li>
       <li data-href="report.php"><i class="material-symbols-outlined">analytics</i><span>Reports</span></li>
     </ul>
     <button class="logout-btn" id="logout-btn"><i class="material-symbols-outlined">logout</i><span>Logout</span></button>
@@ -245,7 +245,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     function showToast(msg){ const t = $('#toast'); if(!t) return; t.textContent = msg; t.style.display='block'; setTimeout(()=>{ t.style.display='none'; }, 4000); }
 
     // Sidebar nav
-    $('#profile-link')?.addEventListener('click', ()=>{ window.location.href = 'profile.html'; });
+    $('#profile-link')?.addEventListener('click', ()=>{ window.location.href = 'profile.php'; });
     $all('.profile-menu li').forEach(li=> li.addEventListener('click', ()=>{ const href=li.getAttribute('data-href'); if(href) window.location.href = href; }));
     $('#logout-btn')?.addEventListener('click', ()=>{ window.location.href = 'homemain.php'; });
 

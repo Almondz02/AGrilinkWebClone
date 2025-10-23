@@ -347,7 +347,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     <div class="header-center">
       <div class="nav-icons">
         <a href="homemain.php" class="icon"><span class="material-symbols-outlined">home</span></a>
-        <a href="listing.html" class="icon"><span class="material-symbols-outlined">storefront</span></a>
+        <a href="listing.php" class="icon"><span class="material-symbols-outlined">storefront</span></a>
         <div class="icon" id="chat-icon"><span class="material-symbols-outlined">forum</span></div>
         <div class="icon" id="notification-icon"><span class="material-symbols-outlined">notifications</span></div>
       </div>
@@ -362,10 +362,10 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
       <div class="profile-name">Juan Dela Cruz</div>
     </div>
     <ul class="profile-menu">
-      <li data-href="request.html"><i class="material-symbols-outlined">request_quote</i><span>Request</span></li>
-      <li data-href="historyandtransaction.html"><i class="material-symbols-outlined">receipt_long</i><span>History and Transactions</span></li>
-      <li data-href="settings.html"><i class="material-symbols-outlined">privacy_tip</i><span>Settings and Privacy</span></li>
-      <li data-href="report.html"><i class="material-symbols-outlined">analytics</i><span>Reports</span></li>
+      <li data-href="request.php"><i class="material-symbols-outlined">request_quote</i><span>Request</span></li>
+      <li data-href="historyandtransaction.php"><i class="material-symbols-outlined">receipt_long</i><span>History and Transactions</span></li>
+      <li data-href="settings.php"><i class="material-symbols-outlined">privacy_tip</i><span>Settings and Privacy</span></li>
+      <li data-href="report.php"><i class="material-symbols-outlined">analytics</i><span>Reports</span></li>
     </ul>
     <button class="logout-btn" id="logout-btn"><i class="material-symbols-outlined">logout</i><span>Logout</span></button>
   </div>
@@ -579,46 +579,68 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     function $all(sel, root=document){ return Array.from(root.querySelectorAll(sel)); }
 
     // ===== NAVIGATION BINDINGS =====
-    $('#profile-link').addEventListener('click', () => { window.location.href = 'profile.html'; });
+    $('#profile-link').addEventListener('click', () => { window.location.href = 'profile.php'; });
     $all('.profile-menu li').forEach(li => li.addEventListener('click', () => { const href = li.getAttribute('data-href'); if (href) window.location.href = href; }));
     $('#logout-btn').addEventListener('click', () => { window.location.href = 'homemain.php'; });
 
     // ===== NOTIFICATION & CHAT HEADER ICONS =====
-    const notificationIcon = $('#notification-icon');
-    const notificationContainer = $('#notification-container');
-    const chatIcon = $('#chat-icon');
-    const chatContainer = $('#header-chat-container');
+    (function(){
+      const notifIcon = $('#notification-icon');
+      const notifCont = $('#notification-container');
+      const chatIcon = $('#chat-icon');
+      const chatCont = $('#header-chat-container');
+      if (!notifIcon || !notifCont || !chatIcon || !chatCont) return;
 
-    notificationIcon.addEventListener('click', (e) => {
-      const rect = notificationIcon.getBoundingClientRect();
-      state.notificationStyle = { top: rect.bottom + 5, right: window.innerWidth - rect.right - 190 };
-      notificationContainer.style.top = state.notificationStyle.top + 'px';
-      notificationContainer.style.right = state.notificationStyle.right + 'px';
-      chatContainer.classList.remove('visible');
-      notificationContainer.classList.toggle('visible');
-      e.stopPropagation();
-    });
-
-    chatIcon.addEventListener('click', (e) => {
-      const rect = chatIcon.getBoundingClientRect();
-      state.chatStyle = { top: rect.bottom + 5, right: window.innerWidth - rect.right - 190 };
-      chatContainer.style.top = state.chatStyle.top + 'px';
-      chatContainer.style.right = state.chatStyle.right + 'px';
-      notificationContainer.classList.remove('visible');
-      chatContainer.classList.toggle('visible');
-      e.stopPropagation();
-    });
-
-    document.addEventListener('click', (e) => {
-      if (notificationContainer.classList.contains('visible') && !notificationContainer.contains(e.target) && e.target !== notificationIcon) {
-        notificationContainer.classList.remove('visible');
+      function positionNear(el, cont){
+        const r = el.getBoundingClientRect();
+        const top = r.bottom + 5;
+        const right = Math.max(10, window.innerWidth - r.right - 190);
+        cont.style.top = top + 'px';
+        cont.style.right = right + 'px';
       }
-      if (chatContainer.classList.contains('visible') && !chatContainer.contains(e.target) && e.target !== chatIcon) {
-        chatContainer.classList.remove('visible');
+
+      function hideAll(){
+        notifCont.classList.remove('visible');
+        chatCont.classList.remove('visible');
       }
-    });
-    $('#close-notification').addEventListener('click', () => notificationContainer.classList.remove('visible'));
-    $('#close-chat').addEventListener('click', () => chatContainer.classList.remove('visible'));
+
+      notifIcon.addEventListener('click', (e)=>{
+        positionNear(notifIcon, notifCont);
+        chatCont.classList.remove('visible');
+        notifCont.classList.toggle('visible');
+        e.stopPropagation();
+      });
+
+      chatIcon.addEventListener('click', (e)=>{
+        positionNear(chatIcon, chatCont);
+        notifCont.classList.remove('visible');
+        chatCont.classList.toggle('visible');
+        e.stopPropagation();
+      });
+
+      document.addEventListener('click', (e)=>{
+        if (notifCont.classList.contains('visible') && !notifCont.contains(e.target) && e.target !== notifIcon) notifCont.classList.remove('visible');
+        if (chatCont.classList.contains('visible') && !chatCont.contains(e.target) && e.target !== chatIcon) chatCont.classList.remove('visible');
+      });
+
+      window.addEventListener('resize', ()=>{
+        if (notifCont.classList.contains('visible')) positionNear(notifIcon, notifCont);
+        if (chatCont.classList.contains('visible')) positionNear(chatIcon, chatCont);
+      });
+      window.addEventListener('scroll', ()=>{
+        if (notifCont.classList.contains('visible')) positionNear(notifIcon, notifCont);
+        if (chatCont.classList.contains('visible')) positionNear(chatIcon, chatCont);
+      }, { passive: true });
+
+      const closeN = $('#close-notification');
+      const closeC = $('#close-chat');
+      closeN && closeN.addEventListener('click', ()=> notifCont.classList.remove('visible'));
+      closeC && closeC.addEventListener('click', ()=> chatCont.classList.remove('visible'));
+
+      document.addEventListener('keydown', (e)=>{
+        if (e.key === 'Escape') hideAll();
+      });
+    })();
 
     // ===== CHAT LIST RENDER =====
     function renderChatList() {

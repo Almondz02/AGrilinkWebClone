@@ -50,11 +50,60 @@ if($_SERVER['REQUEST_METHOD']==='POST'){
     .search-container input{background:transparent;border:none;color:white;outline:none;width:250px;font-size:14px}
     .nav-icons{display:flex;gap:20px}.nav-icons .icon{width:40px;height:40px;border-radius:50%;background:rgba(255,255,255,.2);display:flex;justify-content:center;align-items:center;color:white;cursor:pointer;text-decoration:none}
     .main-container{display:flex;min-height:100vh}.main-content{margin:0 320px 20px calc(var(--sidebar-collapsed) + 20px);padding-top:20px;flex:1;display:flex;flex-direction:column;gap:20px}
-    .notification-container{position:fixed;width:350px;background:#fff;border-radius:8px;box-shadow:0 5px 15px rgba(0,0,0,.2);z-index:100;display:none}
+    .notification-container{position:fixed;width:350px;background:#fff;border-radius:8px;box-shadow:0 5px 15px rgba(0,0,0,.2);z-index:100;display:none;transition:opacity .2s ease}
     .notification-container.visible{display:block}
-    .header-chat-container{position:fixed;width:320px;background:#fff;border-radius:12px;box-shadow:0 8px 30px rgba(0,0,0,.12);z-index:100;display:none;max-height:450px;border:1px solid #e4e6ea}
-    .header-chat-container.visible{display:block}
+    .notification-header{display:flex;justify-content:space-between;align-items:center;padding:15px;border-bottom:1px solid #eee}
+    .notification-header h3{margin:0;font-size:18px;color:#333}
+    #close-notification{cursor:pointer;color:#999}
+    #close-notification:hover{color:#333}
+    .notification-list{max-height:400px;overflow-y:auto}
+    .notification-item{padding:15px;border-bottom:1px solid #eee;cursor:pointer;transition:background-color .2s}
+    .notification-item:hover{background-color:#f5f5f5}
+    .notification-content{display:flex;flex-direction:column}
+    .notification-text{font-size:14px;color:#333;margin-bottom:5px}
+    .notification-text strong{color:#047857}
+    .notification-time{font-size:12px;color:#999}
+    .notification-list::-webkit-scrollbar{width:6px}
+    .notification-list::-webkit-scrollbar-track{background:#f1f1f1}
+    .notification-list::-webkit-scrollbar-thumb{background:#c1c1c1;border-radius:3px}
+    .notification-list::-webkit-scrollbar-thumb:hover{background:#a1a1a1}
+
+    .header-chat-container{position:fixed;width:320px;background:#fff;border-radius:12px;box-shadow:0 8px 30px rgba(0,0,0,.12);z-index:100;display:none;transition:all .3s ease;max-height:450px;border:1px solid #e4e6ea}
+    .header-chat-container.visible{display:block;opacity:1;transform:translateY(0)}
+    .chat-header-popup{display:flex;justify-content:space-between;align-items:center;padding:16px 20px;border-bottom:1px solid #e4e6ea;background-color:#f8f9fa;border-radius:12px 12px 0 0}
+    .chat-header-popup h3{margin:0;font-size:18px;color:#1c1e21;font-weight:700}
+    #close-chat{cursor:pointer;color:#8a8d91;font-size:20px;padding:4px;border-radius:50%;transition:all .2s ease}
+    #close-chat:hover{color:#1c1e21;background-color:#e4e6ea}
+    .active-users-popup{padding:16px 20px 12px; border-bottom: 1px solid #e4e6ea}
+    .active-title-popup{font-weight:600;font-size:14px;color:#047857;margin-bottom:12px}
+    .active-list-popup{display:flex;gap:12px;overflow-x:auto;padding-bottom:8px}
+    .active-list-popup::-webkit-scrollbar{height:6px}
+    .active-list-popup::-webkit-scrollbar-thumb{background:#e4e6ea;border-radius:3px}
+    .active-user-popup{display:flex;flex-direction:column;align-items:center;gap:6px;min-width:54px;cursor:pointer}
+    .user-status-popup{position:relative;width:44px;height:44px}
+    .user-status-popup img{width:44px;height:44px;border-radius:50%;object-fit:cover;border:2px solid #fff;box-shadow:0 2px 6px rgba(0,0,0,.08)}
+    .status-indicator-popup{position:absolute;bottom:0;right:0;width:12px;height:12px;background:#31a24c;border:2px solid #fff;border-radius:50%}
+    .name-popup{font-size:12px;color:#1c1e21}
+    .conversations-title-popup{font-weight:600;font-size:14px;color:#047857;padding:12px 20px 8px}
+    .chat-list-popup{max-height:280px;overflow-y:auto}
+    .chat-list-popup::-webkit-scrollbar{width:6px}
+    .chat-list-popup::-webkit-scrollbar-thumb{background:#e4e6ea;border-radius:3px}
     .listings-container{position:fixed;right:0;top:60px;bottom:0;width:300px;background:#fff;padding:20px;overflow-y:auto;z-index:90;box-shadow:-1px 0 5px rgba(0,0,0,.1)}
+    .listings-header{display:flex;justify-content:flex-start;margin-bottom:15px}
+    .listings-header h3{margin:0;font-size:18px;color:#047857;font-weight:600}
+    .listings-list{display:flex;flex-direction:column;gap:15px}
+    .listing-item{display:flex;align-items:center;padding:12px;border-radius:8px;cursor:pointer;transition:background-color .2s;border:1px solid #e4e6ea}
+    .listing-item:hover{background-color:#f0f2f5;border-color:#047857}
+    .listing-image{width:60px;height:60px;border-radius:8px;object-fit:cover;margin-right:12px}
+    .listing-info{flex:1}
+    .listing-title{font-weight:600;font-size:14px;color:#1c1e21;margin-bottom:4px}
+    .listing-price{font-size:13px;color:#047857;font-weight:600;margin-bottom:2px}
+    .listing-weight{font-size:12px;color:#65676b;margin-bottom:2px}
+    .listing-description{font-size:11px;color:#65676b;line-height:1.3;margin-top:2px}
+    .listings-container::-webkit-scrollbar{width:6px}
+    .listings-container::-webkit-scrollbar-track{background:#f1f1f1}
+    .listings-container::-webkit-scrollbar-thumb{background:#c1c1c1;border-radius:3px}
+    .listings-container::-webkit-scrollbar-thumb:hover{background:#a1a1a1}
     .page-header{background:#fff;border-radius:12px;padding:16px;box-shadow:0 1px 2px rgba(0,0,0,.06);margin-bottom:12px}
     .filter-controls{background:#fff;border-radius:12px;padding:12px;box-shadow:0 1px 2px rgba(0,0,0,.06);margin-bottom:16px}
     .filter-row{display:flex;flex-wrap:wrap;gap:12px;align-items:flex-end}.filter-group{display:flex;flex-direction:column;gap:6px}
@@ -77,7 +126,7 @@ if($_SERVER['REQUEST_METHOD']==='POST'){
     <div class="header-center">
       <div class="nav-icons">
         <a href="homemain.php" class="icon"><span class="material-symbols-outlined">home</span></a>
-        <a href="listing.html" class="icon"><span class="material-symbols-outlined">storefront</span></a>
+        <a href="listing.php" class="icon"><span class="material-symbols-outlined">storefront</span></a>
         <div class="icon" id="chat-icon"><span class="material-symbols-outlined">forum</span></div>
         <div class="icon" id="notification-icon"><span class="material-symbols-outlined">notifications</span></div>
       </div>
@@ -91,10 +140,10 @@ if($_SERVER['REQUEST_METHOD']==='POST'){
       <div class="profile-name">Juan Dela Cruz</div>
     </div>
     <ul class="profile-menu">
-      <li data-href="request.html"><i class="material-symbols-outlined">request_quote</i><span>Request</span></li>
+      <li data-href="request.php"><i class="material-symbols-outlined">request_quote</i><span>Request</span></li>
       <li data-href="historyandtransaction.php"><i class="material-symbols-outlined">receipt_long</i><span>History and Transactions</span></li>
-      <li data-href="settings.html"><i class="material-symbols-outlined">privacy_tip</i><span>Settings and Privacy</span></li>
-      <li data-href="report.html"><i class="material-symbols-outlined">analytics</i><span>Reports</span></li>
+      <li data-href="settings.php"><i class="material-symbols-outlined">privacy_tip</i><span>Settings and Privacy</span></li>
+      <li data-href="report.php"><i class="material-symbols-outlined">analytics</i><span>Reports</span></li>
     </ul>
     <button class="logout-btn" id="logout-btn"><i class="material-symbols-outlined">logout</i><span>Logout</span></button>
   </div>
@@ -173,7 +222,7 @@ if($_SERVER['REQUEST_METHOD']==='POST'){
     </div>
   </div>
 
-  <div class="notification-container" id="notification-container" style="top:0; right:0">
+  <div class="notification-container" id="notification-container" style="position:fixed; top:0; right:0">
     <div class="notification-header"><h3>Notifications</h3><i class="material-symbols-outlined" id="close-notification">close</i></div>
     <div class="notification-list">
       <div class="notification-item"><div class="notification-content"><div class="notification-text"><strong>Maria Santos</strong> commented on your post: "This looks great! Would love to buy some."</div><div class="notification-time">2 hrs ago</div></div></div>
@@ -183,9 +232,34 @@ if($_SERVER['REQUEST_METHOD']==='POST'){
     </div>
   </div>
 
-  <div class="header-chat-container" id="header-chat-container" style="top:0; right:0">
+  <div class="header-chat-container" id="header-chat-container" style="position:fixed; top:0; right:0">
     <div class="chat-header-popup"><h3>Chats</h3><i class="material-symbols-outlined" id="close-chat">close</i></div>
-    <div class="active-users-popup"><div class="active-title-popup">Active Now</div><div class="active-list-popup" id="active-users"></div></div>
+    <div class="active-users-popup">
+      <div class="active-title-popup">Active Now</div>
+      <div class="active-list-popup">
+        <div class="active-user-popup" data-user='{"id":"ana-gonzales","name":"Ana Gonzales","avatar":"https://storage.googleapis.com/workspace-0f70711f-8b4e-4d94-86f1-2a93ccde5887/image/ee4b5487-b1ea-40b6-9a76-0415e304de49.png"}'>
+          <div class="user-status-popup">
+            <img src="https://storage.googleapis.com/workspace-0f70711f-8b4e-4d94-86f1-2a93ccde5887/image/ee4b5487-b1ea-40b6-9a76-0415e304de49.png" alt="Ana Gonzales" />
+            <span class="status-indicator-popup"></span>
+          </div>
+          <span class="name-popup">Ana</span>
+        </div>
+        <div class="active-user-popup" data-user='{"id":"carlos-reyes","name":"Carlos Reyes","avatar":"https://storage.googleapis.com/workspace-0f70711f-8b4e-4d94-86f1-2a93ccde5887/image/331059ac-f6bf-4684-b902-d37824bad8f5.png"}'>
+          <div class="user-status-popup">
+            <img src="https://storage.googleapis.com/workspace-0f70711f-8b4e-4d94-86f1-2a93ccde5887/image/331059ac-f6bf-4684-b902-d37824bad8f5.png" alt="Carlos Reyes" />
+            <span class="status-indicator-popup"></span>
+          </div>
+          <span class="name-popup">Carlos</span>
+        </div>
+        <div class="active-user-popup" data-user='{"id":"lorna-lim","name":"Lorna Lim","avatar":"https://storage.googleapis.com/workspace-0f70711f-8b4e-4d94-86f1-2a93ccde5887/image/2ab478de-5d6d-4dce-8c67-baf47fd7ad8e.png"}'>
+          <div class="user-status-popup">
+            <img src="https://storage.googleapis.com/workspace-0f70711f-8b4e-4d94-86f1-2a93ccde5887/image/2ab478de-5d6d-4dce-8c67-baf47fd7ad8e.png" alt="Lorna Lim" />
+            <span class="status-indicator-popup"></span>
+          </div>
+          <span class="name-popup">Lorna</span>
+        </div>
+      </div>
+    </div>
     <div class="conversations-title-popup">Conversations</div>
     <div class="chat-list-popup" id="chat-list-popup"></div>
   </div>
@@ -208,7 +282,50 @@ if($_SERVER['REQUEST_METHOD']==='POST'){
     ['filter-type','filter-status','date-from','date-to'].forEach(id=>{const el=document.getElementById(id); if(el) el.addEventListener('change',applyFilters);});
     (function(){const el=$('#listings-list');if(!el)return;const items=[{title:'Cattle manure',price:'₱50.00',weight:'500kg available',description:'Well-aged cattle manure, excellent for fertilizer'},{title:'compost',price:'₱75.00',weight:'300kg available',description:'Organic compost from mixed livestock waste'},]; el.innerHTML=items.map(s=>`<div class="listing-item"><div class="listing-info"><div class="listing-title">${s.title}</div><div class="listing-price">${s.price}</div><div class="listing-weight">${s.weight}</div><div class="listing-description">${s.description}</div></div></div>`).join('');})();
     applyFilters();
-    const notifI=$('#notification-icon'), notifC=$('#notification-container'), closeN=$('#close-notification'); if(notifI&&notifC){notifI.addEventListener('click',e=>{const r=notifI.getBoundingClientRect();notifC.style.top=(r.bottom+5)+'px';notifC.style.right=(window.innerWidth-r.right-190)+'px';notifC.classList.toggle('visible');e.stopPropagation();});document.addEventListener('click',e=>{if(notifC.classList.contains('visible')&&!notifC.contains(e.target)&&e.target!==notifI){notifC.classList.remove('visible');}}); if(closeN) closeN.addEventListener('click',()=>notifC.classList.remove('visible'));}
+    (function(){
+      const notifIcon = $('#notification-icon');
+      const notifCont = $('#notification-container');
+      const chatIcon = $('#chat-icon');
+      const chatCont = $('#header-chat-container');
+      if (!notifIcon || !notifCont || !chatIcon || !chatCont) return;
+
+      function positionNear(el, cont){
+        const r = el.getBoundingClientRect();
+        cont.style.top = (r.bottom + 5) + 'px';
+        cont.style.right = Math.max(10, window.innerWidth - r.right - 190) + 'px';
+      }
+      function hideAll(){ notifCont.classList.remove('visible'); chatCont.classList.remove('visible'); }
+
+      notifIcon.addEventListener('click', (e)=>{
+        positionNear(notifIcon, notifCont);
+        chatCont.classList.remove('visible');
+        notifCont.classList.toggle('visible');
+        e.stopPropagation();
+      });
+      chatIcon.addEventListener('click', (e)=>{
+        positionNear(chatIcon, chatCont);
+        notifCont.classList.remove('visible');
+        chatCont.classList.toggle('visible');
+        e.stopPropagation();
+      });
+      document.addEventListener('click', (e)=>{
+        if (notifCont.classList.contains('visible') && !notifCont.contains(e.target) && e.target !== notifIcon) notifCont.classList.remove('visible');
+        if (chatCont.classList.contains('visible') && !chatCont.contains(e.target) && e.target !== chatIcon) chatCont.classList.remove('visible');
+      });
+      window.addEventListener('resize', ()=>{
+        if (notifCont.classList.contains('visible')) positionNear(notifIcon, notifCont);
+        if (chatCont.classList.contains('visible')) positionNear(chatIcon, chatCont);
+      });
+      window.addEventListener('scroll', ()=>{
+        if (notifCont.classList.contains('visible')) positionNear(notifIcon, notifCont);
+        if (chatCont.classList.contains('visible')) positionNear(chatIcon, chatCont);
+      }, { passive: true });
+      const closeN = $('#close-notification');
+      const closeC = $('#close-chat');
+      closeN && closeN.addEventListener('click', ()=> notifCont.classList.remove('visible'));
+      closeC && closeC.addEventListener('click', ()=> chatCont.classList.remove('visible'));
+      document.addEventListener('keydown', (e)=>{ if (e.key === 'Escape') hideAll(); });
+    })();
   })();
   </script>
 </body>

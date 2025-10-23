@@ -181,10 +181,53 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     .notification { padding: 10px; margin: 10px 0; border-radius: 4px; }
     .notification.success { background-color: #d4edda; color: #155724; border: 1px solid #c3e6cb; }
     .notification.error { background-color: #f8d7da; color: #721c24; border: 1px solid #f5c6cb; }
-    .notification-container { position: fixed; width: 350px; background-color: white; border-radius: 8px; box-shadow: 0 5px 15px rgba(0,0,0,0.2); z-index: 100; display: none; transition: opacity 0.2s ease; }
+    /* ===== NOTIFICATION POPUP (match homemain) ===== */
+    .notification-container { position: fixed; width: 350px; background-color: #fff; border-radius: 8px; box-shadow: 0 5px 15px rgba(0,0,0,0.2); z-index: 100; display: none; transition: opacity 0.2s ease; }
     .notification-container.visible { display: block; }
-    .header-chat-container { position: fixed; width: 320px; background-color: white; border-radius: 12px; box-shadow: 0 8px 30px rgba(0,0,0,0.12); z-index: 100; display: none; transition: all 0.3s ease; max-height: 450px; border: 1px solid #e4e6ea; }
+    .notification-header { display: flex; justify-content: space-between; align-items: center; padding: 15px; border-bottom: 1px solid #eee; }
+    .notification-header h3 { margin: 0; font-size: 18px; color: #333; }
+    #close-notification { cursor: pointer; color: #999; }
+    #close-notification:hover { color: #333; }
+    .notification-list { max-height: 400px; overflow-y: auto; }
+    .notification-item { padding: 15px; border-bottom: 1px solid #eee; cursor: pointer; transition: background-color 0.2s; }
+    .notification-item:hover { background-color: #f5f5f5; }
+    .notification-content { display: flex; flex-direction: column; }
+    .notification-text { font-size: 14px; color: #333; margin-bottom: 5px; }
+    .notification-text strong { color: #047857; }
+    .notification-time { font-size: 12px; color: #999; }
+    .notification-list::-webkit-scrollbar { width: 6px; }
+    .notification-list::-webkit-scrollbar-track { background: #f1f1f1; }
+    .notification-list::-webkit-scrollbar-thumb { background: #c1c1c1; border-radius: 3px; }
+    .notification-list::-webkit-scrollbar-thumb:hover { background: #a1a1a1; }
+
+    /* ===== HEADER CHAT POPUP (match homemain) ===== */
+    .header-chat-container { position: fixed; width: 320px; background-color: #fff; border-radius: 12px; box-shadow: 0 8px 30px rgba(0,0,0,0.12); z-index: 100; display: none; transition: all 0.3s ease; max-height: 450px; border: 1px solid #e4e6ea; }
     .header-chat-container.visible { display: block; opacity: 1; transform: translateY(0); }
+    .chat-header-popup { display: flex; justify-content: space-between; align-items: center; padding: 16px 20px; border-bottom: 1px solid #e4e6ea; background-color: #f8f9fa; border-radius: 12px 12px 0 0; }
+    .chat-header-popup h3 { margin: 0; font-size: 18px; color: #1c1e21; font-weight: 700; }
+    #close-chat { cursor: pointer; color: #8a8d91; font-size: 20px; padding: 4px; border-radius: 50%; transition: all 0.2s ease; }
+    #close-chat:hover { color: #1c1e21; background-color: #e4e6ea; }
+    .active-users-popup { padding: 16px 20px 12px; border-bottom: 1px solid #e4e6ea; }
+    .active-title-popup { font-weight: 600; font-size: 14px; color: #047857; margin-bottom: 12px; }
+    .active-list-popup { display: flex; gap: 12px; overflow-x: auto; padding-bottom: 8px; }
+    .active-user-popup { display: flex; flex-direction: column; align-items: center; cursor: pointer; min-width: 60px; }
+    .user-status-popup { position: relative; display: inline-block; margin-bottom: 6px; }
+    .user-status-popup img { width: 40px; height: 40px; border-radius: 50%; object-fit: cover; border: 2px solid #e4e6ea; transition: transform 0.2s ease; }
+    .active-user-popup:hover .user-status-popup img { transform: scale(1.05); border-color: #047857; }
+    .status-indicator-popup { position: absolute; bottom: 2px; right: 2px; width: 12px; height: 12px; background-color: #42b883; border-radius: 50%; border: 2px solid white; }
+    .conversations-title-popup { font-weight: 600; font-size: 14px; color: #047857; padding: 12px 20px 8px; }
+    .chat-list-popup { max-height: 280px; overflow-y: auto; }
+    .chat-item-popup { display: flex; align-items: center; padding: 12px 20px; cursor: pointer; transition: background-color 0.2s; position: relative; }
+    .chat-item-popup:hover { background-color: #f2f3f5; }
+    .chat-item-popup img { width: 44px; height: 44px; border-radius: 50%; margin-right: 12px; object-fit: cover; }
+    .chat-info-popup { flex: 1; min-width: 0; }
+    .chat-name-popup { font-weight: 600; font-size: 14px; margin-bottom: 2px; color: #1c1e21; }
+    .chat-preview-popup { font-size: 13px; color: #65676b; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+    .chat-time-popup { font-size: 12px; color: #8a8d91; position: absolute; top: 12px; right: 20px; }
+    .chat-list-popup::-webkit-scrollbar { width: 6px; }
+    .chat-list-popup::-webkit-scrollbar-track { background: transparent; }
+    .chat-list-popup::-webkit-scrollbar-thumb { background: #bcc0c4; border-radius: 3px; }
+    .chat-list-popup::-webkit-scrollbar-thumb:hover { background: #8a8d91; }
     @media (max-width: 992px) { .profile-container { transform: translateX(-100%); transition: transform 0.3s ease; width: var(--sidebar-expanded); } .profile-container.active { transform: translateX(0); } .main-content { margin-left: 0; margin-right: 0; } }
   </style>
 </head>
@@ -214,10 +257,10 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
       <div class="profile-name">Juan Dela Cruz</div>
     </div>
     <ul class="profile-menu">
-      <li data-href="request.html"><i class="material-symbols-outlined">request_quote</i><span>Request</span></li>
+      <li data-href="request.php"><i class="material-symbols-outlined">request_quote</i><span>Request</span></li>
       <li data-href="historyandtransaction.php"><i class="material-symbols-outlined">receipt_long</i><span>History and Transactions</span></li>
-      <li data-href="settings.html"><i class="material-symbols-outlined">privacy_tip</i><span>Settings and Privacy</span></li>
-      <li data-href="report.html"><i class="material-symbols-outlined">analytics</i><span>Reports</span></li>
+      <li data-href="settings.php"><i class="material-symbols-outlined">privacy_tip</i><span>Settings and Privacy</span></li>
+      <li data-href="report.php"><i class="material-symbols-outlined">analytics</i><span>Reports</span></li>
     </ul>
     <button class="logout-btn" id="logout-btn"><i class="material-symbols-outlined">logout</i><span>Logout</span></button>
   </div>
@@ -339,6 +382,41 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     <div class="chat-list-popup" id="chat-list-popup"></div>
   </div>
 
+  <!-- ===== NOTIFICATION POPUP ===== -->
+  <div class="notification-container" id="notification-container" style="position:fixed; top:0; right:0">
+    <div class="notification-header">
+      <h3>Notifications</h3>
+      <i class="material-symbols-outlined" id="close-notification">close</i>
+    </div>
+    <div class="notification-list">
+      <div class="notification-item">
+        <div class="notification-content">
+          <div class="notification-text"><strong>Maria Santos</strong> commented on your listing.</div>
+          <div class="notification-time">2 hrs ago</div>
+        </div>
+      </div>
+      <div class="notification-item">
+        <div class="notification-content">
+          <div class="notification-text"><strong>AgriTech PH</strong> shared a new article.</div>
+          <div class="notification-time">1 day ago</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ===== CHAT POPUP ===== -->
+  <div class="header-chat-container" id="header-chat-container" style="position:fixed; top:0; right:0">
+    <div class="chat-header-popup">
+      <h3>Chats</h3>
+      <i class="material-symbols-outlined" id="close-chat">close</i>
+    </div>
+    <div class="active-users-popup">
+      <div class="active-title-popup">Active Now</div>
+    </div>
+    <div class="conversations-title-popup">Conversations</div>
+    <div class="chat-list-popup" id="chat-list-popup"></div>
+  </div>
+
   <div id="floating-chats-root"></div>
 
   <script>
@@ -356,46 +434,68 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     function formatDate(dateString){ if(!dateString) return 'No date provided'; try{ return new Date(dateString).toLocaleDateString(undefined,{year:'numeric',month:'long',day:'numeric'});}catch(e){ return dateString; } }
 
     // ===== NAV =====
-    $('#profile-link').addEventListener('click', () => { window.location.href = 'profile.html'; });
+    $('#profile-link').addEventListener('click', () => { window.location.href = 'profile.php'; });
     $all('.profile-menu li').forEach(li => li.addEventListener('click', () => { const href = li.getAttribute('data-href'); if (href) window.location.href = href; }));
     $('#logout-btn').addEventListener('click', () => { window.location.href = 'homemain.php'; });
 
-    // ===== HEADER POPUPS =====
-    const notificationIcon = $('#notification-icon');
-    const notificationContainer = $('#notification-container');
-    const chatIcon = $('#chat-icon');
-    const chatContainer = $('#header-chat-container');
+    // ===== HEADER POPUPS (standardized) =====
+    (function(){
+      const notifIcon = $('#notification-icon');
+      const notifCont = $('#notification-container');
+      const chatIcon = $('#chat-icon');
+      const chatCont = $('#header-chat-container');
+      if (!notifIcon || !notifCont || !chatIcon || !chatCont) return;
 
-    notificationIcon.addEventListener('click', (e) => {
-      const rect = notificationIcon.getBoundingClientRect();
-      state.notificationStyle = { top: rect.bottom + 5, right: window.innerWidth - rect.right - 190 };
-      notificationContainer.style.top = state.notificationStyle.top + 'px';
-      notificationContainer.style.right = state.notificationStyle.right + 'px';
-      chatContainer.classList.remove('visible');
-      notificationContainer.classList.toggle('visible');
-      e.stopPropagation();
-    });
-
-    chatIcon.addEventListener('click', (e) => {
-      const rect = chatIcon.getBoundingClientRect();
-      state.chatStyle = { top: rect.bottom + 5, right: window.innerWidth - rect.right - 190 };
-      chatContainer.style.top = state.chatStyle.top + 'px';
-      chatContainer.style.right = state.chatStyle.right + 'px';
-      notificationContainer.classList.remove('visible');
-      chatContainer.classList.toggle('visible');
-      e.stopPropagation();
-    });
-
-    document.addEventListener('click', (e) => {
-      if (notificationContainer.classList.contains('visible') && !notificationContainer.contains(e.target) && e.target !== notificationIcon) {
-        notificationContainer.classList.remove('visible');
+      function positionNear(el, cont){
+        const r = el.getBoundingClientRect();
+        const top = r.bottom + 5;
+        const right = Math.max(10, window.innerWidth - r.right - 190);
+        cont.style.top = top + 'px';
+        cont.style.right = right + 'px';
       }
-      if (chatContainer.classList.contains('visible') && !chatContainer.contains(e.target) && e.target !== chatIcon) {
-        chatContainer.classList.remove('visible');
+
+      function hideAll(){
+        notifCont.classList.remove('visible');
+        chatCont.classList.remove('visible');
       }
-    });
-    $('#close-notification').addEventListener('click', () => notificationContainer.classList.remove('visible'));
-    $('#close-chat').addEventListener('click', () => chatContainer.classList.remove('visible'));
+
+      notifIcon.addEventListener('click', (e)=>{
+        positionNear(notifIcon, notifCont);
+        chatCont.classList.remove('visible');
+        notifCont.classList.toggle('visible');
+        e.stopPropagation();
+      });
+
+      chatIcon.addEventListener('click', (e)=>{
+        positionNear(chatIcon, chatCont);
+        notifCont.classList.remove('visible');
+        chatCont.classList.toggle('visible');
+        e.stopPropagation();
+      });
+
+      document.addEventListener('click', (e)=>{
+        if (notifCont.classList.contains('visible') && !notifCont.contains(e.target) && e.target !== notifIcon) notifCont.classList.remove('visible');
+        if (chatCont.classList.contains('visible') && !chatCont.contains(e.target) && e.target !== chatIcon) chatCont.classList.remove('visible');
+      });
+
+      window.addEventListener('resize', ()=>{
+        if (notifCont.classList.contains('visible')) positionNear(notifIcon, notifCont);
+        if (chatCont.classList.contains('visible')) positionNear(chatIcon, chatCont);
+      });
+      window.addEventListener('scroll', ()=>{
+        if (notifCont.classList.contains('visible')) positionNear(notifIcon, notifCont);
+        if (chatCont.classList.contains('visible')) positionNear(chatIcon, chatCont);
+      }, { passive: true });
+
+      const closeN = $('#close-notification');
+      const closeC = $('#close-chat');
+      closeN && closeN.addEventListener('click', ()=> notifCont.classList.remove('visible'));
+      closeC && closeC.addEventListener('click', ()=> chatCont.classList.remove('visible'));
+
+      document.addEventListener('keydown', (e)=>{
+        if (e.key === 'Escape') hideAll();
+      });
+    })();
 
     // ===== LISTINGS RENDER =====
     function renderListings(){
