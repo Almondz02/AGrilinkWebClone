@@ -270,6 +270,15 @@ if($_SERVER['REQUEST_METHOD']==='POST'){
   <script>
   (function(){
     const $=(s,r=document)=>r.querySelector(s); const $$=(s,r=document)=>Array.from(r.querySelectorAll(s));
+    // Nav handlers (match homemain.php)
+    const profileLink = $('#profile-link');
+    profileLink && profileLink.addEventListener('click', () => { window.location.href = 'profile.php'; });
+    $$('.profile-menu li').forEach(li => li.addEventListener('click', () => {
+      const href = li.getAttribute('data-href');
+      if (href) window.location.href = href;
+    }));
+    const logoutBtn = $('#logout-btn');
+    logoutBtn && logoutBtn.addEventListener('click', () => { window.location.href = 'homemain.php'; });
     const transactions=[
       {id:1,type:'sale',status:'completed',date:'2024-10-01',title:'Sold 50kg Manure',amount:2500},
       {id:2,type:'purchase',status:'pending',date:'2024-10-03',title:'Bought 30kg Compost',amount:1800},
@@ -280,7 +289,25 @@ if($_SERVER['REQUEST_METHOD']==='POST'){
     function renderTransactions(list){const root=$('#transactions-container');const empty=$('#transactions-empty');if(!root||!empty)return; if(list.length===0){root.innerHTML='';empty.style.display='block';return;} empty.style.display='none'; root.innerHTML=list.map(t=>`<div class="transaction-item" style="display:flex;justify-content:space-between;padding:10px 0;border-bottom:1px solid #eef2f7;"><div><div style="font-weight:700;">${t.title}</div><div style="font-size:12px;color:#64748b;">${t.date} • ${t.type} • ${t.status}</div></div><div style="font-weight:700;color:#047857;">${t.amount?peso(t.amount):''}</div></div>`).join('');}
     function applyFilters(){const type=$('#filter-type')?.value||'all';const status=$('#filter-status')?.value||'all';const from=$('#date-from')?.value;const to=$('#date-to')?.value;let list=[...transactions];const map={sales:'sale',purchases:'purchase',exchanges:'exchange',deliveries:'delivery'}; if(type!=='all'){list=list.filter(t=>map[type]?t.type===map[type]:true);} if(status!=='all'){list=list.filter(t=>t.status===status);} if(from){list=list.filter(t=>t.date>=from);} if(to){list=list.filter(t=>t.date<=to);} renderStats(list);renderTransactions(list);}    
     ['filter-type','filter-status','date-from','date-to'].forEach(id=>{const el=document.getElementById(id); if(el) el.addEventListener('change',applyFilters);});
-    (function(){const el=$('#listings-list');if(!el)return;const items=[{title:'Cattle manure',price:'₱50.00',weight:'500kg available',description:'Well-aged cattle manure, excellent for fertilizer'},{title:'compost',price:'₱75.00',weight:'300kg available',description:'Organic compost from mixed livestock waste'},]; el.innerHTML=items.map(s=>`<div class="listing-item"><div class="listing-info"><div class="listing-title">${s.title}</div><div class="listing-price">${s.price}</div><div class="listing-weight">${s.weight}</div><div class="listing-description">${s.description}</div></div></div>`).join('');})();
+    (function(){
+      const el=$('#listings-list');
+      if(!el)return;
+      const items=[
+        {title:'Cattle manure',price:'₱50.00',weight:'500kg available',description:'Well-aged cattle manure, excellent for fertilizer', photo:null},
+        {title:'compost',price:'₱75.00',weight:'300kg available',description:'Organic compost from mixed livestock waste', photo:null},
+      ];
+      el.innerHTML = items.map(s=>`
+        <div class="listing-item">
+          ${s.photo ? `<img class="listing-image" src="${s.photo}" alt="${s.title}" />` : ''}
+          <div class="listing-info">
+            <div class="listing-title">${s.title}</div>
+            <div class="listing-price">${s.price}</div>
+            <div class="listing-weight">${s.weight}</div>
+            <div class="listing-description">${s.description}</div>
+          </div>
+        </div>
+      `).join('');
+    })();
     applyFilters();
     (function(){
       const notifIcon = $('#notification-icon');
