@@ -80,25 +80,18 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     .nav-icons { display:flex; gap:20px; }
     .nav-icons .icon { width:40px; height:40px; border-radius:50%; background:rgba(255,255,255,0.2); display:flex; justify-content:center; align-items:center; color:#fff; cursor:pointer; text-decoration:none; }
 
-    .profile-container { position:fixed; left:0; top:60px; bottom:0; width:var(--sidebar-collapsed); background:#fff; padding:20px; z-index:90; box-shadow:1px 0 5px rgba(0,0,0,0.1); overflow:hidden; transition: width .3s ease; display:flex; flex-direction:column; }
-    .profile-container:hover { width: var(--sidebar-expanded); }
-    .profile-container:hover { overflow-y:auto; }
+    .profile-container { position:fixed; left:0; top:60px; bottom:0; width:var(--sidebar-expanded); background:#fff; padding:20px; z-index:90; box-shadow:1px 0 5px rgba(0,0,0,0.1); overflow-y:auto; transition: width .3s ease; display:flex; flex-direction:column; }
     .profile-header { display:flex; align-items:center; margin-bottom:20px; }
     .profile-pic { width:50px; height:50px; border-radius:50%; object-fit:cover; margin-right:10px; cursor:pointer; }
     .profile-name { font-weight:600; }
     .profile-menu { list-style:none; }
     .profile-menu li { padding:10px; margin:5px 0; border-radius:8px; display:flex; align-items:center; cursor:pointer; }
     .profile-menu li:hover { background:#f0f2f5; }
-    .profile-menu li i { margin-right:0; color:#FF9100; }
-    .profile-container:hover .profile-menu li i { margin-right:10px; }
-    .logout-btn { margin-top:auto; margin-bottom:16px; padding:10px 15px; background:#ef4444; color:#fff; border:none; border-radius:8px; display:flex; align-items:center; justify-content:flex-start; gap:8px; cursor:pointer; width:100%; }
-    .logout-btn i { margin-right:0; line-height:1; display:inline-flex; align-items:center; }
-    .logout-btn span { line-height:1; display:inline-flex; align-items:center; }
-    .profile-container .profile-name, .profile-container .profile-menu li span, .profile-container .logout-btn span { display: none; }
-    .profile-container:hover .profile-name, .profile-container:hover .profile-menu li span, .profile-container:hover .logout-btn span { display: inline; }
+    .profile-menu li i { margin-right:10px; color:#FF9100; }
+    .bottom-menu { margin-top:auto; }
+    .profile-container .profile-name, .profile-container .profile-menu li span, .profile-container .logout-btn span { display: inline; }
 
-    .main-content { margin-left: calc(var(--sidebar-collapsed) + 20px); padding: 20px 24px 24px; transition: margin-left .3s ease; }
-    .profile-container:hover ~ .main-content { margin-left: calc(var(--sidebar-expanded) + 20px); }
+    .main-content { margin-left: calc(var(--sidebar-expanded) + 20px); padding: 20px 24px 24px; transition: margin-left .3s ease; }
     .report-container { max-width: 900px; margin: 0 auto; }
     .report-header { background:#fff; border-radius:12px; box-shadow:var(--shadow-md); padding:20px 24px; margin-bottom:16px; }
     .report-header h1 { margin:0; color:#0f172a; }
@@ -153,10 +146,13 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     <ul class="profile-menu">
       <li data-href="request.php"><i class="material-symbols-outlined">request_quote</i><span>Request</span></li>
       <li data-href="historyandtransaction.php"><i class="material-symbols-outlined">receipt_long</i><span>History and Transactions</span></li>
-      <li data-href="settings.php"><i class="material-symbols-outlined">privacy_tip</i><span>Settings and Privacy</span></li>
-      <li data-href="report.php"><i class="material-symbols-outlined">analytics</i><span>Reports</span></li>
     </ul>
-    <button class="logout-btn" id="logout-btn"><i class="material-symbols-outlined">logout</i><span>Logout</span></button>
+    <ul class="profile-menu bottom-menu">
+      <li data-href="#change-role"><i class="material-symbols-outlined">manage_accounts</i><span>Change Role</span></li>
+      <li data-href="settings.php"><i class="material-symbols-outlined">settings</i><span>Settings</span></li>
+      <li data-href="report.php"><i class="material-symbols-outlined">analytics</i><span>My Report</span></li>
+      <li data-href="#switch-appearance"><i class="material-symbols-outlined">dark_mode</i><span>Switch Appearance</span></li>
+    </ul>
   </div>
 
   <!-- Main content -->

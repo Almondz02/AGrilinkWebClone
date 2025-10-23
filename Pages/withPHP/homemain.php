@@ -99,26 +99,30 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     body { margin: 0; padding: 60px 0 0 0; background: var(--bg); color: var(--text); line-height: 1.6; overflow-x: hidden; min-height: 100vh; }
 
     /* ===== PROFILE CONTAINER SIDEBAR ===== */
-    .profile-container { position: fixed; left: 0; top: 60px; bottom: 0; width: var(--sidebar-collapsed); background-color: var(--surface); padding: 20px; z-index: 90; box-shadow: var(--shadow-sm); overflow: hidden; transition: width 0.3s ease; display:flex; flex-direction:column; }
-    .profile-container:hover { width: var(--sidebar-expanded); }
-    .profile-container:hover { overflow-y: auto; }
+    .profile-container { position: fixed; left: 0; top: 60px; bottom: 0; width: var(--sidebar-expanded); background-color: var(--surface); padding: 20px; z-index: 90; box-shadow: var(--shadow-sm); overflow-y: auto; transition: width 0.3s ease; display:flex; flex-direction:column; }
     .profile-header { display: flex; align-items: center; margin-bottom: 20px; }
     .profile-pic { width: 50px; height: 50px; border-radius: 50%; object-fit: cover; margin-right: 10px; cursor: pointer; }
     .profile-name { font-weight: 600; }
     .profile-container .profile-name,
     .profile-container .profile-menu li span,
-    .profile-container .logout-btn span { display: none; }
-    .profile-container:hover .profile-name,
-    .profile-container:hover .profile-menu li span,
-    .profile-container:hover .logout-btn span { display: inline; }
+    .profile-container .logout-btn span { display: inline; }
     .profile-menu { list-style: none; }
     .profile-menu li { padding: 10px; margin: 5px 0; border-radius: var(--radius-sm); display: flex; align-items: center; cursor: pointer; }
     .profile-menu li:hover { background-color: var(--surface-hover); }
-    .profile-menu li i { margin-right: 0; color: #FF9100; }
-    .profile-container:hover .profile-menu li i { margin-right: 10px; }
-    .logout-btn { margin-top: auto; margin-bottom: 16px; padding: 10px 15px; background-color: #ef4444; color: var(--surface); border: none; border-radius: var(--radius-sm); display: flex; align-items: center; justify-content: flex-start; gap: 8px; cursor: pointer; width: 100%; }
-    .logout-btn i { margin-right: 0; line-height: 1; display: inline-flex; align-items: center; }
-    .logout-btn span { line-height: 1; display: inline-flex; align-items: center; }
+    .profile-menu li i { margin-right: 10px; color: #FF9100; }
+    .bottom-menu { margin-top: auto; }
+
+    /* ===== PROFILE BOTTOM MENU (popover) ===== */
+    .profile-menu-trigger { margin-top: auto; display: inline-flex; align-items: center; gap: 8px; border: 1px solid var(--border); background: #fff; color: #111827; padding: 10px 14px; border-radius: 10px; cursor: pointer; box-shadow: var(--shadow-sm); }
+    .profile-menu-trigger .material-symbols-outlined { color: #0f172a; }
+    .profile-menu-popover { position: absolute; left: 16px; bottom: 70px; width: 260px; background: #fff; border-radius: 12px; box-shadow: 0 10px 25px rgba(0,0,0,0.15); border: 1px solid #e5e7eb; padding: 10px 0; display: none; z-index: 120; }
+    .profile-menu-popover.visible { display: block; }
+    .profile-menu-popover .menu-item { display: flex; align-items: center; gap: 12px; padding: 10px 16px; color: #0f172a; cursor: pointer; }
+    .profile-menu-popover .menu-item:hover { background: #f8fafc; }
+    .profile-menu-popover .menu-item .material-symbols-outlined { color: #475569; }
+    .profile-menu-popover .menu-divider { height: 1px; background: #f1f5f9; margin: 6px 0; }
+    .profile-menu-popover .logout-action { margin: 8px 12px 4px; padding: 10px 14px; background: #ef4444; color: #fff; border-radius: 10px; display: flex; align-items: center; gap: 10px; font-weight: 600; justify-content: center; }
+    .profile-menu-popover .logout-action .material-symbols-outlined { color: #fff; }
 
     /* ===== HEADER CONTAINER STYLES ===== */
     .header-container { position: fixed; top: 0; left: 0; right: 0; height: 60px; background-color: #FF9100; display: flex; align-items: center; padding: 0 20px; z-index: 100; box-shadow: 0 2px 4px rgba(0,0,0,0.1); }
@@ -143,8 +147,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
     /* ===== MAIN CONTAINER AND CONTENT ===== */
     .main-container { display: flex; margin-top: 0px; padding-top: 0px; min-height: 100vh; }
-    .main-content { margin: 0px 320px 20px calc(var(--sidebar-collapsed) + 20px); padding-top: 20px; flex: 1; display: flex; flex-direction: column; gap: 20px; transition: margin-left 0.3s ease; }
-    .profile-container:hover ~ .main-container .main-content { margin-left: calc(var(--sidebar-expanded) + 20px); }
+    .main-content { margin: 0px 320px 20px calc(var(--sidebar-expanded) + 20px); padding-top: 20px; flex: 1; display: flex; flex-direction: column; gap: 20px; transition: margin-left 0.3s ease; }
 
     /* ===== POST CREATION BOX STYLES ===== */
     .post-box { background-color: white; border-radius: 8px; padding: 20px; box-shadow: 0 1px 2px rgba(0,0,0,0.1); }
@@ -364,10 +367,22 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     <ul class="profile-menu">
       <li data-href="request.php"><i class="material-symbols-outlined">request_quote</i><span>Request</span></li>
       <li data-href="historyandtransaction.php"><i class="material-symbols-outlined">receipt_long</i><span>History and Transactions</span></li>
-      <li data-href="settings.php"><i class="material-symbols-outlined">privacy_tip</i><span>Settings and Privacy</span></li>
-      <li data-href="report.php"><i class="material-symbols-outlined">analytics</i><span>Reports</span></li>
     </ul>
-    <button class="logout-btn" id="logout-btn"><i class="material-symbols-outlined">logout</i><span>Logout</span></button>
+
+    <!-- Bottom popup menu trigger -->
+    <button class="profile-menu-trigger" id="profile-menu-trigger" type="button">
+      <span class="material-symbols-outlined">menu</span>
+      <span>Menu</span>
+    </button>
+    <!-- Popup content -->
+    <div class="profile-menu-popover" id="profile-menu-popover">
+      <div class="menu-item" data-href="#change-role"><span class="material-symbols-outlined">manage_accounts</span><span>Change Role</span></div>
+      <div class="menu-item" data-href="settings.php"><span class="material-symbols-outlined">settings</span><span>Settings</span></div>
+      <div class="menu-item" data-href="report.php"><span class="material-symbols-outlined">analytics</span><span>My Report</span></div>
+      <div class="menu-item" data-href="#switch-appearance"><span class="material-symbols-outlined">dark_mode</span><span>Switch Appearance</span></div>
+      <div class="menu-divider"></div>
+      <div class="logout-action" id="logout-action"><span class="material-symbols-outlined">logout</span><span>Logout</span></div>
+    </div>
   </div>
 
   <!-- ===== MAIN CONTAINER AND CONTENT AREA ===== -->
@@ -581,7 +596,22 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     // ===== NAVIGATION BINDINGS =====
     $('#profile-link').addEventListener('click', () => { window.location.href = 'profile.php'; });
     $all('.profile-menu li').forEach(li => li.addEventListener('click', () => { const href = li.getAttribute('data-href'); if (href) window.location.href = href; }));
-    $('#logout-btn').addEventListener('click', () => { window.location.href = 'homemain.php'; });
+    $('#logout-btn')?.addEventListener('click', () => { window.location.href = 'homemain.php'; });
+
+    // Bottom popup menu (inside profile sidebar)
+    (function(){
+      const trigger = document.getElementById('profile-menu-trigger');
+      const pop = document.getElementById('profile-menu-popover');
+      const logout = document.getElementById('logout-action');
+      if (!trigger || !pop) return;
+      function toggle(){ pop.classList.toggle('visible'); }
+      function hide(){ pop.classList.remove('visible'); }
+      trigger.addEventListener('click', (e)=>{ e.stopPropagation(); toggle(); });
+      document.addEventListener('click', (e)=>{ if (pop.classList.contains('visible') && !pop.contains(e.target) && e.target !== trigger) hide(); });
+      document.addEventListener('keydown', (e)=>{ if (e.key === 'Escape') hide(); });
+      pop.querySelectorAll('.menu-item').forEach(it=> it.addEventListener('click', ()=>{ const href=it.getAttribute('data-href'); if(href && href.startsWith('#')) { hide(); return; } if(href){ window.location.href = href; } }));
+      logout && logout.addEventListener('click', ()=>{ window.location.href = 'homemain.php'; });
+    })();
 
     // ===== NOTIFICATION & CHAT HEADER ICONS =====
     (function(){

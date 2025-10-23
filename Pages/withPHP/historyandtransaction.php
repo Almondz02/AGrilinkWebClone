@@ -35,21 +35,21 @@ if($_SERVER['REQUEST_METHOD']==='POST'){
     *{margin:0;padding:0;box-sizing:border-box;font-family:'Inter','Segoe UI',system-ui,-apple-system,sans-serif}
     :root{--brand:#047857;--brand-light:#059669;--brand-dark:#065f46;--bg:linear-gradient(135deg,#f0f9ff 0%,#e0f2fe 50%,#f0f2f5 100%);--surface:#fff;--surface-hover:#f1f5f9;--text:#0f172a;--shadow-sm:0 1px 2px rgba(0,0,0,.05);--radius-sm:8px;--sidebar-expanded:280px;--sidebar-collapsed:80px}
     body{margin:0;padding:60px 0 0;background:var(--bg);color:var(--text);line-height:1.6;overflow-x:hidden;min-height:100vh}
-    .profile-container{position:fixed;left:0;top:60px;bottom:0;width:var(--sidebar-collapsed);background:var(--surface);padding:20px;z-index:90;box-shadow:var(--shadow-sm);overflow:hidden;transition:width .3s;display:flex;flex-direction:column}
+    .profile-container{position:fixed;left:0;top:60px;bottom:0;width:var(--sidebar-expanded);background:var(--surface);padding:20px;z-index:90;box-shadow:var(--shadow-sm);overflow-y:auto;transition:width .3s;display:flex;flex-direction:column}
     .profile-container:hover{width:var(--sidebar-expanded)}.profile-container:hover{overflow-y:auto}
     .profile-header{display:flex;align-items:center;margin-bottom:20px}.profile-pic{width:50px;height:50px;border-radius:50%;object-fit:cover;margin-right:10px;cursor:pointer}.profile-name{font-weight:600}
-    .profile-container .profile-name,.profile-container .profile-menu li span,.profile-container .logout-btn span{display:none}
+    .profile-container .profile-name,.profile-container .profile-menu li span,.profile-container .logout-btn span{display:inline}
     .profile-container:hover .profile-name,.profile-container:hover .profile-menu li span,.profile-container:hover .logout-btn span{display:inline}
     .profile-menu{list-style:none}.profile-menu li{padding:10px;margin:5px 0;border-radius:var(--radius-sm);display:flex;align-items:center;cursor:pointer}
-    .profile-menu li:hover{background:var(--surface-hover)}.profile-menu li i{margin-right:0;color:#FF9100}.profile-container:hover .profile-menu li i{margin-right:10px}
-    .logout-btn{margin-top:auto;margin-bottom:16px;padding:10px 15px;background:#ef4444;color:#fff;border:none;border-radius:var(--radius-sm);display:flex;align-items:center;gap:8px;cursor:pointer;width:100%}
+    .profile-menu li:hover{background:var(--surface-hover)}.profile-menu li i{margin-right:10px;color:#FF9100}
+    .bottom-menu{margin-top:auto}
     .header-container{position:fixed;top:0;left:0;right:0;height:60px;background:#FF9100;display:flex;align-items:center;padding:0 20px;z-index:100;box-shadow:0 2px 4px rgba(0,0,0,.1)}
     .header-left{flex:1;display:flex;align-items:center;gap:20px}.header-center{flex:2;display:flex;justify-content:center;align-items:center}.header-right{flex:1;display:flex;justify-content:flex-end;align-items:center}
     .logo{font-size:24px;font-weight:bold;color:white;text-decoration:none}
     .search-container{display:flex;align-items:center;background:rgba(255,255,255,.2);border-radius:12px;padding:8px 16px;gap:12px}
     .search-container input{background:transparent;border:none;color:white;outline:none;width:250px;font-size:14px}
     .nav-icons{display:flex;gap:20px}.nav-icons .icon{width:40px;height:40px;border-radius:50%;background:rgba(255,255,255,.2);display:flex;justify-content:center;align-items:center;color:white;cursor:pointer;text-decoration:none}
-    .main-container{display:flex;min-height:100vh}.main-content{margin:0 320px 20px calc(var(--sidebar-collapsed) + 20px);padding-top:20px;flex:1;display:flex;flex-direction:column;gap:20px}
+    .main-container{display:flex;min-height:100vh}.main-content{margin:0 320px 20px calc(var(--sidebar-expanded) + 20px);padding-top:20px;flex:1;display:flex;flex-direction:column;gap:20px}
     .notification-container{position:fixed;width:350px;background:#fff;border-radius:8px;box-shadow:0 5px 15px rgba(0,0,0,.2);z-index:100;display:none;transition:opacity .2s ease}
     .notification-container.visible{display:block}
     .notification-header{display:flex;justify-content:space-between;align-items:center;padding:15px;border-bottom:1px solid #eee}
@@ -142,10 +142,13 @@ if($_SERVER['REQUEST_METHOD']==='POST'){
     <ul class="profile-menu">
       <li data-href="request.php"><i class="material-symbols-outlined">request_quote</i><span>Request</span></li>
       <li data-href="historyandtransaction.php"><i class="material-symbols-outlined">receipt_long</i><span>History and Transactions</span></li>
-      <li data-href="settings.php"><i class="material-symbols-outlined">privacy_tip</i><span>Settings and Privacy</span></li>
-      <li data-href="report.php"><i class="material-symbols-outlined">analytics</i><span>Reports</span></li>
     </ul>
-    <button class="logout-btn" id="logout-btn"><i class="material-symbols-outlined">logout</i><span>Logout</span></button>
+    <ul class="profile-menu bottom-menu">
+      <li data-href="#change-role"><i class="material-symbols-outlined">manage_accounts</i><span>Change Role</span></li>
+      <li data-href="settings.php"><i class="material-symbols-outlined">settings</i><span>Settings</span></li>
+      <li data-href="report.php"><i class="material-symbols-outlined">analytics</i><span>My Report</span></li>
+      <li data-href="#switch-appearance"><i class="material-symbols-outlined">dark_mode</i><span>Switch Appearance</span></li>
+    </ul>
   </div>
 
   <div class="main-container">
