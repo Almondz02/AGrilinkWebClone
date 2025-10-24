@@ -35,8 +35,7 @@ if($_SERVER['REQUEST_METHOD']==='POST'){
     *{margin:0;padding:0;box-sizing:border-box;font-family:'Inter','Segoe UI',system-ui,-apple-system,sans-serif}
     :root{--brand:#047857;--brand-light:#059669;--brand-dark:#065f46;--bg:linear-gradient(135deg,#f0f9ff 0%,#e0f2fe 50%,#f0f2f5 100%);--surface:#fff;--surface-hover:#f1f5f9;--text:#0f172a;--shadow-sm:0 1px 2px rgba(0,0,0,.05);--radius-sm:8px;--sidebar-expanded:280px;--sidebar-collapsed:80px}
     body{margin:0;padding:0;background:var(--bg);color:var(--text);line-height:1.6;overflow-x:hidden;min-height:100vh}
-    .profile-container{position:fixed;left:0;top:0;bottom:0;width:var(--sidebar-expanded);background:var(--surface);padding:20px;z-index:90;box-shadow:var(--shadow-sm);overflow-y:auto;transition:width .3s;display:flex;flex-direction:column}
-    .profile-container:hover{width:var(--sidebar-expanded)}.profile-container:hover{overflow-y:auto}
+    .profile-container{position:fixed;left:0;top:0;bottom:0;width:var(--sidebar-expanded);background:var(--surface);padding:20px;z-index:90;box-shadow:var(--shadow-sm);overflow-y:auto;display:flex;flex-direction:column}
     .profile-header{display:flex;align-items:center;margin-bottom:20px}.profile-pic{width:50px;height:50px;border-radius:50%;object-fit:cover;margin-right:10px;cursor:pointer}.profile-name{font-weight:600}
     .profile-container .profile-name,.profile-container .profile-menu li span,.profile-container .logout-btn span{display:inline}
     .profile-container:hover .profile-name,.profile-container:hover .profile-menu li span,.profile-container:hover .logout-btn span{display:inline}
