@@ -96,10 +96,10 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
       --sidebar-expanded: 280px;
       --sidebar-collapsed: 80px;
     }
-    body { margin: 0; padding: 60px 0 0 0; background: var(--bg); color: var(--text); line-height: 1.6; overflow-x: hidden; min-height: 100vh; }
+    body { margin: 0; padding: 0; background: var(--bg); color: var(--text); line-height: 1.6; overflow-x: hidden; min-height: 100vh; }
 
     /* ===== PROFILE CONTAINER SIDEBAR ===== */
-    .profile-container { position: fixed; left: 0; top: 60px; bottom: 0; width: var(--sidebar-expanded); background-color: var(--surface); padding: 20px; z-index: 90; box-shadow: var(--shadow-sm); overflow-y: auto; transition: width 0.3s ease; display:flex; flex-direction:column; }
+    .profile-container { position: fixed; left: 0; top: 0; bottom: 0; width: var(--sidebar-expanded); background-color: var(--surface); padding: 20px; z-index: 90; box-shadow: var(--shadow-sm); overflow-y: auto; transition: width 0.3s ease; display:flex; flex-direction:column; }
     .profile-header { display: flex; align-items: center; margin-bottom: 20px; }
     .profile-pic { width: 50px; height: 50px; border-radius: 50%; object-fit: cover; margin-right: 10px; cursor: pointer; }
     .profile-name { font-weight: 600; }
@@ -107,10 +107,17 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     .profile-container .profile-menu li span,
     .profile-container .logout-btn span { display: inline; }
     .profile-menu { list-style: none; }
-    .profile-menu li { padding: 10px; margin: 5px 0; border-radius: var(--radius-sm); display: flex; align-items: center; cursor: pointer; }
+    .profile-menu li { padding: 14px 16px; margin: 8px 0; border-radius: var(--radius-sm); display: flex; align-items: center; cursor: pointer; font-size: 18px; }
     .profile-menu li:hover { background-color: var(--surface-hover); }
-    .profile-menu li i { margin-right: 10px; color: #FF9100; }
+    .profile-menu li i { margin-right: 14px; color: #FF9100; font-size: 26px; }
     .bottom-menu { margin-top: auto; }
+    .sidebar-brand { font-weight: 800; color: #FF9100; margin: 0 0 16px; font-size: 28px; background: transparent; padding: 0; border-radius: 0; display: block; text-align: center; }
+
+    /* Sidebar search bar */
+    .sidebar-search { display: flex; align-items: center; gap: 10px; background: #f1f5f9; border: 1px solid var(--border); border-radius: 12px; padding: 10px 12px; margin: 6px 0 10px; }
+    .sidebar-search .material-symbols-outlined { color: #64748b; font-size: 22px; }
+    .sidebar-search input { flex: 1; border: none; outline: none; background: transparent; font-size: 16px; color: #0f172a; }
+    .sidebar-search input::placeholder { color: #94a3b8; }
 
     /* ===== PROFILE BOTTOM MENU (popover) ===== */
     .profile-menu-trigger { margin-top: auto; display: inline-flex; align-items: center; gap: 8px; border: 1px solid var(--border); background: #fff; color: #111827; padding: 10px 14px; border-radius: 10px; cursor: pointer; box-shadow: var(--shadow-sm); }
@@ -131,13 +138,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     .header-right { flex: 1; display: flex; justify-content: flex-end; align-items: center; }
     .logo { font-size: 24px; font-weight: bold; color: white; }
 
-    /* ===== SEARCH CONTAINER STYLES ===== */
-    .search-container { display: flex; align-items: center; background-color: rgba(255,255,255,0.2); border-radius: 12px; padding: 8px 16px; gap: 12px; transition: all 0.2s ease; }
-    .search-container:hover { background-color: rgba(255,255,255,0.25); }
-    .search-container input { background: transparent; border: none; color: white; outline: none; width: 250px; font-size: 14px; }
-    .search-container input::placeholder { color: rgba(255,255,255,0.7); }
-    .search-container .material-symbols-outlined { color: white; font-size: 24px; transition: transform 0.2s ease; }
-    .search-container:hover .material-symbols-outlined { transform: scale(1.1); }
+    /* Search bar removed */
 
     /* ===== NAVIGATION ICONS STYLES ===== */
     .nav-icons { display: flex; gap: 20px; }
@@ -145,12 +146,21 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     .nav-icons .icon:hover { background-color: rgba(255,255,255,0.3); }
     .nav-icons .icon .material-symbols-outlined { font-size: 24px; font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24; }
 
+    /* ===== FLOATING ACTION BUTTONS ===== */
+    .fab-notif { position: fixed; top: 80px; right: 24px; width: 76px; height: 76px; border-radius: 9999px; background: #ffffff; border: 1px solid #e5e7eb; box-shadow: 0 14px 34px rgba(0,0,0,0.18); display: flex; align-items: center; justify-content: center; cursor: pointer; z-index: 120; }
+    .fab-notif .material-symbols-outlined { color: #111827; font-size: 34px; }
+    .fab-notif:hover { background: #f8fafc; }
+    .fab-chat { position: fixed; bottom: 24px; right: 24px; border-radius: 9999px; background: #ffffff; border: 1px solid #e5e7eb; box-shadow: 0 16px 36px rgba(0,0,0,0.18); display: inline-flex; align-items: center; gap: 16px; padding: 18px 32px; cursor: pointer; z-index: 120; }
+    .fab-chat .material-symbols-outlined { color: #111827; font-size: 30px; }
+    .fab-chat .fab-chat-label { color: #111827; font-weight: 800; font-size: 17px; }
+    .fab-chat:hover { background: #f8fafc; }
+
     /* ===== MAIN CONTAINER AND CONTENT ===== */
     .main-container { display: flex; margin-top: 0px; padding-top: 0px; min-height: 100vh; }
-    .main-content { margin: 0px 320px 20px calc(var(--sidebar-expanded) + 20px); padding-top: 20px; flex: 1; display: flex; flex-direction: column; gap: 20px; transition: margin-left 0.3s ease; }
+    .main-content { margin: 0px auto 24px calc(var(--sidebar-expanded) + 96px); padding-top: 24px; flex: 1; display: flex; flex-direction: column; gap: 24px; transition: margin-left 0.3s ease; max-width: 820px; width: 100%; }
 
     /* ===== POST CREATION BOX STYLES ===== */
-    .post-box { background-color: white; border-radius: 8px; padding: 20px; box-shadow: 0 1px 2px rgba(0,0,0,0.1); }
+    .post-box { background-color: white; border-radius: 16px; padding: 20px; box-shadow: var(--shadow-lg); border: 1px solid #e5e7eb; }
     .post-input { display: flex; margin-bottom: 15px; }
     .post-input img { width: 40px; height: 40px; border-radius: 50%; margin-right: 10px; }
     .post-input input { flex: 1; padding: 10px 15px; border-radius: 20px; border: 1px solid #ddd; outline: none; }
@@ -176,13 +186,14 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     .remove-photo-btn .material-symbols-outlined { font-size: 18px; }
 
     /* ===== POST DISPLAY STYLES ===== */
-    .post { background-color: white; border-radius: 8px; padding: 20px; box-shadow: 0 1px 2px rgba(0,0,0,0.1); }
+    .post { background-color: white; border-radius: 16px; padding: 20px; box-shadow: var(--shadow-lg); border: 1px solid #e5e7eb; }
     .post-header { display: flex; align-items: center; margin-bottom: 10px; }
     .post-header img { width: 40px; height: 40px; border-radius: 50%; margin-right: 10px; }
     .post-user { font-weight: 600; margin-bottom: 2px; }
     .post-time { font-size: 12px; color: #777; }
     .post-content { margin-bottom: 15px; }
     .post-image { width: 100%; max-height: 400px; object-fit: cover; border-radius: 8px; margin-bottom: 15px; }
+    #posts-feed { display: flex; flex-direction: column; gap: 24px; }
 
     /* ===== POST INTERACTIONS AND REACTIONS ===== */
     .post-stats { display: flex; justify-content: space-between; padding: 10px 0; border-top: 1px solid #eee; border-bottom: 1px solid #eee; margin-bottom: 10px; }
@@ -224,18 +235,13 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     .comment-post-btn:disabled { background-color: #e4e6ea; color: #bcc0c4; cursor: not-allowed; }
 
     /* ===== NOTIFICATION POPUP ===== */
-    .notification-container { position: fixed; width: 350px; background-color: white; border-radius: 8px; box-shadow: 0 5px 15px rgba(0,0,0,0.2); z-index: 100; display: none; transition: opacity 0.2s ease; }
-    .notification-header { display: flex; justify-content: space-between; align-items: center; padding: 15px; border-bottom: 1px solid #eee; }
-    .notification-header h3 { margin: 0; font-size: 18px; color: #333; }
+    .notification-container { position: fixed; width: 460px; background-color: #fff; border-radius: 16px; box-shadow: 0 18px 40px rgba(0,0,0,0.18); z-index: 130; display: none; border: 1px solid #e5e7eb; overflow: hidden; }
+    .notification-header { display: flex; justify-content: space-between; align-items: center; padding: 20px 24px; border-bottom: 1px solid #e5e7eb; background: #fff; }
+    .notification-header h3 { margin: 0; font-size: 20px; color: #111827; font-weight: 700; }
     #close-notification { cursor: pointer; color: #999; }
     #close-notification:hover { color: #333; }
-    .notification-list { max-height: 400px; overflow-y: auto; }
-    .notification-item { padding: 15px; border-bottom: 1px solid #eee; cursor: pointer; transition: background-color 0.2s; }
-    .notification-item:hover { background-color: #f5f5f5; }
-    .notification-content { display: flex; flex-direction: column; }
-    .notification-text { font-size: 14px; color: #333; margin-bottom: 5px; }
-    .notification-text strong { color: #047857; }
-    .notification-time { font-size: 12px; color: #999; }
+    .notification-list { max-height: 540px; overflow-y: auto; padding: 24px; background: #fff; }
+    .notification-empty { display: flex; align-items: center; justify-content: center; color: #6b7280; font-size: 15px; padding: 40px 0; }
     .notification-container.visible { display: block; }
     .notification-list::-webkit-scrollbar { width: 6px; }
     .notification-list::-webkit-scrollbar-track { background: #f1f1f1; }
@@ -243,7 +249,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     .notification-list::-webkit-scrollbar-thumb:hover { background: #a1a1a1; }
 
     /* ===== CHAT POPUP ===== */
-    .header-chat-container { position: fixed; width: 320px; background-color: white; border-radius: 12px; box-shadow: 0 8px 30px rgba(0,0,0,0.12); z-index: 100; display: none; transition: all 0.3s ease; max-height: 450px; border: 1px solid #e4e6ea; }
+    .header-chat-container { position: fixed; width: 460px; background-color: white; border-radius: 12px; box-shadow: 0 8px 30px rgba(0,0,0,0.12); z-index: 100; display: none; transition: all 0.3s ease; max-height: 540px; border: 1px solid #e4e6ea; }
     .header-chat-container.visible { display: block; opacity: 1; transform: translateY(0); }
     .chat-header-popup { display: flex; justify-content: space-between; align-items: center; padding: 16px 20px; border-bottom: 1px solid #e4e6ea; background-color: #f8f9fa; border-radius: 12px 12px 0 0; }
     .chat-header-popup h3 { margin: 0; font-size: 18px; color: #1c1e21; font-weight: 700; }
@@ -272,24 +278,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     .chat-list-popup::-webkit-scrollbar-thumb { background: #bcc0c4; border-radius: 3px; }
     .chat-list-popup::-webkit-scrollbar-thumb:hover { background: #8a8d91; }
 
-    /* ===== LISTINGS SIDEBAR ===== */
-    .listings-container { position: fixed; right: 0; top: 60px; bottom: 0; width: 300px; background-color: white; padding: 20px; overflow-y: auto; z-index: 90; box-shadow: -1px 0 5px rgba(0,0,0,0.1); }
-    .listings-header { display: flex; justify-content: flex-start; margin-bottom: 15px; }
-    .listings-header h3 { margin: 0; font-size: 18px; color: #047857; font-weight: 600; }
-    .listings-list { display: flex; flex-direction: column; gap: 15px; }
-    .listing-item { display: flex; align-items: center; padding: 12px; border-radius: 8px; cursor: pointer; transition: background-color 0.2s; border: 1px solid #e4e6ea; }
-    .listing-item:hover { background-color: #f0f2f5; border-color: #047857; }
-    .listing-image { width: 60px; height: 60px; border-radius: 8px; object-fit: cover; margin-right: 12px; }
-    .listing-info { flex: 1; }
-    .listing-title { font-weight: 600; font-size: 14px; color: #1c1e21; margin-bottom: 4px; }
-    .listing-price { font-size: 13px; color: #047857; font-weight: 600; margin-bottom: 2px; }
-    .listing-weight { font-size: 12px; color: #65676b; margin-bottom: 2px; }
-    .listing-description { font-size: 11px; color: #65676b; line-height: 1.3; margin-top: 2px; }
-    .no-listings { text-align: center; padding: 20px; color: #65676b; font-style: italic; }
-    .listings-container::-webkit-scrollbar { width: 6px; }
-    .listings-container::-webkit-scrollbar-track { background: #f1f1f1; }
-    .listings-container::-webkit-scrollbar-thumb { background: #c1c1c1; border-radius: 3px; }
-    .listings-container::-webkit-scrollbar-thumb:hover { background: #a1a1a1; }
+    /* Listings sidebar removed */
 
     /* ===== CHAT WINDOWS ===== */
     .chat-window { position: fixed; width: 280px; height: 420px; background: white; border-radius: 12px 12px 0 0; box-shadow: 0 -4px 25px rgba(0,0,0,0.2); z-index: 1000; border: 1px solid #e4e6ea; border-bottom: none; transition: all 0.3s ease; }
@@ -333,40 +322,60 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     @keyframes typingAnimation { 0%, 60%, 100% { transform: translateY(0); } 30% { transform: translateY(-10px); } }
 
     /* ===== RESPONSIVE ===== */
-    @media (max-width: 1200px) { .listings-container { width: 250px; } }
+    @media (max-width: 1200px) { }
     @media (max-width: 992px) { .profile-container { transform: translateX(-100%); transition: transform 0.3s ease; width: var(--sidebar-expanded); } .profile-container.active { transform: translateX(0); } .main-content { margin-left: 0; margin-right: 0; } }
+    
+    /* ===== DARK MODE (Quick invert approach) ===== */
+    body.dark {
+      filter: invert(1) hue-rotate(180deg);
+      background-color: #000;
+    }
+    /* Re-invert media so images/videos look normal */
+    body.dark img,
+    body.dark video,
+    body.dark iframe,
+    body.dark canvas { filter: invert(1) hue-rotate(180deg); }
+    /* Avoid double-inverting icons inside buttons that use background images (none currently) */
+    /* Optional: fine-tune borders that may look too bright */
+    body.dark * { border-color: inherit; }
+    /* In dark mode, keep layout identical to light mode for profile container and popover */
+    body.dark .profile-container,
+    body.dark #profile-menu-popover {
+      /* Cancel global invert so visuals match light mode */
+      filter: invert(1) hue-rotate(180deg);
+    }
+    /* Position the menu trigger at the bottom in dark mode */
+    body.dark .profile-menu-trigger { margin-top: auto; }
+    /* Inside canceled areas, avoid re-inverting media */
+    body.dark .profile-container img,
+    body.dark .profile-container video,
+    body.dark .profile-container iframe,
+    body.dark .profile-container canvas,
+    body.dark #profile-menu-popover img,
+    body.dark #profile-menu-popover video,
+    body.dark #profile-menu-popover iframe,
+    body.dark #profile-menu-popover canvas {
+      filter: none;
+    }
   </style>
 </head>
 <body>
-  <!-- ===== HEADER CONTAINER ===== -->
-  <div class="header-container">
-    <div class="header-left">
-      <div class="logo">AgriLink</div>
-      <div class="search-container">
-        <span class="material-symbols-outlined">search</span>
-        <input type="text" placeholder="Search Agri" />
-      </div>
-    </div>
-    <div class="header-center">
-      <div class="nav-icons">
-        <a href="homemain.php" class="icon"><span class="material-symbols-outlined">home</span></a>
-        <a href="listing.php" class="icon"><span class="material-symbols-outlined">storefront</span></a>
-        <div class="icon" id="chat-icon"><span class="material-symbols-outlined">forum</span></div>
-        <div class="icon" id="notification-icon"><span class="material-symbols-outlined">notifications</span></div>
-      </div>
-    </div>
-    <div class="header-right"></div>
-  </div>
+  
 
   <!-- ===== PROFILE CONTAINER SIDEBAR ===== -->
   <div class="profile-container">
-    <div class="profile-header">
-      <img src="https://storage.googleapis.com/workspace-0f70711f-8b4e-4d94-86f1-2a93ccde5887/image/0ec0940b-23d9-4b1f-8e72-2a8bd35584e4.png" alt="Farmer profile picture wearing a hat and smiling" class="profile-pic" id="profile-link" />
-      <div class="profile-name">Juan Dela Cruz</div>
+    <div class="sidebar-brand">Agrilink</div>
+    <ul class="profile-menu">
+      <li data-href="homemain.php"><i class="material-symbols-outlined">home</i><span>Home</span></li>
+    </ul>
+    <div class="sidebar-search">
+      <span class="material-symbols-outlined">search</span>
+      <input type="text" id="sidebar-search-input" placeholder="Search" />
     </div>
     <ul class="profile-menu">
-      <li data-href="request.php"><i class="material-symbols-outlined">request_quote</i><span>Request</span></li>
-      <li data-href="historyandtransaction.php"><i class="material-symbols-outlined">receipt_long</i><span>History and Transactions</span></li>
+      <li data-href="listing.php"><i class="material-symbols-outlined">storefront</i><span>Listings</span></li>
+      <li data-href="historyandtransaction.php"><i class="material-symbols-outlined">receipt_long</i><span>Listing History</span></li>
+      <li data-href="profile.php"><i class="material-symbols-outlined">person</i><span>Profile</span></li>
     </ul>
 
     <!-- Bottom popup menu trigger -->
@@ -375,7 +384,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
       <span>Menu</span>
     </button>
   </div>
-  <!-- Popup content moved OUTSIDE sidebar to avoid clipping and align beside trigger -->
+
+  <!-- Popover moved OUTSIDE sidebar to avoid clipping and align beside trigger -->
   <div class="profile-menu-popover" id="profile-menu-popover">
     <div class="menu-item" data-href="#change-role"><span class="material-symbols-outlined">manage_accounts</span><span>Change Role</span></div>
     <div class="menu-item" data-href="settings.php"><span class="material-symbols-outlined">settings</span><span>Settings</span></div>
@@ -428,25 +438,25 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     </div>
   </div>
 
-  <!-- ===== LISTINGS CONTAINER SIDEBAR ===== -->
-  <div class="listings-container">
-    <div class="listings-header"><h3>Current Listings</h3></div>
-    <div class="listings-list" id="listings-list"></div>
-  </div>
+  <!-- Floating buttons: reuse existing IDs for JS hooks -->
+  <button class="fab-notif" id="notification-icon" type="button" aria-label="Notifications">
+    <span class="material-symbols-outlined">notifications</span>
+  </button>
+  <button class="fab-chat" id="chat-icon" type="button" aria-label="Messages">
+    <span class="material-symbols-outlined">forum</span>
+    <span class="fab-chat-label">Messages</span>
+  </button>
 
   <!-- ===== NOTIFICATION POPUP ===== -->
-  <div class="notification-container" id="notification-container" style="position:fixed; top:0; right:0">
+  <div class="notification-container" id="notification-container">
     <div class="notification-header"><h3>Notifications</h3><i class="material-symbols-outlined" id="close-notification">close</i></div>
     <div class="notification-list">
-      <div class="notification-item"><div class="notification-content"><div class="notification-text"><strong>Maria Santos</strong> commented on your post: "This looks great! Would love to buy some."</div><div class="notification-time">2 hrs ago</div></div></div>
-      <div class="notification-item"><div class="notification-content"><div class="notification-text"><strong>Pedro Bautista</strong> liked your post about organic fertilizer.</div><div class="notification-time">5 hrs ago</div></div></div>
-      <div class="notification-item"><div class="notification-content"><div class="notification-text"><strong>AgriTech PH</strong> shared a new article: "Benefits of Organic Waste in Farming"</div><div class="notification-time">1 day ago</div></div></div>
-      <div class="notification-item"><div class="notification-content"><div class="notification-text"><strong>Farmers Cooperative</strong> added a new listing for compost materials.</div><div class="notification-time">2 days ago</div></div></div>
+      <div class="notification-empty">No notifications yet</div>
     </div>
   </div>
 
   <!-- ===== CHAT POPUP ===== -->
-  <div class="header-chat-container" id="header-chat-container" style="position:fixed; top:0; right:0">
+  <div class="header-chat-container" id="header-chat-container">
     <div class="chat-header-popup">
       <h3>Chats</h3>
       <i class="material-symbols-outlined" id="close-chat">close</i>
@@ -569,10 +579,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
       userPosts: [],
       showComments: {},
       commentInputs: {},
-      listings: [
-        { id: 1, wasteType: 'manure', weight: 500, collectionDate: '2023-06-15', description: 'Well-aged cattle manure, excellent for fertilizer', animalType: 'Cattle', price: 50.0, photo: null },
-        { id: 2, wasteType: 'compost', weight: 300, collectionDate: '2023-06-18', description: 'Organic compost from mixed livestock waste', price: 75.0, photo: null }
-      ],
       notificationVisible: false,
       chatVisible: false,
       notificationStyle: { top: 0, right: 0 },
@@ -594,56 +600,62 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     function $all(sel, root=document){ return Array.from(root.querySelectorAll(sel)); }
 
     // ===== NAVIGATION BINDINGS =====
-    $('#profile-link').addEventListener('click', () => { window.location.href = 'profile.php'; });
-    $all('.profile-menu li').forEach(li => li.addEventListener('click', () => { const href = li.getAttribute('data-href'); if (href) window.location.href = href; }));
+    $('#profile-link')?.addEventListener('click', () => { window.location.href = 'profile.php'; });
+    $all('.profile-menu li').forEach(li => li.addEventListener('click', () => {
+      const href = li.getAttribute('data-href');
+      if (!href) return;
+      window.location.href = href;
+    }));
     $('#logout-btn')?.addEventListener('click', () => { window.location.href = 'homemain.php'; });
 
-    // Bottom popup menu (inside profile sidebar)
+    // Bottom popup menu (outside profile sidebar; positioned beside trigger)
     (function(){
       const trigger = document.getElementById('profile-menu-trigger');
       const pop = document.getElementById('profile-menu-popover');
       const logout = document.getElementById('logout-action');
       if (!trigger || !pop) return;
       function position(){
-        if (!trigger || !pop) return;
         const r = trigger.getBoundingClientRect();
-        const gap = 16; // slight push to the right
-        const topOffset = -6; // nudge upwards slightly
-        // Default to right side of trigger
+        const gap = 16;
+        // Start to the right of the trigger
         let left = r.right + gap;
-        // Ensure it's outside the profile container box
         const pc = document.querySelector('.profile-container');
         if (pc) {
           const cr = pc.getBoundingClientRect();
+          // Ensure it's at least outside the sidebar
           left = Math.max(left, cr.right + 8);
         }
-        let top = Math.max(8, r.top + topOffset);
-        // Measure popover dimensions by making it visible offscreen briefly if needed
-        const wasHidden = !pop.classList.contains('visible') && pop.style.display === '';
         const prevDisplay = pop.style.display;
-        if (!pop.classList.contains('visible')) { pop.style.visibility = 'hidden'; pop.style.display = 'block'; }
-        const pw = pop.offsetWidth || 260;
-        const ph = pop.offsetHeight || 200;
-        if (!pop.classList.contains('visible')) { pop.style.display = prevDisplay; pop.style.visibility = ''; }
-        // Flip horizontally if overflowing right
+        if (!pop.classList.contains('visible')) { pop.style.visibility='hidden'; pop.style.display='block'; }
+        const pw = pop.offsetWidth || 260; const ph = pop.offsetHeight || 200;
+        if (!pop.classList.contains('visible')) { pop.style.display = prevDisplay; pop.style.visibility=''; }
         const margin = 8;
-        if (left + pw > window.innerWidth - margin) {
-          left = Math.max(margin, r.left - gap - pw);
-        }
-        // Clamp vertically inside viewport
+        // Flip to the left of the trigger if overflowing right edge
+        if (left + pw > window.innerWidth - margin) { left = Math.max(margin, r.left - gap - pw); }
+        // Bottom-align the popover beside the floater trigger
+        let top = r.bottom - ph;
+        // Constrain within viewport
         top = Math.max(margin, Math.min(top, window.innerHeight - ph - margin));
-        pop.style.top = Math.round(top) + 'px';
-        pop.style.left = Math.round(left) + 'px';
+        pop.style.top = Math.round(top)+'px';
+        pop.style.left = Math.round(left)+'px';
       }
       function toggle(){ position(); pop.classList.toggle('visible'); }
       function hide(){ pop.classList.remove('visible'); }
       trigger.addEventListener('click', (e)=>{ e.stopPropagation(); toggle(); });
       document.addEventListener('click', (e)=>{ if (pop.classList.contains('visible') && !pop.contains(e.target) && e.target !== trigger) hide(); });
       document.addEventListener('keydown', (e)=>{ if (e.key === 'Escape') hide(); });
-      pop.querySelectorAll('.menu-item').forEach(it=> it.addEventListener('click', ()=>{ const href=it.getAttribute('data-href'); if(href && href.startsWith('#')) { hide(); return; } if(href){ window.location.href = href; } }));
+      pop.querySelectorAll('.menu-item').forEach(it=> it.addEventListener('click', ()=>{
+        const href = it.getAttribute('data-href');
+        if (!href) return;
+        if (href === '#switch-appearance') { return; }
+        if (href.startsWith('#')) { hide(); return; }
+        window.location.href = href;
+      }));
       logout && logout.addEventListener('click', ()=>{ window.location.href = 'homemain.php'; });
       window.addEventListener('resize', ()=>{ if (pop.classList.contains('visible')) position(); });
-      window.addEventListener('scroll', ()=>{ if (pop.classList.contains('visible')) position(); }, { passive: true });
+      window.addEventListener('scroll', ()=>{ if (pop.classList.contains('visible')) position(); }, { passive:true });
+      // Expose for other scripts (e.g., theme toggle) to reposition after UI changes
+      window.__positionProfileMenu = position;
     })();
 
     // ===== NOTIFICATION & CHAT HEADER ICONS =====
@@ -656,10 +668,24 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
       function positionNear(el, cont){
         const r = el.getBoundingClientRect();
-        const top = r.bottom + 5;
-        const right = Math.max(10, window.innerWidth - r.right - 190);
-        cont.style.top = top + 'px';
-        cont.style.right = right + 'px';
+        const margin = 10;
+        // Measure container width even if hidden
+        const prevDisplay = cont.style.display;
+        const prevVisibility = cont.style.visibility;
+        if (!cont.classList.contains('visible')) { cont.style.visibility = 'hidden'; cont.style.display = 'block'; }
+        const cw = cont.offsetWidth || 400;
+        if (!cont.classList.contains('visible')) { cont.style.display = prevDisplay; cont.style.visibility = prevVisibility; }
+        // If we're positioning the chat floater, align it vertically under the notification bell
+        const anchorRect = (cont.id === 'header-chat-container' && notifIcon) ? notifIcon.getBoundingClientRect() : r;
+        const top = anchorRect.bottom + 8;
+        let left;
+        // Center on viewport for both notification and chat floaters
+        const centerLeft = (window.innerWidth - cw) / 2;
+        const bias = 780; // same right nudge used for notification
+        left = Math.max(margin, Math.min(window.innerWidth - cw - margin, centerLeft + bias));
+        cont.style.top = Math.round(top) + 'px';
+        cont.style.left = Math.round(left) + 'px';
+        cont.style.right = 'auto';
       }
 
       function hideAll(){
@@ -703,6 +729,37 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
       document.addEventListener('keydown', (e)=>{
         if (e.key === 'Escape') hideAll();
       });
+    })();
+
+    // ===== DARK MODE TOGGLE =====
+    (function(){
+      const STORAGE_KEY = 'theme';
+      function applyTheme(theme){
+        const useDark = theme === 'dark';
+        document.body.classList.toggle('dark', useDark);
+      }
+      // Initial load: apply ONLY if user has an explicit saved choice
+      const saved = localStorage.getItem(STORAGE_KEY);
+      if (saved === 'dark' || saved === 'light') {
+        applyTheme(saved);
+      }
+      // Toggle on click of the "Switch Appearance" menu item
+      const switchItem = document.querySelector('.profile-menu-popover .menu-item[data-href="#switch-appearance"]');
+      if (switchItem) {
+        switchItem.addEventListener('click', (e)=>{
+          e.stopPropagation();
+          const willBeDark = !document.body.classList.contains('dark');
+          document.body.classList.toggle('dark', willBeDark);
+          localStorage.setItem(STORAGE_KEY, willBeDark ? 'dark' : 'light');
+          // Keep the menu visible after switching
+          const pop = document.getElementById('profile-menu-popover');
+          if (pop) {
+            pop.classList.add('visible');
+            // Reposition beside the floater after theme/layout changes
+            if (window.__positionProfileMenu) { window.__positionProfileMenu(); }
+          }
+        });
+      }
     })();
 
     // ===== CHAT LIST RENDER =====
@@ -998,35 +1055,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
       photoInput.value = '';
     });
 
-    // ===== LISTINGS RENDER =====
-    function renderListings() {
-      const list = document.getElementById('listings-list');
-      list.innerHTML = '';
-      const listings = state.listings;
-      if (listings.length === 0) {
-        list.innerHTML = '<div class="no-listings"><p>No current listings available</p></div>';
-        return;
-      }
-      listings.forEach(listing => {
-        const item = document.createElement('div');
-        item.className = 'listing-item';
-        item.innerHTML = `
-          ${listing.photo ? `<img src="${listing.photo}" alt="${(listing.animalType || listing.wasteType)} ${listing.wasteType}" class="listing-image" />` : ''}
-          <div class="listing-info">
-            <div class="listing-title">${listing.animalType ? `${listing.animalType} ${listing.wasteType}` : listing.wasteType}</div>
-            ${listing.price ? `<div class="listing-price">₱${Number(listing.price).toFixed(2)}</div>` : ''}
-            <div class="listing-weight">${listing.weight}kg available</div>
-            ${listing.description ? `<div class="listing-description">${listing.description}</div>` : ''}
-          </div>
-        `;
-        list.appendChild(item);
-      });
-    }
-
     // ===== INIT =====
     renderChatList();
     renderPosts();
-    renderListings();
   </script>
 </body>
 </html>
