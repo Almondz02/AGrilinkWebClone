@@ -185,7 +185,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     .notification.success { background-color: #d4edda; color: #155724; border: 1px solid #c3e6cb; }
     .notification.error { background-color: #f8d7da; color: #721c24; border: 1px solid #f5c6cb; }
     /* ===== NOTIFICATION POPUP (match homemain) ===== */
-    .notification-container { position: fixed; width: 350px; background-color: #fff; border-radius: 8px; box-shadow: 0 5px 15px rgba(0,0,0,0.2); z-index: 100; display: none; transition: opacity 0.2s ease; }
+    .notification-container { position: fixed; top: 60px; right: 0; width: 350px; background-color: #fff; border-radius: 8px; box-shadow: 0 5px 15px rgba(0,0,0,0.2); z-index: 100; display: none; transition: opacity 0.2s ease; }
     .notification-container.visible { display: block; }
     .notification-header { display: flex; justify-content: space-between; align-items: center; padding: 15px; border-bottom: 1px solid #eee; }
     .notification-header h3 { margin: 0; font-size: 18px; color: #333; }
@@ -204,7 +204,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     .notification-list::-webkit-scrollbar-thumb:hover { background: #a1a1a1; }
 
     /* ===== HEADER CHAT POPUP (match homemain) ===== */
-    .header-chat-container { position: fixed; width: 320px; background-color: #fff; border-radius: 12px; box-shadow: 0 8px 30px rgba(0,0,0,0.12); z-index: 100; display: none; transition: all 0.3s ease; max-height: 450px; border: 1px solid #e4e6ea; }
+    .header-chat-container { position: fixed; top: 60px; right: 0; width: 320px; background-color: #fff; border-radius: 12px; box-shadow: 0 8px 30px rgba(0,0,0,0.12); z-index: 100; display: none; transition: all 0.3s ease; max-height: 450px; border: 1px solid #e4e6ea; }
     .header-chat-container.visible { display: block; opacity: 1; transform: translateY(0); }
     .chat-header-popup { display: flex; justify-content: space-between; align-items: center; padding: 16px 20px; border-bottom: 1px solid #e4e6ea; background-color: #f8f9fa; border-radius: 12px 12px 0 0; }
     .chat-header-popup h3 { margin: 0; font-size: 18px; color: #1c1e21; font-weight: 700; }
@@ -352,7 +352,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     </div>
   </div>
 
-  <div class="notification-container" id="notification-container" style="position:fixed; top:0; right:0">
+  <div class="notification-container" id="notification-container" style="position:fixed; top:60px; right:0">
     <div class="notification-header"><h3>Notifications</h3><i class="material-symbols-outlined" id="close-notification">close</i></div>
     <div class="notification-list">
       <div class="notification-item"><div class="notification-content"><div class="notification-text"><strong>Maria Santos</strong> commented on your listing.</div><div class="notification-time">2 hrs ago</div></div></div>
@@ -362,7 +362,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     </div>
   </div>
 
-  <div class="header-chat-container" id="header-chat-container" style="position:fixed; top:0; right:0">
+  <div class="header-chat-container" id="header-chat-container" style="position:fixed; top:60px; right:0">
     <div class="chat-header-popup">
       <h3>Chats</h3>
       <i class="material-symbols-outlined" id="close-chat">close</i>
@@ -398,7 +398,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
   </div>
 
   <!-- ===== NOTIFICATION POPUP ===== -->
-  <div class="notification-container" id="notification-container" style="position:fixed; top:0; right:0">
+  <div class="notification-container" id="notification-container" style="position:fixed; top:60px; right:0">
     <div class="notification-header">
       <h3>Notifications</h3>
       <i class="material-symbols-outlined" id="close-notification">close</i>
@@ -420,7 +420,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
   </div>
 
   <!-- ===== CHAT POPUP ===== -->
-  <div class="header-chat-container" id="header-chat-container" style="position:fixed; top:0; right:0">
+  <div class="header-chat-container" id="header-chat-container" style="position:fixed; top:60px; right:0">
     <div class="chat-header-popup">
       <h3>Chats</h3>
       <i class="material-symbols-outlined" id="close-chat">close</i>
