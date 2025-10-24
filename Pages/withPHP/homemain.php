@@ -95,8 +95,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
       --radius-sm: 8px;
       --sidebar-expanded: 280px;
       --sidebar-collapsed: 80px;
+      --top-gap: 60px; /* keep body and notification top gaps in sync */
     }
-    body { margin: 0; padding: 0; background: var(--bg); color: var(--text); line-height: 1.6; overflow-x: hidden; min-height: 100vh; }
+    body { margin: 0; padding: 0; background: var(--bg); color: var(--text); line-height: 1.6; overflow-x: hidden; min-height: 100vh; padding-top: var(--top-gap); }
 
     /* ===== PROFILE CONTAINER SIDEBAR ===== */
     .profile-container { position: fixed; left: 0; top: 0; bottom: 0; width: var(--sidebar-expanded); background-color: var(--surface); padding: 20px; z-index: 90; box-shadow: var(--shadow-sm); overflow-y: auto; transition: width 0.3s ease; display:flex; flex-direction:column; }
@@ -147,7 +148,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     .nav-icons .icon .material-symbols-outlined { font-size: 24px; font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24; }
 
     /* ===== FLOATING ACTION BUTTONS ===== */
-    .fab-notif { position: fixed; top: 80px; right: 24px; width: 76px; height: 76px; border-radius: 9999px; background: #ffffff; border: 1px solid #e5e7eb; box-shadow: 0 14px 34px rgba(0,0,0,0.18); display: flex; align-items: center; justify-content: center; cursor: pointer; z-index: 120; }
+    .fab-notif { position: fixed; top: calc(var(--top-gap) - 24px); right: 24px; width: 76px; height: 76px; border-radius: 9999px; background: #ffffff; border: 1px solid #e5e7eb; box-shadow: 0 14px 34px rgba(0,0,0,0.18); display: flex; align-items: center; justify-content: center; cursor: pointer; z-index: 120; }
     .fab-notif .material-symbols-outlined { color: #111827; font-size: 34px; }
     .fab-notif:hover { background: #f8fafc; }
     .fab-chat { position: fixed; bottom: 24px; right: 24px; border-radius: 9999px; background: #ffffff; border: 1px solid #e5e7eb; box-shadow: 0 16px 36px rgba(0,0,0,0.18); display: inline-flex; align-items: center; gap: 16px; padding: 18px 32px; cursor: pointer; z-index: 120; }
@@ -235,7 +236,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     .comment-post-btn:disabled { background-color: #e4e6ea; color: #bcc0c4; cursor: not-allowed; }
 
     /* ===== NOTIFICATION POPUP ===== */
-    .notification-container { position: fixed; width: 460px; background-color: #fff; border-radius: 16px; box-shadow: 0 18px 40px rgba(0,0,0,0.18); z-index: 130; display: none; border: 1px solid #e5e7eb; overflow: hidden; }
+    .notification-container { position: fixed; top: var(--top-gap); right: 0; width: 460px; background-color: #fff; border-radius: 16px; box-shadow: 0 18px 40px rgba(0,0,0,0.18); z-index: 130; display: none; border: 1px solid #e5e7eb; overflow: hidden; }
     .notification-header { display: flex; justify-content: space-between; align-items: center; padding: 20px 24px; border-bottom: 1px solid #e5e7eb; background: #fff; }
     .notification-header h3 { margin: 0; font-size: 20px; color: #111827; font-weight: 700; }
     #close-notification { cursor: pointer; color: #999; }
@@ -249,7 +250,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     .notification-list::-webkit-scrollbar-thumb:hover { background: #a1a1a1; }
 
     /* ===== CHAT POPUP ===== */
-    .header-chat-container { position: fixed; width: 460px; background-color: white; border-radius: 12px; box-shadow: 0 8px 30px rgba(0,0,0,0.12); z-index: 100; display: none; transition: all 0.3s ease; max-height: 540px; border: 1px solid #e4e6ea; }
+    .header-chat-container { position: fixed; top: var(--top-gap); right: 0; width: 460px; background-color: white; border-radius: 12px; box-shadow: 0 8px 30px rgba(0,0,0,0.12); z-index: 100; display: none; transition: all 0.3s ease; max-height: 540px; border: 1px solid #e4e6ea; }
     .header-chat-container.visible { display: block; opacity: 1; transform: translateY(0); }
     .chat-header-popup { display: flex; justify-content: space-between; align-items: center; padding: 16px 20px; border-bottom: 1px solid #e4e6ea; background-color: #f8f9fa; border-radius: 12px 12px 0 0; }
     .chat-header-popup h3 { margin: 0; font-size: 18px; color: #1c1e21; font-weight: 700; }
