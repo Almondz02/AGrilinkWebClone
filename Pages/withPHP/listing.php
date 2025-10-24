@@ -246,6 +246,45 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     .chat-list-popup::-webkit-scrollbar-thumb { background: #bcc0c4; border-radius: 3px; }
     .chat-list-popup::-webkit-scrollbar-thumb:hover { background: #8a8d91; }
     @media (max-width: 992px) { .profile-container { transform: translateX(-100%); transition: transform 0.3s ease; width: var(--sidebar-expanded); } .profile-container.active { transform: translateX(0); } .main-content { margin-left: 0; margin-right: 0; } }
+    /* ===== FLOATING CHAT WINDOWS (match homemain) ===== */
+    .chat-window { position: fixed; width: 280px; height: 420px; background: white; border-radius: 12px 12px 0 0; box-shadow: 0 -4px 25px rgba(0,0,0,0.2); z-index: 1000; border: 1px solid #e4e6ea; border-bottom: none; transition: all 0.3s ease; }
+    .chat-window.minimized { height: 42px; }
+    .chat-window-header { background: linear-gradient(135deg, #047857 0%, #059669 100%); color: white; padding: 14px 18px; border-radius: 12px 12px 0 0; display: flex; justify-content: space-between; align-items: center; cursor: pointer; box-shadow: 0 2px 8px rgba(4,120,87,0.3); }
+    .chat-window-user { display: flex; align-items: center; gap: 10px; }
+    .chat-window-avatar { width: 28px; height: 28px; border-radius: 50%; object-fit: cover; border: 2px solid rgba(255,255,255,0.3); }
+    .chat-window-name { font-weight: 600; font-size: 15px; }
+    .chat-window-status { font-size: 12px; opacity: 0.8; margin-top: 2px; }
+    .chat-window-controls { display: flex; gap: 6px; }
+    .chat-minimize, .chat-close { font-size: 20px; cursor: pointer; padding: 4px; border-radius: 50%; transition: all 0.2s; width: 28px; height: 28px; display: flex; align-items: center; justify-content: center; }
+    .chat-minimize:hover, .chat-close:hover { background-color: rgba(255,255,255,0.2); transform: scale(1.1); }
+    .chat-window-messages { height: 320px; overflow-y: auto; padding: 16px; background: linear-gradient(to bottom, #f8f9fa 0%, #ffffff 100%); scroll-behavior: smooth; }
+    .chat-empty-state { text-align: center; color: #65676b; padding: 60px 20px; }
+    .chat-empty-state h4 { margin: 0 0 8px 0; color: #047857; font-size: 16px; }
+    .chat-empty-state p { margin: 0; font-size: 14px; }
+    .chat-message { margin-bottom: 16px; animation: messageSlideIn 0.3s ease-out; }
+    .chat-message.sent { text-align: right; }
+    .chat-message.received { text-align: left; }
+    .message-content { display: inline-block; max-width: 85%; padding: 10px 14px; border-radius: 18px; font-size: 14px; line-height: 1.4; position: relative; word-wrap: break-word; }
+    .chat-message.sent .message-content { background: linear-gradient(135deg, #047857 0%, #059669 100%); color: white; box-shadow: 0 2px 8px rgba(4,120,87,0.3); }
+    .chat-message.received .message-content { background: #e4e6ea; color: #1c1e21; box-shadow: 0 1px 3px rgba(0,0,0,0.1); }
+    .message-time { font-size: 11px; color: #65676b; margin-top: 6px; }
+    .message-status { font-size: 10px; color: #65676b; margin-top: 4px; }
+    .chat-message.sent .message-status { text-align: right; }
+    .typing-indicator { display: flex; align-items: center; padding: 12px 16px; margin-bottom: 8px; }
+    .typing-indicator .typing-avatar { width: 24px; height: 24px; border-radius: 50%; margin-right: 8px; }
+    .typing-bubble { background: #e4e6ea; border-radius: 18px; padding: 8px 12px; display: flex; align-items: center; gap: 3px; }
+    .typing-dot { width: 6px; height: 6px; border-radius: 50%; background: #65676b; animation: typingAnimation 1.4s infinite; }
+    .typing-dot:nth-child(2) { animation-delay: 0.2s; }
+    .typing-dot:nth-child(3) { animation-delay: 0.4s; }
+    .chat-window-input { display: flex; padding: 14px; background: white; border-top: 1px solid #e4e6ea; align-items: center; gap: 10px; }
+    .chat-window-input input { flex: 1; border: 1px solid #e4e6ea; border-radius: 22px; padding: 10px 16px; outline: none; font-size: 14px; transition: all 0.2s; }
+    .chat-window-input input:focus { border-color: #047857; box-shadow: 0 0 0 3px rgba(4,120,87,0.1); }
+    .chat-window-input button { background: linear-gradient(135deg, #047857 0%, #059669 100%); color: white; border: none; border-radius: 50%; width: 38px; height: 38px; cursor: pointer; display: flex; align-items: center; justify-content: center; transition: all 0.2s; box-shadow: 0 2px 6px rgba(4,120,87,0.3); }
+    .chat-window-input button:hover { background: linear-gradient(135deg, #065f46 0%, #047857 100%); transform: scale(1.05); }
+    .chat-window-input button:disabled { background: #e4e6ea; color: #65676b; cursor: not-allowed; transform: none; }
+    .chat-window-input button i { font-size: 18px; }
+    @keyframes messageSlideIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+    @keyframes typingAnimation { 0%, 60%, 100% { transform: translateY(0); } 30% { transform: translateY(-10px); } }
   </style>
 </head>
 <body>
@@ -417,7 +456,10 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
       { id: 1, wasteType: 'manure', weight: 500, collectionDate: '2023-06-15', description: 'Well-aged cattle manure, excellent for fertilizer', animalType: 'Cattle', price: 50.0, photo: null },
       { id: 2, wasteType: 'compost', weight: 300, collectionDate: '2023-06-18', description: 'Organic compost from mixed livestock waste', price: 75.0, photo: null },
     ];
-    const state = { listings: [...initialListings], conversations: [], openChatWindows: [], typingUsers: {}, messageInputs: {}, notificationStyle: { top: 0, right: 0 }, chatStyle: { top: 0, right: 0 } };
+    const state = { listings: [...initialListings], conversations: [
+      { id: 'mang-jose', name: 'Mang Jose', avatar: 'https://storage.googleapis.com/workspace-0f70711f-8b4e-4d94-86f1-2a93ccde5887/image/70ed3f6c-a0ca-4490-8b6a-eaa245dffa33.png', lastMessage: 'Hi, about the manure delivery tomorrow...', time: '2:30 PM', messages: [ { id: 1, text: 'Hi, about the manure delivery tomorrow...', sender: 'them', time: '2:30 PM' }, { id: 2, text: 'What time should I expect the delivery?', sender: 'them', time: '2:31 PM' } ] },
+      { id: 'farmers-coop', name: 'Farmers Cooperative', avatar: 'https://storage.googleapis.com/workspace-0f70711f-8b4e-4d94-86f1-2a93ccde5887/image/250bc031-e5eb-4467-9d71-49154b992c13.png', lastMessage: 'New bulk order of organic fertilizer available', time: 'Yesterday', messages: [ { id: 1, text: 'New bulk order of organic fertilizer available', sender: 'them', time: 'Yesterday' }, { id: 2, text: 'Would you be interested in placing an order?', sender: 'them', time: 'Yesterday' } ] }
+    ], openChatWindows: [], typingUsers: {}, messageInputs: {}, notificationStyle: { top: 0, right: 0 }, chatStyle: { top: 0, right: 0 } };
 
     // ===== HELPERS =====
     function $(sel, root=document){ return root.querySelector(sel); }
@@ -456,6 +498,168 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
       window.addEventListener('resize', ()=>{ if (pop.classList.contains('visible')) position(); });
       window.addEventListener('scroll', ()=>{ if (pop.classList.contains('visible')) position(); }, { passive:true });
     })();
+
+    // ===== CHAT LIST RENDER =====
+    function renderChatList() {
+      const list = document.getElementById('chat-list-popup');
+      if (!list) return;
+      list.innerHTML = '';
+      state.conversations.forEach(conversation => {
+        const item = document.createElement('div');
+        item.className = 'chat-item-popup';
+        item.innerHTML = `
+          <img src="${conversation.avatar}" alt="${conversation.name}" />
+          <div class="chat-info-popup">
+            <div class="chat-name-popup">${conversation.name}</div>
+            <div class="chat-preview-popup">${conversation.lastMessage}</div>
+          </div>
+          <div class="chat-time-popup">${conversation.time}</div>
+        `;
+        item.addEventListener('click', () => openChatWindow(conversation));
+        list.appendChild(item);
+      });
+    }
+
+    // Quick open chat from active users
+    (function(){
+      const chatCont = document.getElementById('header-chat-container');
+      Array.from(document.querySelectorAll('.active-user-popup')).forEach(el => {
+        el.addEventListener('click', () => {
+          const user = JSON.parse(el.getAttribute('data-user'));
+          openChatWindow({ ...user, messages: [] });
+          chatCont && chatCont.classList.remove('visible');
+        });
+      });
+    })();
+
+    // ===== FLOATING CHAT WINDOWS =====
+    function openChatWindow(user) {
+      if (state.openChatWindows.find(c => c.id === user.id)) return;
+      const existingConversation = state.conversations.find(c => c.id === user.id);
+      const newChat = { id: user.id, name: user.name, avatar: user.avatar, messages: existingConversation?.messages || user.messages || [], isMinimized: false };
+      if (!existingConversation) {
+        state.conversations = [ { id: user.id, name: user.name, avatar: user.avatar, lastMessage: 'Start a conversation...', time: 'Now', messages: [] }, ...state.conversations ];
+        renderChatList();
+      }
+      state.openChatWindows.push(newChat);
+      renderFloatingChats();
+    }
+
+    function closeChatWindow(chatId) {
+      state.openChatWindows = state.openChatWindows.filter(c => c.id !== chatId);
+      renderFloatingChats();
+    }
+
+    function minimizeChatWindow(chatId) {
+      state.openChatWindows = state.openChatWindows.map(c => c.id === chatId ? { ...c, isMinimized: !c.isMinimized } : c);
+      renderFloatingChats();
+    }
+
+    function sendMessage(chatId, message) {
+      if (!message || !message.trim()) return;
+      const time = new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+      const newMessage = { id: Date.now(), text: message, sender: 'me', time, timestamp: new Date(), status: 'sent' };
+      state.openChatWindows = state.openChatWindows.map(c => c.id === chatId ? { ...c, messages: [...c.messages, newMessage] } : c);
+      state.conversations = state.conversations.map(conv => conv.id === chatId ? { ...conv, lastMessage: message, time: 'Now', messages: [...conv.messages, newMessage] } : conv);
+      state.messageInputs[chatId] = '';
+      renderFloatingChats();
+      simulateTypingAndResponse(chatId);
+      setTimeout(() => autoScrollMessages(chatId), 100);
+    }
+
+    function simulateTypingAndResponse(chatId) {
+      state.typingUsers[chatId] = true;
+      renderFloatingChats();
+      setTimeout(() => {
+        state.typingUsers[chatId] = false;
+        const responses = [
+          "Thanks for your message! I'll get back to you soon.",
+          "That sounds great! Let me check on that for you.",
+          "I appreciate you reaching out. Let's discuss this further.",
+          "Perfect! I'll have more details for you shortly.",
+          "Got it! I'll look into this and respond soon."
+        ];
+        const randomResponse = responses[Math.floor(Math.random() * responses.length)];
+        const time = new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+        const responseMessage = { id: Date.now() + 1, text: randomResponse, sender: 'them', time, timestamp: new Date(), status: 'delivered' };
+        state.openChatWindows = state.openChatWindows.map(c => c.id === chatId ? { ...c, messages: [...c.messages, responseMessage] } : c);
+        state.conversations = state.conversations.map(conv => conv.id === chatId ? { ...conv, lastMessage: randomResponse, time: 'Now', messages: [...conv.messages, responseMessage] } : conv);
+        renderFloatingChats();
+        setTimeout(() => autoScrollMessages(chatId), 100);
+      }, Math.random() * 2000 + 1500);
+    }
+
+    function autoScrollMessages(chatId) {
+      const el = document.getElementById(`messages-${chatId}`);
+      if (el) el.scrollTop = el.scrollHeight;
+    }
+
+    function renderFloatingChats() {
+      const root = document.getElementById('floating-chats-root');
+      if (!root) return;
+      root.innerHTML = '';
+      state.openChatWindows.forEach((chat, index) => {
+        const container = document.createElement('div');
+        container.className = `chat-window ${chat.isMinimized ? 'minimized' : ''}`;
+        container.style.bottom = '0px';
+        container.style.right = `${320 + (index * 280)}px`;
+        container.innerHTML = `
+          <div class="chat-window-header">
+            <div class="chat-window-user">
+              <img src="${chat.avatar}" alt="${chat.name}" class="chat-window-avatar" />
+              <span class="chat-window-name">${chat.name}</span>
+            </div>
+            <div class="chat-window-controls">
+              <i class="material-symbols-outlined chat-minimize">${chat.isMinimized ? 'expand_more' : 'expand_less'}</i>
+              <i class="material-symbols-outlined chat-close">close</i>
+            </div>
+          </div>
+          ${chat.isMinimized ? '' : `
+          <div class="chat-window-messages" id="messages-${chat.id}">
+            ${chat.messages.length === 0 ? `
+              <div class="chat-empty-state">
+                <h4>👋 Hey there!</h4>
+                <p>Start a conversation with ${chat.name}</p>
+              </div>
+            ` : `
+              ${chat.messages.map(m => `
+                <div class="chat-message ${m.sender === 'me' ? 'sent' : 'received'}">
+                  <div class="message-content">${m.text}</div>
+                  <div class="message-time">${m.time}</div>
+                  ${m.sender === 'me' ? `<div class="message-status">${m.status === 'sent' ? '✓' : (m.status === 'delivered' ? '✓✓' : '')}</div>` : ''}
+                </div>
+              `).join('')}
+              ${state.typingUsers[chat.id] ? `
+                <div class="typing-indicator">
+                  <img src="${chat.avatar}" alt="${chat.name}" class="typing-avatar" />
+                  <div class="typing-bubble">
+                    <div class="typing-dot"></div>
+                    <div class="typing-dot"></div>
+                    <div class="typing-dot"></div>
+                  </div>
+                </div>
+              ` : ''}
+            `}
+          </div>
+          <div class="chat-window-input">
+            <input type="text" placeholder="Message ${chat.name}..." value="${state.messageInputs[chat.id] || ''}" />
+            <button ${!(state.messageInputs[chat.id] || '').trim() ? 'disabled' : ''}>
+              <i class="material-symbols-outlined">send</i>
+            </button>
+          </div>`}
+        `;
+        container.querySelector('.chat-window-header').addEventListener('click', () => minimizeChatWindow(chat.id));
+        container.querySelector('.chat-close').addEventListener('click', (e) => { e.stopPropagation(); closeChatWindow(chat.id); });
+        if (!chat.isMinimized) {
+          const input = container.querySelector('.chat-window-input input');
+          const button = container.querySelector('.chat-window-input button');
+          input.addEventListener('input', (e) => { state.messageInputs[chat.id] = e.target.value; });
+          input.addEventListener('keypress', (e) => { if (e.key === 'Enter' && !e.shiftKey) { e.preventDefault(); sendMessage(chat.id, input.value); }});
+          button.addEventListener('click', () => sendMessage(chat.id, input.value));
+        }
+        root.appendChild(container);
+      });
+    }
 
     // ===== HEADER POPUPS (standardized) =====
     (function(){
@@ -558,6 +762,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     }
 
     // Initial render (demo data only)
+    renderChatList();
     renderListings();
   </script>
 </body>
