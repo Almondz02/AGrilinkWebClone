@@ -251,7 +251,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     .notification-list::-webkit-scrollbar-thumb:hover { background: #a1a1a1; }
 
     /* ===== CHAT POPUP ===== */
-    .header-chat-container { position: fixed; top: var(--top-gap); right: 0; width: 460px; background-color: white; border-radius: 12px; box-shadow: 0 8px 30px rgba(0,0,0,0.12); z-index: 100; display: none; transition: all 0.3s ease; max-height: 540px; border: 1px solid #e4e6ea; }
+    .header-chat-container { position: fixed; top: var(--top-gap); right: 0; width: 460px; background-color: white; border-radius: 12px; box-shadow: 0 8px 30px rgba(0,0,0,0.12); z-index: 100; display: none; transition: opacity 0.2s ease; max-height: 540px; border: 1px solid #e4e6ea; }
     .header-chat-container.visible { display: block; opacity: 1; transform: translateY(0); }
     .chat-header-popup { display: flex; justify-content: space-between; align-items: center; padding: 16px 20px; border-bottom: 1px solid #e4e6ea; background-color: #f8f9fa; border-radius: 12px 12px 0 0; }
     .chat-header-popup h3 { margin: 0; font-size: 18px; color: #1c1e21; font-weight: 700; }
@@ -677,14 +677,12 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         if (!cont.classList.contains('visible')) { cont.style.visibility = 'hidden'; cont.style.display = 'block'; }
         const cw = cont.offsetWidth || 400;
         if (!cont.classList.contains('visible')) { cont.style.display = prevDisplay; cont.style.visibility = prevVisibility; }
-        // If we're positioning the chat floater, align it vertically under the notification bell
+        // For chat floater, align vertically under the notification bell; else use the triggering icon
         const anchorRect = (cont.id === 'header-chat-container' && notifIcon) ? notifIcon.getBoundingClientRect() : r;
         const top = anchorRect.bottom + 8;
-        let left;
-        // Center on viewport for both notification and chat floaters
         const centerLeft = (window.innerWidth - cw) / 2;
-        const bias = 780; // same right nudge used for notification
-        left = Math.max(margin, Math.min(window.innerWidth - cw - margin, centerLeft + bias));
+        const bias = 780; // horizontal nudge to the right
+        const left = Math.max(margin, Math.min(window.innerWidth - cw - margin, centerLeft + bias));
         cont.style.top = Math.round(top) + 'px';
         cont.style.left = Math.round(left) + 'px';
         cont.style.right = 'auto';

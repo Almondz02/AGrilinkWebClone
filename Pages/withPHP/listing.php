@@ -210,7 +210,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     .notification-list::-webkit-scrollbar-thumb:hover { background: #a1a1a1; }
 
     /* ===== HEADER CHAT POPUP (match homemain) ===== */
-    .header-chat-container { position: fixed; top: var(--top-gap); right: 0; width: 460px; background-color: white; border-radius: 12px; box-shadow: 0 8px 30px rgba(0,0,0,0.12); z-index: 100; display: none; transition: all 0.3s ease; max-height: 540px; border: 1px solid #e4e6ea; }
+    .header-chat-container { position: fixed; top: var(--top-gap); right: 0; width: 460px; background-color: white; border-radius: 12px; box-shadow: 0 8px 30px rgba(0,0,0,0.12); z-index: 100; display: none; transition: opacity 0.2s ease; max-height: 540px; border: 1px solid #e4e6ea; }
     /* ===== NOTIFICATION FAB ===== */
     .fab-notif { position: fixed; top: 24px; right: 24px; width: 76px; height: 76px; border-radius: 9999px; background: #fff; border: 1px solid #e5e7eb; box-shadow: 0 14px 34px rgba(0,0,0,0.18); display: flex; align-items: center; justify-content: center; cursor: pointer; z-index: 1000; }
     .fab-notif .material-symbols-outlined { color: #111827; font-size: 34px; }
@@ -679,10 +679,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         if (!cont.classList.contains('visible')) { cont.style.visibility = 'hidden'; cont.style.display = 'block'; }
         const cw = cont.offsetWidth || 400;
         if (!cont.classList.contains('visible')) { cont.style.display = prevDisplay; cont.style.visibility = prevVisibility; }
-        // If positioning chat, align vertically under the notification floater for consistency
+        // For chat floater, align vertically under the notification bell; else use the triggering icon
         const anchorRect = (cont.id === 'header-chat-container' && notifIcon) ? notifIcon.getBoundingClientRect() : r;
         const top = anchorRect.bottom + 8;
-        // Center with a right bias similar to homemain.php
         const centerLeft = (window.innerWidth - cw) / 2;
         const bias = 780; // horizontal nudge to the right
         const left = Math.max(margin, Math.min(window.innerWidth - cw - margin, centerLeft + bias));
