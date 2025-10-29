@@ -101,37 +101,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     body { margin: 0; padding: 0; background: var(--bg); color: var(--text); line-height: 1.6; overflow-x: hidden; min-height: 100vh; padding-top: var(--top-gap); }
 
     /* ===== PROFILE CONTAINER SIDEBAR ===== */
-    .profile-container { position: fixed; left: 0; top: 0; bottom: 0; width: var(--sidebar-expanded); background-color: var(--surface); padding: 20px; z-index: 90; box-shadow: var(--shadow-sm); overflow-y: auto; transition: width 0.3s ease; display:flex; flex-direction:column; }
-    .profile-header { display: flex; align-items: center; margin-bottom: 20px; }
-    .profile-pic { width: 50px; height: 50px; border-radius: 50%; object-fit: cover; margin-right: 10px; cursor: pointer; }
-    .profile-name { font-weight: 600; }
-    .profile-container .profile-name,
-    .profile-container .profile-menu li span,
-    .profile-container .logout-btn span { display: inline; }
-    .profile-menu { list-style: none; }
-    .profile-menu li { padding: 14px 16px; margin: 8px 0; border-radius: var(--radius-sm); display: flex; align-items: center; cursor: pointer; font-size: 18px; }
-    .profile-menu li:hover { background-color: var(--surface-hover); }
-    .profile-menu li i { margin-right: 14px; color: #FF9100; font-size: 26px; }
-    .bottom-menu { margin-top: auto; }
-    .sidebar-brand { font-weight: 800; color: #FF9100; margin: 0 0 16px; font-size: 28px; background: transparent; padding: 0; border-radius: 0; display: block; text-align: center; }
-
-    /* Sidebar search bar */
-    .sidebar-search { display: flex; align-items: center; gap: 10px; background: #f1f5f9; border: 1px solid var(--border); border-radius: 12px; padding: 10px 12px; margin: 6px 0 10px; }
-    .sidebar-search .material-symbols-outlined { color: #64748b; font-size: 22px; }
-    .sidebar-search input { flex: 1; border: none; outline: none; background: transparent; font-size: 16px; color: #0f172a; }
-    .sidebar-search input::placeholder { color: #94a3b8; }
-
-    /* ===== PROFILE BOTTOM MENU (popover) ===== */
-    .profile-menu-trigger { margin-top: auto; display: inline-flex; align-items: center; gap: 8px; border: 1px solid var(--border); background: #fff; color: #111827; padding: 10px 14px; border-radius: 10px; cursor: pointer; box-shadow: var(--shadow-sm); }
-    .profile-menu-trigger .material-symbols-outlined { color: #0f172a; }
-    .profile-menu-popover { position: fixed; width: 260px; background: #fff; border-radius: 12px; box-shadow: 0 10px 25px rgba(0,0,0,0.15); border: 1px solid #e5e7eb; padding: 10px 0; display: none; z-index: 120; max-height: calc(100vh - 16px); overflow-y: auto; }
-    .profile-menu-popover.visible { display: block; }
-    .profile-menu-popover .menu-item { display: flex; align-items: center; gap: 12px; padding: 10px 16px; color: #0f172a; cursor: pointer; }
-    .profile-menu-popover .menu-item:hover { background: #f8fafc; }
-    .profile-menu-popover .menu-item .material-symbols-outlined { color: #475569; }
-    .profile-menu-popover .menu-divider { height: 1px; background: #f1f5f9; margin: 6px 0; }
-    .profile-menu-popover .logout-action { margin: 8px 12px 4px; padding: 10px 14px; background: #ef4444; color: #fff; border-radius: 10px; display: flex; align-items: center; gap: 10px; font-weight: 600; justify-content: center; }
-    .profile-menu-popover .logout-action .material-symbols-outlined { color: #fff; }
+    /* Sidebar and menu styles are provided by the Default Profile Container partial. */
 
     /* ===== HEADER CONTAINER STYLES ===== */
     .header-container { position: fixed; top: 0; left: 0; right: 0; height: 60px; background-color: #FF9100; display: flex; align-items: center; padding: 0 20px; z-index: 100; box-shadow: 0 2px 4px rgba(0,0,0,0.1); }
@@ -159,7 +129,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
     /* ===== MAIN CONTAINER AND CONTENT ===== */
     .main-container { display: flex; margin-top: 0px; padding-top: 0px; min-height: 100vh; }
-    .main-content { margin: 0px auto 24px calc(var(--sidebar-expanded) + 96px); padding-top: 24px; flex: 1; display: flex; flex-direction: column; gap: 24px; transition: margin-left 0.3s ease; max-width: 820px; width: 100%; }
+    .main-content { margin: 0px auto 24px calc(var(--sidebar-expanded) + 96px) !important; padding-top: 24px; flex: 1; display: flex; flex-direction: column; gap: 24px; transition: margin-left 0.3s ease; max-width: 820px; width: 100%; }
 
     /* ===== POST CREATION BOX STYLES ===== */
     .post-box { background-color: white; border-radius: 16px; padding: 20px; box-shadow: var(--shadow-lg); border: 1px solid #e5e7eb; }
@@ -365,37 +335,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
   
 
   <!-- ===== PROFILE CONTAINER SIDEBAR ===== -->
-  <div class="profile-container">
-    <div class="sidebar-brand">Agrilink</div>
-    <ul class="profile-menu">
-      <li data-href="homemain.php"><i class="material-symbols-outlined">home</i><span>Home</span></li>
-    </ul>
-    <div class="sidebar-search">
-      <span class="material-symbols-outlined">search</span>
-      <input type="text" id="sidebar-search-input" placeholder="Search" />
-    </div>
-    <ul class="profile-menu">
-      <li data-href="listing.php"><i class="material-symbols-outlined">storefront</i><span>Listings</span></li>
-      <li data-href="historyandtransaction.php"><i class="material-symbols-outlined">receipt_long</i><span>Listing History</span></li>
-      <li data-href="profile.php"><i class="material-symbols-outlined">person</i><span>Profile</span></li>
-    </ul>
-
-    <!-- Bottom popup menu trigger -->
-    <button class="profile-menu-trigger" id="profile-menu-trigger" type="button">
-      <span class="material-symbols-outlined">menu</span>
-      <span>Menu</span>
-    </button>
-  </div>
-
-  <!-- Popover moved OUTSIDE sidebar to avoid clipping and align beside trigger -->
-  <div class="profile-menu-popover" id="profile-menu-popover">
-    <div class="menu-item" data-href="#change-role"><span class="material-symbols-outlined">manage_accounts</span><span>Change Role</span></div>
-    <div class="menu-item" data-href="settings.php"><span class="material-symbols-outlined">settings</span><span>Settings</span></div>
-    <div class="menu-item" data-href="report.php"><span class="material-symbols-outlined">analytics</span><span>My Report</span></div>
-    <div class="menu-item" data-href="#switch-appearance"><span class="material-symbols-outlined">dark_mode</span><span>Switch Appearance</span></div>
-    <div class="menu-divider"></div>
-    <div class="logout-action" id="logout-action"><span class="material-symbols-outlined">logout</span><span>Logout</span></div>
-  </div>
+  <?php require_once __DIR__ . '/partials/profile_container.php'; if (function_exists('render_profile_container')) { render_profile_container(); } ?>
 
   <!-- ===== MAIN CONTAINER AND CONTENT AREA ===== -->
   <div class="main-container">

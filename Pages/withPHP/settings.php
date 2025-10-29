@@ -17,12 +17,43 @@ $replacements = [
   'profile.html' => 'profile.php',
 ];
 $html = str_replace(array_keys($replacements), array_values($replacements), $html);
+// Replace the sidebar profile container with the exact homemain.php version
+$profileContainer = <<<HTML
+<div class="profile-container">
+  <div class="sidebar-brand">Agrilink</div>
+  <ul class="profile-menu">
+    <li data-href="homemain.php"><i class="material-symbols-outlined">home</i><span>Home</span></li>
+  </ul>
+  <div class="sidebar-search">
+    <span class="material-symbols-outlined">search</span>
+    <input type="text" id="sidebar-search-input" placeholder="Search" />
+  </div>
+  <ul class="profile-menu">
+    <li data-href="listing.php"><i class="material-symbols-outlined">storefront</i><span>Listings</span></li>
+    <li data-href="historyandtransaction.php"><i class="material-symbols-outlined">receipt_long</i><span>Listing History</span></li>
+    <li data-href="profile.php"><i class="material-symbols-outlined">person</i><span>Profile</span></li>
+  </ul>
+  <!-- Bottom popup menu trigger -->
+  <button class="profile-menu-trigger" id="profile-menu-trigger" type="button">
+    <span class="material-symbols-outlined">menu</span>
+    <span>Menu</span>
+  </button>
+</div>
+HTML;
+
+$html = preg_replace('/<div\s+class="profile-container"[\s\S]*?<\/div>\s*/i', $profileContainer, $html, 1);
+// Remove the header section (between comment anchors) and any fallback header container
+$html = preg_replace('/<!--\s*Header\s*-->[\s\S]*?<!--\s*Sidebar\s*-->/i', '<!-- Sidebar -->', $html, 1);
+$html = preg_replace('/<div\s+class="header-container"[^>]*>[\s\S]*?<\/div>/i', '', $html);
 
 // Inject Notification and Chat containers + standardized header handlers before </body>
 $injection = <<<'HTML'
   
   <!-- Injected: Standardized styles and containers (match homemain.php) -->
   <style>
+    /* Remove reserved header spacing since header is stripped */
+    body { padding-top: 0 !important; }
+    .profile-container { top: 0 !important; }
     .notification-container { position: fixed; width: 350px; background-color: white; border-radius: 8px; box-shadow: 0 5px 15px rgba(0,0,0,0.2); z-index: 100; display: none; transition: opacity 0.2s ease; }
     .notification-container.visible { display: block; }
     .notification-header { display: flex; justify-content: space-between; align-items: center; padding: 15px; border-bottom: 1px solid #eee; }
@@ -143,6 +174,51 @@ $injection = <<<'HTML'
     @keyframes typingAnimation { 0%, 60%, 100% { transform: translateY(0); } 30% { transform: translateY(-10px); } }
   </style>
 
+  <!-- Override layout to match homemain.php main-content width/offset -->
+  <style>
+    .main-content {
+      max-width: 820px;
+      width: 100%;
+      /* top | right | bottom | left */
+      margin: 0px auto 24px calc(var(--sidebar-expanded) + 96px);
+      padding-top: 24px;
+    }
+    @media (max-width: 992px) {
+      .main-content { margin-left: 0 !important; margin-right: 0 !important; }
+    }
+  </style>
+  
+  <!-- Sidebar styles copied from homemain.php -->
+  <style>
+    .profile-container { position: fixed; left: 0; top: 0; bottom: 0; width: var(--sidebar-expanded); background-color: var(--surface); padding: 20px; z-index: 90; box-shadow: var(--shadow-sm); overflow-y: auto; transition: width 0.3s ease; display:flex; flex-direction:column; }
+    .profile-header { display: flex; align-items: center; margin-bottom: 20px; }
+    .profile-pic { width: 50px; height: 50px; border-radius: 50%; object-fit: cover; margin-right: 10px; cursor: pointer; }
+    .profile-name { font-weight: 600; }
+    .profile-container .profile-name,
+    .profile-container .profile-menu li span,
+    .profile-container .logout-btn span { display: inline; }
+    .profile-menu { list-style: none; }
+    .profile-menu li { padding: 14px 16px; margin: 8px 0; border-radius: var(--radius-sm); display: flex; align-items: center; cursor: pointer; font-size: 18px; }
+    .profile-menu li:hover { background-color: var(--surface-hover); }
+    .profile-menu li i { margin-right: 14px; color: #FF9100; font-size: 26px; }
+    .bottom-menu { margin-top: auto; }
+    .sidebar-brand { font-weight: 800; color: #FF9100; margin: 0 0 16px; font-size: 28px; background: transparent; padding: 0; border-radius: 0; display: block; text-align: center; }
+    .sidebar-search { display: flex; align-items: center; gap: 10px; background: #f1f5f9; border: 1px solid var(--border); border-radius: 12px; padding: 10px 12px; margin: 6px 0 10px; }
+    .sidebar-search .material-symbols-outlined { color: #64748b; font-size: 22px; }
+    .sidebar-search input { flex: 1; border: none; outline: none; background: transparent; font-size: 16px; color: #0f172a; }
+    .sidebar-search input::placeholder { color: #94a3b8; }
+    .profile-menu-trigger { margin-top: auto; display: inline-flex; align-items: center; gap: 8px; border: 1px solid var(--border); background: #fff; color: #111827; padding: 10px 14px; border-radius: 10px; cursor: pointer; box-shadow: var(--shadow-sm); }
+    .profile-menu-trigger .material-symbols-outlined { color: #0f172a; }
+    .profile-menu-popover { position: fixed; width: 260px; background: #fff; border-radius: 12px; box-shadow: 0 10px 25px rgba(0,0,0,0.15); border: 1px solid #e5e7eb; padding: 10px 0; display: none; z-index: 120; max-height: calc(100vh - 16px); overflow-y: auto; }
+    .profile-menu-popover.visible { display: block; }
+    .profile-menu-popover .menu-item { display: flex; align-items: center; gap: 12px; padding: 10px 16px; color: #0f172a; cursor: pointer; }
+    .profile-menu-popover .menu-item:hover { background: #f8fafc; }
+    .profile-menu-popover .menu-item .material-symbols-outlined { color: #475569; }
+    .profile-menu-popover .menu-divider { height: 1px; background: #f1f5f9; margin: 6px 0; }
+    .profile-menu-popover .logout-action { margin: 8px 12px 4px; padding: 10px 14px; background: #ef4444; color: #fff; border-radius: 10px; display: flex; align-items: center; gap: 10px; font-weight: 600; justify-content: center; }
+    .profile-menu-popover .logout-action .material-symbols-outlined { color: #fff; }
+  </style>
+  
   <div id="floating-chats-root"></div>
 
   <script>
@@ -215,6 +291,45 @@ $injection = <<<'HTML'
       });
       const logoutBtn = $('#logout-btn');
       if (logoutBtn) logoutBtn.addEventListener('click', ()=> { window.location.href = 'homemain.php'; });
+    })();
+  </script>
+
+  <!-- Popover toggle (aligned with Default Profile Container: includes backdrop floater) -->
+  <script>
+    (function(){
+      const trigger = document.getElementById('profile-menu-trigger');
+      const pop = document.getElementById('profile-menu-popover');
+      // Ensure backdrop exists
+      let bd = document.getElementById('profile-menu-backdrop');
+      if (!bd) {
+        bd = document.createElement('div');
+        bd.id = 'profile-menu-backdrop';
+        bd.className = 'profile-menu-backdrop';
+        const style = document.createElement('style');
+        style.textContent = `.profile-menu-backdrop{position:fixed;inset:0;background:rgba(0,0,0,0.2);backdrop-filter:saturate(120%) blur(0px);display:none;z-index:110}.profile-menu-backdrop.visible{display:block}`;
+        document.head.appendChild(style);
+        document.body.appendChild(bd);
+      }
+      if (!trigger || !pop) return;
+      function position(){
+        const r = trigger.getBoundingClientRect();
+        const gap = 16; const topOffset = -6; let left = r.right + gap; let top = Math.max(8, r.top + topOffset);
+        const pc = document.querySelector('.profile-container'); if (pc) { const cr = pc.getBoundingClientRect(); left = Math.max(left, cr.right + 8); }
+        const prevDisplay = pop.style.display; if (!pop.classList.contains('visible')) { pop.style.visibility='hidden'; pop.style.display='block'; }
+        const pw = pop.offsetWidth || 260; const ph = pop.offsetHeight || 200; if (!pop.classList.contains('visible')) { pop.style.display = prevDisplay; pop.style.visibility=''; }
+        const margin = 8; if (left + pw > window.innerWidth - margin) left = Math.max(margin, r.left - gap - pw);
+        top = Math.max(margin, Math.min(top, window.innerHeight - ph - margin));
+        pop.style.top = Math.round(top)+'px'; pop.style.left = Math.round(left)+'px';
+      }
+      function toggle(){ position(); pop.classList.toggle('visible'); bd && bd.classList.toggle('visible'); }
+      function hide(){ pop.classList.remove('visible'); bd && bd.classList.remove('visible'); }
+      trigger.addEventListener('click', (e)=>{ e.stopPropagation(); toggle(); });
+      bd && bd.addEventListener('click', hide);
+      document.addEventListener('click', (e)=>{ if (pop.classList.contains('visible') && !pop.contains(e.target) && e.target !== trigger) hide(); });
+      document.addEventListener('keydown', (e)=>{ if (e.key==='Escape') hide(); });
+      pop.querySelectorAll('.menu-item').forEach(it=> it.addEventListener('click', ()=>{ const href=it.getAttribute('data-href'); if(href && href.startsWith('#')) { hide(); return; } if(href){ hide(); window.location.href = href; } }));
+      window.addEventListener('resize', ()=>{ if (pop.classList.contains('visible')) position(); });
+      window.addEventListener('scroll', ()=>{ if (pop.classList.contains('visible')) position(); }, { passive:true });
     })();
   </script>
 

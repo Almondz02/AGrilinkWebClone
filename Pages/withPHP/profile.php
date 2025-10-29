@@ -85,36 +85,33 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
   <style>
     html { scrollbar-gutter: stable both-edges; }
     * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Inter', 'Segoe UI', system-ui, -apple-system, sans-serif; }
-    :root { --brand:#047857; --brand-light:#059669; --brand-dark:#065f46; --bg:linear-gradient(135deg,#f0f9ff 0%,#e0f2fe 50%,#f0f2f5 100%); --surface:#ffffff; --surface-2:#f8fafc; --surface-hover:#f1f5f9; --text:#0f172a; --border:#e2e8f0; --shadow-md:0 4px 6px -1px rgba(0,0,0,.1), 0 2px 4px -1px rgba(0,0,0,.06); --radius:12px; --sidebar-expanded:280px; --sidebar-collapsed:80px; }
-    body { background: var(--bg); color: var(--text); min-height: 100vh; padding-top: 0; }
+    :root {
+      --brand: #047857;
+      --brand-light: #059669;
+      --brand-dark: #065f46;
+      --bg: linear-gradient(135deg, #f0f9ff 0%, #e0f2fe 50%, #f0f2f5 100%);
+      --surface: #ffffff;
+      --surface-2: #f8fafc;
+      --surface-hover: #f1f5f9;
+      --text: #0f172a;
+      --text-muted: #64748b;
+      --text-light: #94a3b8;
+      --border: #e2e8f0;
+      --border-light: #f1f5f9;
+      --ring: rgba(4, 120, 87, 0.12);
+      --shadow-sm: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
+      --shadow-md: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+      --shadow-lg: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+      --radius: 12px;
+      --radius-sm: 8px;
+      --sidebar-expanded: 280px;
+      --sidebar-collapsed: 80px;
+      --top-gap: 0; /* keep body and notification top gaps in sync */
+    }
+    body { background: var(--bg); color: var(--text); min-height: 100vh; padding-top: var(--top-gap); }
     .header-container { display: none; }
     
-    .profile-container { position: fixed; left: 0; top: 0; bottom: 0; width: var(--sidebar-expanded); background-color: white; padding: 20px; z-index: 90; box-shadow: 1px 0 5px rgba(0,0,0,0.1); overflow-y:auto; transition: width .3s ease; display:flex; flex-direction:column; }
-    .profile-header { display: flex; align-items: center; margin-bottom: 20px; }
-    .profile-pic { width: 50px; height: 50px; border-radius: 50%; object-fit: cover; margin-right: 10px; cursor: pointer; }
-    .profile-name { font-weight: 600; }
-    .profile-menu { list-style: none; }
-    .profile-menu li { padding: 14px 16px; margin: 8px 0; border-radius: var(--radius-sm); display: flex; align-items: center; cursor: pointer; font-size: 18px; }
-    .profile-menu li i { margin-right: 14px; color: #FF9100; font-size: 26px; }
-    .bottom-menu { margin-top: auto; }
-    /* Sidebar brand and search (match homemain) */
-    .sidebar-brand { font-weight: 800; color: #FF9100; margin: 0 0 24px; font-size: 28px; background: transparent; padding: 0; border-radius: 0; display: block; text-align: center; }
-    .sidebar-search { display: flex; align-items: center; gap: 10px; background: #f1f5f9; border: 1px solid var(--border); border-radius: 12px; padding: 10px 12px; margin: 6px 0 10px; }
-    .sidebar-search .material-symbols-outlined { color: #64748b; font-size: 22px; }
-    .sidebar-search input { flex: 1; border: none; outline: none; background: transparent; font-size: 16px; color: #0f172a; }
-    .sidebar-search input::placeholder { color: #94a3b8; }
-    /* Menu trigger + popover (match homemain) */
-    .profile-menu-trigger { margin-top: auto; display: inline-flex; align-items: center; gap: 8px; border: 1px solid var(--border); background: #fff; color: #111827; padding: 10px 14px; border-radius: 10px; cursor: pointer; box-shadow: var(--shadow-sm); }
-    .profile-menu-trigger .material-symbols-outlined { color: #0f172a; }
-    .profile-menu-popover { position: fixed; width: 260px; background: #fff; border-radius: 12px; box-shadow: 0 10px 25px rgba(0,0,0,0.15); border: 1px solid #e5e7eb; padding: 10px 0; display: none; z-index: 120; max-height: calc(100vh - 16px); overflow-y: auto; }
-    .profile-menu-popover.visible { display: block; }
-    .profile-menu-popover .menu-item { display: flex; align-items: center; gap: 12px; padding: 10px 16px; color: #0f172a; cursor: pointer; }
-    .profile-menu-popover .menu-item:hover { background: #f8fafc; }
-    .profile-menu-popover .menu-item .material-symbols-outlined { color: #475569; }
-    .profile-menu-popover .menu-divider { height: 1px; background: #f1f5f9; margin: 6px 0; }
-    .profile-menu-popover .logout-action { margin: 8px 12px 4px; padding: 10px 14px; background: #ef4444; color: #fff; border-radius: 10px; display: flex; align-items: center; gap: 10px; font-weight: 600; justify-content: center; }
-    .profile-container .profile-name, .profile-container .profile-menu li span, .profile-container .logout-btn span { display:inline; }
-    .main-content { margin: 0px auto 24px calc(var(--sidebar-expanded) + 96px); padding-top: 24px; flex: 1; display: flex; flex-direction: column; gap: 24px; transition: margin-left .3s ease; max-width: 820px; width: 100%; }
+    .main-content { margin: 0px auto 24px calc(var(--sidebar-expanded) + 96px) !important; padding-top: 24px; flex: 1; display: flex; flex-direction: column; gap: 24px; transition: margin-left .3s ease; max-width: 820px; width: 100%; }
     .cover-section { margin-bottom: 20px; }
     .cover-container { position: relative; border-radius: 12px; overflow: hidden; box-shadow: var(--shadow-md); background: white; }
     .cover-photo { height: 220px; position: relative; }
@@ -240,38 +237,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
   </style>
 </head>
 <body>
-  
-
-  <!-- Sidebar (match homemain structure) -->
-  <div class="profile-container">
-    <div class="sidebar-brand">Agrilink</div>
-    <ul class="profile-menu">
-      <li data-href="homemain.php"><i class="material-symbols-outlined">home</i><span>Home</span></li>
-    </ul>
-    <div class="sidebar-search">
-      <span class="material-symbols-outlined">search</span>
-      <input type="text" id="sidebar-search-input" placeholder="Search" />
-    </div>
-    <ul class="profile-menu">
-      <li data-href="listing.php"><i class="material-symbols-outlined">storefront</i><span>Listings</span></li>
-      <li data-href="historyandtransaction.php"><i class="material-symbols-outlined">receipt_long</i><span>Listing History</span></li>
-      <li data-href="profile.php"><i class="material-symbols-outlined">person</i><span>Profile</span></li>
-    </ul>
-    <!-- Bottom popup menu trigger -->
-    <button class="profile-menu-trigger" id="profile-menu-trigger" type="button">
-      <span class="material-symbols-outlined">menu</span>
-      <span>Menu</span>
-    </button>
-  </div>
-  <!-- Popover moved outside sidebar -->
-  <div class="profile-menu-popover" id="profile-menu-popover">
-    <div class="menu-item" data-href="#change-role"><span class="material-symbols-outlined">manage_accounts</span><span>Change Role</span></div>
-    <div class="menu-item" data-href="settings.php"><span class="material-symbols-outlined">settings</span><span>Settings</span></div>
-    <div class="menu-item" data-href="report.php"><span class="material-symbols-outlined">analytics</span><span>My Report</span></div>
-    <div class="menu-item" data-href="#switch-appearance"><span class="material-symbols-outlined">dark_mode</span><span>Switch Appearance</span></div>
-    <div class="menu-divider"></div>
-    <div class="logout-action" id="logout-action"><span class="material-symbols-outlined">logout</span><span>Logout</span></div>
-  </div>
+  <?php require_once __DIR__ . '/partials/profile_container.php'; ?>
+  <?php render_profile_container(); ?>
 
   <!-- Main content -->
   <div class="main-content">
@@ -396,37 +363,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     function renderStars(rating){ const root = $('#rating-stars'); if(!root) return; root.innerHTML=''; const full=Math.floor(rating), half = rating%1!==0; for(let i=0;i<full;i++){ root.innerHTML += '<span class="material-symbols-outlined">star</span>'; } if(half){ root.innerHTML += '<span class="material-symbols-outlined">star_half</span>'; } const empties = 5 - Math.ceil(rating); for(let i=0;i<empties;i++){ root.innerHTML += '<span class="material-symbols-outlined">star</span>'; } }
     renderStars(calculateRating());
 
-    // Sidebar nav
-    $('#profile-link')?.addEventListener('click', ()=>{ window.location.href = 'profile.php'; });
-    $all('.profile-menu li').forEach(li=> li.addEventListener('click', ()=>{ const href=li.getAttribute('data-href'); if(href) window.location.href = href; }));
-    $('#logout-btn')?.addEventListener('click', ()=>{ window.location.href = 'homemain.php'; });
-
-    // Sidebar bottom menu popover (match homemain)
-    (function(){
-      const trigger = document.getElementById('profile-menu-trigger');
-      const pop = document.getElementById('profile-menu-popover');
-      const logout = document.getElementById('logout-action');
-      if (!trigger || !pop) return;
-      function position(){
-        const r = trigger.getBoundingClientRect();
-        const gap = 16; const topOffset = -6; let left = r.right + gap; let top = Math.max(8, r.top + topOffset);
-        const pc = document.querySelector('.profile-container'); if (pc) { const cr = pc.getBoundingClientRect(); left = Math.max(left, cr.right + 8); }
-        const prevDisplay = pop.style.display; if (!pop.classList.contains('visible')) { pop.style.visibility='hidden'; pop.style.display='block'; }
-        const pw = pop.offsetWidth || 260; const ph = pop.offsetHeight || 200; if (!pop.classList.contains('visible')) { pop.style.display = prevDisplay; pop.style.visibility=''; }
-        const margin = 8; if (left + pw > window.innerWidth - margin) left = Math.max(margin, r.left - gap - pw);
-        top = Math.max(margin, Math.min(top, window.innerHeight - ph - margin));
-        pop.style.top = Math.round(top)+'px'; pop.style.left = Math.round(left)+'px';
-      }
-      function toggle(){ position(); pop.classList.toggle('visible'); }
-      function hide(){ pop.classList.remove('visible'); }
-      trigger.addEventListener('click', (e)=>{ e.stopPropagation(); toggle(); });
-      document.addEventListener('click', (e)=>{ if (pop.classList.contains('visible') && !pop.contains(e.target) && e.target !== trigger) hide(); });
-      document.addEventListener('keydown', (e)=>{ if (e.key==='Escape') hide(); });
-      pop.querySelectorAll('.menu-item').forEach(it=> it.addEventListener('click', ()=>{ const href=it.getAttribute('data-href'); if(href && href.startsWith('#')) { hide(); return; } if(href){ window.location.href = href; } }));
-      logout && logout.addEventListener('click', ()=>{ window.location.href = 'homemain.php'; });
-      window.addEventListener('resize', ()=>{ if (pop.classList.contains('visible')) position(); });
-      window.addEventListener('scroll', ()=>{ if (pop.classList.contains('visible')) position(); }, { passive:true });
-    })();
+    
 
     // ===== CHAT LIST RENDER =====
     const chatState = {
