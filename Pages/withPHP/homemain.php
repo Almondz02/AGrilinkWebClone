@@ -1,4 +1,10 @@
 <?php
+$sessionDir = __DIR__ . '/tmp/sessions';
+if (!is_dir($sessionDir)) { mkdir($sessionDir, 0777, true); }
+session_save_path($sessionDir);
+ini_set('display_errors', '0');
+ini_set('display_startup_errors', '0');
+error_reporting(0);
 session_start();
 
 // CSRF token setup
